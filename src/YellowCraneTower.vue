@@ -1,19 +1,39 @@
 <template>
-  <div id="app" :class="useinfo ? 'pages-old' : 'pages-new'">
-    <div class="card"><router-view /></div>
-    <div class="bottom-new" v-if="!useinfo"></div>
-    <div class="bottom-old" v-if="useinfo"></div>
-    <div class="bottom-d" :class="useinfo ? 'bottomImgold' : 'bottomImgnew'"></div>
-  </div>
+    <div id="app" :class="abc.isuser ? 'pages-old' : 'pages-new'" >
+      <transition name="move"><div class="card" :class="{move:ismove}"><router-view /></div></transition>
+      <div class="bottom-new" v-if="!abc.isuser"></div>
+      <div class="bottom-old" v-if="abc.isuser">
+        <ul class="bottom-old-a" >
+          <li v-for="(item,index) in website" :key="index"><a :href="item"></a></li>
+        </ul>
+      </div>
+      <div class="bottom-d" :class="abc.isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
+      <!-- 弹出的提示model -->
+      <modal></modal>
+    </div>
 </template>
 
 <script>
+  import modal from '@/components/assembly/modal'
 export default {
   name: 'YellowCraneTower',
   data() {
     return {
-      useinfo: true //判断是新客户还是老客户
+      //模拟传进来的值
+      abc:{
+        isuser:false,//新老客户
+      },
+      website:['https://www.baidu.com','https://www.taobao.com','https://www.jd.com'],//老用户页面跳转的三个链接
+      ismove:false
     };
+  },
+  components:{
+    modal
+  },
+  mounted(){
+    this.ismove=true
+  },
+  methods:{
   }
 };
 </script>
@@ -24,15 +44,22 @@ export default {
   background-size: cover;
 };
 @pages: {
-  z-index: -100;
-  position: relative;
+  z-index: 0;
   width: 100%;
   box-sizing: border-box;
+  position:relative;
 };
 //*样式
-body {
+body,ul {
   margin: 0;
   padding: 0;
+}
+li{
+  list-style:none;
+}
+.center{
+  display: flex;
+  justify-content: center;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -49,22 +76,36 @@ body {
   @backgrounds();
   position: absolute;
   left: 25px;
-  top: 350px;
-  z-index: -6;
+  top:900px;
+  z-index: 5;
+}
+.move{
+  top:235px;
+}
+//卡片的开局动画
+.move-enter{
+  top:900px;
+}
+.move-enter-active,.move-leave-active{
+    transition: all 3s;
+}
+.move-leave{
+  top:235px;
 }
 // 新用户样式
 .pages-new {
   background: url(../static/page.png) no-repeat;
   @pages();
-  @backgrounds();
-  height: 2061px;
+  background-position: 100% 100%;
+  background-size: cover;
+  height: 1933px;
   .bottom-new {
     position: absolute;
     bottom: 10px;
     left: 0;
     background: url(../static/bottom-new.png) no-repeat;
     @backgrounds();
-    z-index: -5;
+    z-index: 100;
     width: 750px;
     height: 1171px;
   }
@@ -77,19 +118,32 @@ body {
   background: url(../static/pages-old.png) no-repeat;
   @pages();
   @backgrounds();
-  height: 1720px;
+  height: 1593px;
   .bottomImgold {
-    bottom: 0;
+    bottom: 205px;
   }
   .bottom-old {
     background: url(../static/bottom-old.png) no-repeat;
     @backgrounds();
-    z-index: -5;
+    z-index: 10;
     width: 750px;
     height: 769px;
     position: absolute;
     bottom: 10px;
     left: 0;
+    .bottom-old-a{
+      padding:245px 75px 0px;
+      li{
+        height: 139px;
+        margin-bottom: 25px;
+        a{
+          border-radius: 100px;
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
   }
 }
 // 包裹层
@@ -99,7 +153,7 @@ body {
   position: absolute;
   width: 727px;
   height: 646px;
-  left: 14px;
-  z-index: -10;
+  left: 11.5px;
+  z-index: 1;
 }
 </style>

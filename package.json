@@ -5,7 +5,7 @@
   "author": "DESKTOP-V2D67I1\\ydm <478807601@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
@@ -17,7 +17,8 @@
     "postcss-viewport-units": "^0.1.6",
     "postcss-write-svg": "^3.0.1",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

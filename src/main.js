@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import YellowCraneTower from './YellowCraneTower'
 import router from './router'
+import store from './store'
 
 Vue.config.productionTip = false
 
@@ -10,6 +11,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#YellowCraneTower',
   router,
+  store,
   components: { YellowCraneTower },
   template: '<YellowCraneTower/>'
 })

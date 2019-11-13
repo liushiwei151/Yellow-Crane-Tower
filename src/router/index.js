@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import QRcode from '@/components/QRcode'
+import verification from '@/components/verification'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'QRcode',
-      component: QRcode
+      name: 'verification',
+      component: verification
     }
   ]
 })

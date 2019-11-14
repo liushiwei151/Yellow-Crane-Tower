@@ -1,40 +1,41 @@
 <template>
-    <div id="app" :class="abc.isuser ? 'pages-old' : 'pages-new'" >
-      <transition name="move"><div class="card" :class="{move:ismove}"><router-view /></div></transition>
-      <div class="bottom-new" v-if="!abc.isuser"></div>
-      <div class="bottom-old" v-if="abc.isuser">
-        <ul class="bottom-old-a" >
-          <li v-for="(item,index) in website" :key="index"><a :href="item"></a></li>
-        </ul>
-      </div>
-      <div class="bottom-d" :class="abc.isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
-      <!-- 弹出的提示model -->
-      <modal></modal>
+  <div id="app" :class="isuser ? 'pages-old' : 'pages-new'">
+      <div class="card" ><router-view /></div>
+    <div class="bottom-new" v-if="!isuser"></div>
+    <div class="bottom-old" v-if="isuser">
+      <ul class="bottom-old-a">
+        <li v-for="(item, index) in website" :key="index"><a :href="item"></a></li>
+      </ul>
     </div>
+    <div class="bottom-d" :class="isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
+    <!-- 弹出的提示model -->
+    <modal></modal>
+  </div>
 </template>
 
 <script>
-  import modal from '@/components/assembly/modal'
+import modal from '@/components/assembly/modal';
+import { mapState, mapActions } from 'vuex';
 export default {
   name: 'YellowCraneTower',
   data() {
     return {
       //模拟传进来的值
-      abc:{
-        isuser:false,//新老客户
-      },
-      website:['https://www.baidu.com','https://www.taobao.com','https://www.jd.com'],//老用户页面跳转的三个链接
-      ismove:false
+      website: ['https://www.baidu.com', 'https://www.taobao.com', 'https://www.jd.com'], //老用户页面跳转的三个链接
     };
   },
   components:{
     modal
   },
-  mounted(){
-    this.ismove=true
+  computed:{
+    ...mapState({
+      isuser:'isuser'
+    })
   },
-  methods:{
-  }
+  mounted() {
+    this.ismove = true;
+  },
+  methods: {}
 };
 </script>
 
@@ -47,17 +48,17 @@ export default {
   z-index: 0;
   width: 100%;
   box-sizing: border-box;
-  position:relative;
+  position: relative;
 };
 //*样式
-body,ul {
+body,ul,p {
   margin: 0;
   padding: 0;
 }
-li{
-  list-style:none;
+li {
+  list-style: none;
 }
-.center{
+.center {
   display: flex;
   justify-content: center;
 }
@@ -70,28 +71,29 @@ li{
 }
 //香烟的卡片样式
 .card {
-  background: url(../static/smokeBG1.png) no-repeat;
+  background: url(/static/smokegqzBG2.png) no-repeat;
   width: 700px;
   height: 744px;
   @backgrounds();
   position: absolute;
   left: 25px;
-  top:900px;
+  // top:800px;
+  top: 235px;
   z-index: 5;
 }
-.move{
-  top:235px;
-}
-//卡片的开局动画
-.move-enter{
-  top:900px;
-}
-.move-enter-active,.move-leave-active{
-    transition: all 3s;
-}
-.move-leave{
-  top:235px;
-}
+// .move{
+//   top:235px;
+// }
+// //卡片的开局动画
+// .move-enter{
+//   top:900px;
+// }
+// .move-enter-active,.move-leave-active{
+//     transition: all 3s;
+// }
+// .move-leave{
+//   top:235px;
+// }
 // 新用户样式
 .pages-new {
   background: url(../static/page.png) no-repeat;
@@ -131,12 +133,12 @@ li{
     position: absolute;
     bottom: 10px;
     left: 0;
-    .bottom-old-a{
-      padding:245px 75px 0px;
-      li{
+    .bottom-old-a {
+      padding: 245px 75px 0px;
+      li {
         height: 139px;
         margin-bottom: 25px;
-        a{
+        a {
           border-radius: 100px;
           display: block;
           width: 100%;

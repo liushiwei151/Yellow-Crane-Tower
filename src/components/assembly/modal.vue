@@ -1,56 +1,57 @@
 <template>
-  <div class="modal" @touchmove.prevent @click.stop="close" :class="{ show: isshow }">
-    <div class="modal-box">
+  <div class="modal" @touchmove.prevent :class="{ show: isshow }">
+    <!-- 老用户跳转 -->
+    <div class="modal-box" v-if="isuser">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
         <div>{{ contentstyle.text2 }}</div>
       </div>
       <div class="modal-box-button">
-        <button @click.stop="close" v-show="contentstyle.isbutton">{{ contentstyle.button }}</button>
+        <button @click="close" v-show="contentstyle.isbutton">{{ contentstyle.button }}</button>
+      </div>
+    </div>
+    <!-- 新用户跳转 -->
+    <div v-if="!isuser" class="modal-new">
+      <div class="modal-new-code"></div>
+      <div class="modal-new-clause">
+        <p>
+          关注前请仔细阅读
+          <a href="#">沙龙服务条款</a>
+        </p>
+        <p>一经关注则视为同意</p>
+      </div>
+      <div class="modal-new-sup">
+        <p>本平台含有烟草内容18岁以下谢绝关注</p>
+        <p>服务支持: 武汉黄鹤楼漫天游文化传播有限公司</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 export default {
   name: 'modal',
   data() {
-    return {
+    return {};
+  },
+  computed: {
+    ...mapState({
       //模态框是否显示
-      isshow: false,
-      //提前存储的提示内容
-      storagecont:[
-        {img: true, text1: '您输入的验证码有误',text2: '请重新输入',isbutton:true,button:'重新输入'},
-        {img: false, text1: '系统调试中,请稍后再试~',text2: '',isbutton:false,button:''},
-        {img:true,text1:'验证码输入错误',text2:'亲爱的楼主, 您输入的验证码有误若产品为新开封, 请注意鉴别真伪',isbutton:true,button:'好的'},
-        {img: false,text1:'您要的页面走丢了,',text2: '试试重新加载找回正确的页面吧！',isbutton:false,button:''},
-        {img: true, text1: '此二维码查询有误',text2: '',isbutton:true,button:'重新扫码'}
-      ],
-      num:4,//显示第几条信息
-      //以传过来的值确认现在的样式
-      contentstyle: {
-        img: true, //显示哪个图片
-        text1: '您输入的验证码有误',
-        text2: '请重新输入',
-        isbutton:true,
-        button:"重新输入"
-      }
-    };
+      isshow: 'isshow',
+      //显示第几条信息
+      num: 'modalnum',
+      // 现在的样式内容
+      contentstyle: 'contentstyle',
+      //新老用户
+      isuser: 'isuser'
+    })
   },
-  mounted(){
-    this.showcont(this.num);
-  },
+  mounted() {},
   methods: {
     //关闭modal
-    close() {
-      this.isshow = false;
-    },
-    //根据传过来的值显示第几条信息
-    showcont(e){
-      this.contentstyle=this.storagecont[e];
-    }
+    ...mapActions(['close'])
   }
 };
 </script>
@@ -82,6 +83,37 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  .modal-new {
+    width: 703px;
+    height: 874px;
+    background: url(/static/modal02.png) no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    .modal-new-code {
+      width: 290px;
+      height: 290px;
+      background: url(/static/QRcode.png) no-repeat;
+      background-size: 100% 100%;
+      margin-top:373px;
+    }
+    .modal-new-clause {
+      color: rgb(85, 34, 8);
+      font-size: 24px;
+      font-weight: bold;
+      a{
+        color:rgb(212,62,62);
+        text-decoration: none;
+      }
+    }
+    .modal-new-sup {
+      color: rgb(250, 152, 77);
+      font-size: 18px;
+      margin-bottom: 36px;
+    }
+  }
   .modal-box {
     color: #fff;
     width: 700px;
@@ -110,10 +142,10 @@ export default {
       flex-direction: column;
       justify-content: space-around;
       div:first-of-type {
-        margin-bottom:10px;
+        margin-bottom: 10px;
       }
-      div:last-of-type{
-        padding:0 130px;
+      div:last-of-type {
+        padding: 0 130px;
       }
     }
     .modal-box-button {

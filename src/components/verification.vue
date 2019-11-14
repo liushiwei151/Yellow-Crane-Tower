@@ -3,12 +3,13 @@
     <div class="verification-img"></div>
     <div class="verification-input">
       <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode"/>
-      <button @click="subCode">提交</button>
+      <button @click="subcode(verificationCode);empty();">提交</button>
     </div>
   </div>
 </template>
 
 <script>
+   import {mapState,mapActions} from "vuex"
 export default {
   name: 'verification',
   data() {
@@ -18,14 +19,10 @@ export default {
     };
   },
   methods:{
-    //向后台接口提交验证码
-    subCode(){
-      if(this.verificationCode==='9999'){
-        alert('跳转')
-      }else{
-        
-      }
-      this.verificationCode=""
+    ...mapActions(['subcode']),
+    // 清空输入框
+    empty(){
+      this.verificationCode="";
     }
   }
 };

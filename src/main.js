@@ -4,6 +4,8 @@ import Vue from 'vue'
 import YellowCraneTower from './YellowCraneTower'
 import router from './router'
 import store from './store'
+import ScratchCard from '@/components/scratch-card/index.js'
+Vue.use(ScratchCard)
 
 Vue.config.productionTip = false
 

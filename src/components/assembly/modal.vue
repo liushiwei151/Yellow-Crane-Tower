@@ -1,7 +1,7 @@
 <template>
   <div class="modal" @touchmove.prevent :class="{ show: isshow }">
     <!-- 老用户跳转 -->
-    <div class="modal-box" v-if="isuser">
+    <div class="modal-box" v-if="ismodal.isuser&&ismodal.isaddress==='isuser'">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- 新用户跳转 -->
-    <div v-if="!isuser" class="modal-new">
+    <div v-if="!ismodal.isuser&&ismodal.isaddress==='isuser'" class="modal-new">
       <div class="modal-new-code"></div>
       <div class="modal-new-clause">
         <p>
@@ -24,6 +24,21 @@
       <div class="modal-new-sup">
         <p>本平台含有烟草内容18岁以下谢绝关注</p>
         <p>服务支持: 武汉黄鹤楼漫天游文化传播有限公司</p>
+      </div>
+    </div>
+    <!-- 客户留电话跳转 -->
+    <div v-if="ismodal.isaddress==='isphone'" class="modal-box">
+      <div>请输入手机号</div>
+      <div>
+        <label for="subphone"></label>
+        <input id='subphone' type="text" placeholder="请输入手机号">
+      </div>
+      <div>
+        <label for="subQR"></label>
+        <input id="subQR" type="text" placeholder="请输入验证码">
+      </div>
+      <div class="modal-box-button">
+        <button @click.stop="bcphone" class='bcphone'>确定</button>
       </div>
     </div>
   </div>
@@ -44,14 +59,16 @@ export default {
       num: 'modalnum',
       // 现在的样式内容
       contentstyle: 'contentstyle',
-      //新老用户
-      isuser: 'isuser'
+      //显示什么样的modal
+      ismodal: 'ismodal',
     })
   },
-  mounted() {},
   methods: {
     //关闭modal
-    ...mapActions(['close'])
+    ...mapActions(['close']),
+    bcphone(){
+
+    }
   }
 };
 </script>
@@ -97,14 +114,14 @@ export default {
       height: 290px;
       background: url(/static/QRcode.png) no-repeat;
       background-size: 100% 100%;
-      margin-top:373px;
+      margin-top: 373px;
     }
     .modal-new-clause {
       color: rgb(85, 34, 8);
       font-size: 24px;
       font-weight: bold;
-      a{
-        color:rgb(212,62,62);
+      a {
+        color: rgb(212, 62, 62);
         text-decoration: none;
       }
     }
@@ -120,6 +137,9 @@ export default {
     height: 744px;
     background: url(/static/popp.png) no-repeat;
     background-size: 100% 100%;
+    input{
+      width: 635px;
+    }
     .modal-box-img {
       width: 269px;
       height: 269px;
@@ -158,6 +178,10 @@ export default {
         width: 313px;
         height: 79px;
         font-size: 36px;
+      }
+      .bcphone{
+        letter-spacing: 30px;
+        text-indent: 30px;
       }
     }
   }

@@ -1,13 +1,13 @@
 <template>
-  <div id="app" :class="isuser ? 'pages-old' : 'pages-new'">
+  <div id="app" :class="ismodal.isuser ? 'pages-old' : 'pages-new'">
       <div class="card" ><router-view /></div>
-    <div class="bottom-new" v-if="!isuser"></div>
-    <div class="bottom-old" v-if="isuser">
+    <div class="bottom-new" v-if="!ismodal.isuser"></div>
+    <div class="bottom-old" v-if="ismodal.isuser">
       <ul class="bottom-old-a">
         <li v-for="(item, index) in website" :key="index"><a :href="item"></a></li>
       </ul>
     </div>
-    <div class="bottom-d" :class="isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
+    <div class="bottom-d" :class="ismodal.isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
     <!-- 弹出的提示model -->
     <modal></modal>
   </div>
@@ -29,7 +29,7 @@ export default {
   },
   computed:{
     ...mapState({
-      isuser:'isuser'
+      ismodal:'ismodal'
     })
   },
   mounted() {
@@ -105,6 +105,7 @@ li {
     position: absolute;
     bottom: 10px;
     left: 0;
+    pointer-events: none;
     background: url(../static/bottom-new.png) no-repeat;
     @backgrounds();
     z-index: 100;
@@ -133,6 +134,7 @@ li {
     position: absolute;
     bottom: 10px;
     left: 0;
+    pointer-events: none;
     .bottom-old-a {
       padding: 245px 75px 0px;
       li {

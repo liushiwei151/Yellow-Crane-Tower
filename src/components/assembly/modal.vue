@@ -1,7 +1,7 @@
 <template>
   <div class="modal" @touchmove.prevent :class="{ show: isshow }">
     <!-- 老用户跳转 -->
-    <div class="modal-box" v-if="ismodal.isuser&&ismodal.isaddress==='isuser'">
+    <div class="modal-box" v-if="ismodal.isuser && ismodal.isaddress === 'isuser'">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- 新用户跳转 -->
-    <div v-if="!ismodal.isuser&&ismodal.isaddress==='isuser'" class="modal-new">
+    <div v-if="!ismodal.isuser && ismodal.isaddress === 'isuser'" class="modal-new">
       <div class="modal-new-code"></div>
       <div class="modal-new-clause">
         <p>
@@ -27,19 +27,19 @@
       </div>
     </div>
     <!-- 客户留电话跳转 -->
-    <div v-if="ismodal.isaddress==='isphone'" class="modal-box">
-      <div>请输入手机号</div>
-      <div>
-        <label for="subphone"></label>
-        <input id='subphone' type="text" placeholder="请输入手机号">
+    <div v-if="ismodal.isaddress === 'isphone'" class="modal-phone">
+      <div class="modal-phone-title">请输入手机号</div>
+      <div class="modal-phone-tel">
+        <label for="subtel"></label>
+        <input id="subtel" type="tel" maxlength="11" placeholder="请输入手机号" />
       </div>
-      <div>
+      <div class="modal-phone-QR">
         <label for="subQR"></label>
-        <input id="subQR" type="text" placeholder="请输入验证码">
+        <input id="subQR" type="text" maxlength="5" placeholder="请输入验证码" />
+        <div>获取验证码</div>
       </div>
-      <div class="modal-box-button">
-        <button @click.stop="bcphone" class='bcphone'>确定</button>
-      </div>
+      <div class="modal-box-button"><button @click.stop="close" >确定</button></div>
+      <div class="modal-phone-text">手机活动仅限本次活动领奖使用, 将严格保密, 请安心填写。</div>
     </div>
   </div>
 </template>
@@ -60,13 +60,13 @@ export default {
       // 现在的样式内容
       contentstyle: 'contentstyle',
       //显示什么样的modal
-      ismodal: 'ismodal',
+      ismodal: 'ismodal'
     })
   },
   methods: {
     //关闭modal
     ...mapActions(['close']),
-    bcphone(){
+    bcphone() {
 
     }
   }
@@ -74,6 +74,20 @@ export default {
 </script>
 
 <style scoped lang="less">
+@modal: {
+  color: #fff;
+  width: 700px;
+  height: 744px;
+  background: url(/static/popp.png) no-repeat;
+  background-size: 100% 100%;
+};
+@label:{
+  width: 100px;
+  height: 100%;
+  border-right: solid 1px rgb(211, 176, 34);
+  background-position: 50% 50%;
+  display: block;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -131,15 +145,92 @@ export default {
       margin-bottom: 36px;
     }
   }
-  .modal-box {
-    color: #fff;
-    width: 700px;
-    height: 744px;
-    background: url(/static/popp.png) no-repeat;
-    background-size: 100% 100%;
-    input{
-      width: 635px;
+  // 留取资料样式
+  .modal-phone {
+    @modal();
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    .modal-phone-title {
+      font-size: 36px;
+      margin: 85px 0 61px;
+      color: rgb(85, 34, 8);
+      font-weight: bold;
     }
+    .modal-phone-text {
+      font-size: 20px;
+      color: rgb(205, 154, 74);
+      margin-top:10px;
+    }
+    .modal-phone-tel {
+      background-color: #fff;
+      width: 635px;
+      border-radius: 20px;
+      border: none;
+      border: solid 1px rgb(211, 176, 34);
+      box-shadow: 0 0 2px rgba(250, 0, 0, 0.5);
+      height: 108px;
+      display: flex;
+      margin-bottom: 37px;
+      box-sizing: border-box;
+      label {
+        background: url(/static/phone.png) no-repeat;
+        background-size: 30px 43px;
+           @label();
+      }
+      input {
+        height: 100%;
+        box-sizing: border-box;
+        border: none;
+        font-size: 28px;
+        text-indent: 15px;
+        width: 500px;
+        outline: none;
+      }
+    }
+    .modal-phone-QR {
+      box-sizing: border-box;
+      background-color: #fff;
+      width: 635px;
+      border-radius: 20px;
+      border: none;
+      border: solid 1px rgb(211, 176, 34);
+      box-shadow: 0 0 2px rgba(250, 0, 0, 0.5);
+      height: 108px;
+      display: flex;
+      margin-bottom: 145px;
+      position: relative;
+      label {
+        background: url(/static/clock.png) no-repeat;
+        background-size: 28px 37px;
+          @label();
+      }
+      input {
+        border: none;
+        text-indent: 15px;
+        outline: none;
+        font-size: 28px;
+        width: 340px;
+      }
+      div {
+        color: rgb(217, 48, 53);
+        font-size: 31px;
+        width: 191px;
+        font-weight: bold;
+        border-left: solid 1px rgb(211, 176, 34);
+        position: absolute;
+        top:0;
+        right:0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  // 问题模态框样式
+  .modal-box {
+    @modal();
     .modal-box-img {
       width: 269px;
       height: 269px;
@@ -168,22 +259,22 @@ export default {
         padding: 0 130px;
       }
     }
-    .modal-box-button {
-      button {
-        background: url(/static/button2.png) no-repeat;
-        background-size: 100% 100%;
-        outline: none;
-        border: none;
-        color: #fff;
-        width: 313px;
-        height: 79px;
-        font-size: 36px;
-      }
-      .bcphone{
-        letter-spacing: 30px;
-        text-indent: 30px;
-      }
-    }
+  }
+}
+.modal-box-button {
+  button {
+    background: url(/static/button2.png) no-repeat;
+    background-size: 100% 100%;
+    outline: none;
+    border: none;
+    color: #fff;
+    width: 313px;
+    height: 79px;
+    font-size: 36px;
+  }
+  .bcphone {
+    letter-spacing: 30px;
+    text-indent: 30px;
   }
 }
 .show {

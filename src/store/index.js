@@ -11,10 +11,12 @@ const store = new Vuex.Store({
     modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal:{
-       isphone:"123",//客户电话
+       isphone:"1234567891",//客户电话
        isuser:true,//新老用户
        isaddress:'isphone'//modal是由哪里传来的
     },
+    // 烟的图片和背景图片
+    smokeimg:'zy',//8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
     //提前存储的提示内容
     storagecont:[
       {img: true, text1: '您输入的验证码有误',text2: '请重新输入',isbutton:true,button:'重新输入'},
@@ -97,8 +99,9 @@ const store = new Vuex.Store({
     // 开始刮奖
     dostartCallback(house,mm){
        house.ismodal.isaddress='isphone';
-       console.log(house.ismodal.isaddress)
-      house.isshow=true
+       if(house.ismodal.isphone.length!=11){
+         house.isshow=true
+       }
     }
   },
 

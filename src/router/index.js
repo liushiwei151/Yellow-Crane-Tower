@@ -11,16 +11,19 @@ export default new Router({
     {
       path: '/',
       name: 'verification',
+      meta:{index:0},
       component: verification
     },
     {
       path:'/result',
       name:'result',
+      meta:{index:1},
       component:result
     },
     {
       path:'/scratch',
       name:'scratch',
+      meta:{index:2},
       component:scratch
     }
   ]

@@ -73,7 +73,7 @@ export default {
           this.number += 1;
         }
         this.startMove();
-      }, 3000); // 滚动不需要停顿则将时间改成动画持续时间
+      }, 3000);
     },
     //清除遮罩层后
     clearCallback() {
@@ -114,7 +114,7 @@ export default {
   height: 320px;
   background: url(/static/gjbg.png) no-repeat;
   background-size: 100% 100%;
-  margin: 35px auto 0;
+  margin: 35px 89px 0;
   box-sizing: border-box;
   overflow: hidden;
 }

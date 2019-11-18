@@ -5,7 +5,7 @@
       <span>扫码次数: {{ QRcodeinfor.num }}</span>
     </div>
     <div class="result-content">
-      <div class="result-content-img"></div>
+      <div class="result-content-img" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'.png)'}"></div>
       <div class="result-content-text">
         <div class="result-content-text1">
           <div v-if="QRcodeinfor.num != 1">
@@ -46,12 +46,13 @@ export default {
   name: 'result',
   data() {
     return {
-      star: [true, true, true, false, false]
+      star: [true, true, true, false, false],
     };
   },
   computed: {
     ...mapState({
-      QRcodeinfor: 'QRcodeinfor'
+      QRcodeinfor: 'QRcodeinfor',
+      smokeimg:'smokeimg'
     })
   },
   methods: {
@@ -82,17 +83,18 @@ export default {
   }
   .result-content {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     margin: 48px 40px 0 126px;
     .result-content-img {
       width: 190px;
       height: 343px;
-      background: url(/static/smokexgqz.png) no-repeat;
+      background: url(/static/smoke/xgqz.png) no-repeat;
       background-size: 100% 100%;
     }
     .result-content-text {
       font-size: 21px;
       width: 280px;
+      margin-left:62px;
       .result-content-text1 {
         height: 90px;
         text-align: left;

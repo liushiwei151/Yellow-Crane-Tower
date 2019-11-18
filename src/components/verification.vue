@@ -39,6 +39,7 @@ export default {
 };
 .verification-input {
   position: relative;
+  padding: 0 60px;
   input {
     width: 584px;
     padding: 27px 0 27px 35px;

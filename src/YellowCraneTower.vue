@@ -1,6 +1,8 @@
 <template>
   <div id="app" :class="ismodal.isuser ? 'pages-old' : 'pages-new'">
-      <div class="card" ><router-view /></div>
+    <div :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'BG.png)'}" key="0">
+      <transition :name="transitionName"><router-view /></transition>
+    </div>
     <div class="bottom-new" v-if="!ismodal.isuser"></div>
     <div class="bottom-old" v-if="ismodal.isuser">
       <ul class="bottom-old-a">
@@ -21,25 +23,70 @@ export default {
   data() {
     return {
       //模拟传进来的值
-      website: ['https://www.baidu.com', 'https://www.taobao.com', 'https://www.jd.com'], //老用户页面跳转的三个链接
+      website: ['https://www.baidu.com', 'https://www.taobao.com', 'https://www.baidu.com'], //老用户页面跳转的三个链接
+      card: true,
+      transitionName: ''
     };
   },
-  components:{
+  components: {
     modal
   },
-  computed:{
+  computed: {
     ...mapState({
-      ismodal:'ismodal'
+      ismodal: 'ismodal',
+      smokeimg:'smokeimg'
     })
   },
   mounted() {
+    this.$router.push('/');
     this.ismove = true;
+    this.move();
   },
-  methods: {}
+  methods: {
+    move() {
+      setTimeout(() => {
+        this.card = false;
+      }, 0);
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (to.meta.index > from.meta.index) {
+        //设置动画名称
+        this.transitionName = 'move-left';
+      } else {
+        this.transitionName = 'move-right';
+      }
+    }
+  }
 };
 </script>
 
 <style lang="less">
+.move-left-enter-active,
+.move-left-leave-active,
+.move-right-enter-active,
+.move-right-leave-active {
+  will-change: transform;
+  transition: all 1000ms linear;
+  position: absolute;
+}
+.move-right-enter {
+  opacity: 0;
+  transform: translate(-100%, 0);
+}
+.move-right-leave-to {
+  opacity: 0;
+  transform: translate(100%, 0);
+}
+.move-left-enter {
+  opacity: 0;
+  transform: translate(100%, 0);
+}
+.move-left-leave-to {
+  opacity: 0;
+  transform: translate(-100%, 0);
+}
 @backgrounds: {
   background-position: 100% 100%;
   background-size: cover;
@@ -51,7 +98,9 @@ export default {
   position: relative;
 };
 //*样式
-body,ul,p {
+body,
+ul,
+p {
   margin: 0;
   padding: 0;
 }
@@ -70,30 +119,30 @@ li {
   color: #2c3e50;
 }
 //香烟的卡片样式
-.card {
-  background: url(/static/smokegqzBG2.png) no-repeat;
+.card1 {
+  background: url(/static/smoke/xgqzBG.png) no-repeat;
   width: 700px;
   height: 744px;
   @backgrounds();
   position: absolute;
   left: 25px;
-  // top:800px;
+  // top: 235px;
+  z-index: 5;
+  transform: translate(0, 565px);
+  overflow: hidden;
+}
+.card2 {
+  overflow: hidden;
+  background: url(/static/smoke/xgqzBG.png) no-repeat;
+  width: 700px;
+  height: 744px;
+  @backgrounds();
+  position: absolute;
+  transition: transform 2s ease-out;
+  left: 25px;
   top: 235px;
   z-index: 5;
 }
-// .move{
-//   top:235px;
-// }
-// //卡片的开局动画
-// .move-enter{
-//   top:900px;
-// }
-// .move-enter-active,.move-leave-active{
-//     transition: all 3s;
-// }
-// .move-leave{
-//   top:235px;
-// }
 // 新用户样式
 .pages-new {
   background: url(../static/page.png) no-repeat;
@@ -140,6 +189,7 @@ li {
       li {
         height: 139px;
         margin-bottom: 25px;
+        pointer-events: auto;
         a {
           border-radius: 100px;
           display: block;

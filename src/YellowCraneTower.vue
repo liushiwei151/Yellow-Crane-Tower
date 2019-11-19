@@ -1,15 +1,16 @@
 <template>
-  <div id="app" :class="ismodal.isuser ? 'pages-old' : 'pages-new'">
+  <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
     <div :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'BG.png)'}" key="0">
-      <transition :name="transitionName"><router-view /></transition>
+     <router-view />
+     <!-- <transition :name="transitionName"><router-view /></transition> -->
     </div>
-    <div class="bottom-new" v-if="!ismodal.isuser"></div>
-    <div class="bottom-old" v-if="ismodal.isuser">
+    <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
+    <div class="bottom-old" v-if="ismodal.isuser==='0'">
       <ul class="bottom-old-a">
-        <li v-for="(item, index) in website" :key="index"><a :href="item"></a></li>
+        <li v-for="(item, index) in website" :key="index"><a :href="item.web" class="webadv" :style="{backgroundImage:'url(/static/'+item.adv+'.png)'}"></a></li>
       </ul>
     </div>
-    <div class="bottom-d" :class="ismodal.isuser ? 'bottomImgold' : 'bottomImgnew'"></div>
+    <div class="bottom-d" :class="ismodal.isuser==='0' ? 'bottomImgold' : 'bottomImgnew'"></div>
     <!-- 弹出的提示model -->
     <modal></modal>
   </div>
@@ -23,9 +24,13 @@ export default {
   data() {
     return {
       //模拟传进来的值
-      website: ['https://www.baidu.com', 'https://www.taobao.com', 'https://www.baidu.com'], //老用户页面跳转的三个链接
+      website: [
+        {web:'https://www.baidu.com',adv:'adv1'},
+         {web:'https://www.taobao.com',adv:'adv2'},
+         {web:'https://www.baidu.com',adv:'adv1'},
+         ], //老用户页面跳转的三个链接
       card: true,
-      transitionName: ''
+      transitionName: '',
     };
   },
   components: {
@@ -49,7 +54,7 @@ export default {
       }, 0);
     }
   },
-  watch: {
+  /*watch: {
     $route(to, from) {
       if (to.meta.index > from.meta.index) {
         //设置动画名称
@@ -58,12 +63,12 @@ export default {
         this.transitionName = 'move-right';
       }
     }
-  }
+  }*/
 };
 </script>
 
 <style lang="less">
-.move-left-enter-active,
+/*.move-left-enter-active,
 .move-left-leave-active,
 .move-right-enter-active,
 .move-right-leave-active {
@@ -86,7 +91,7 @@ export default {
 .move-left-leave-to {
   opacity: 0;
   transform: translate(-100%, 0);
-}
+}*/
 @backgrounds: {
   background-position: 100% 100%;
   background-size: cover;
@@ -186,6 +191,9 @@ li {
     pointer-events: none;
     .bottom-old-a {
       padding: 245px 75px 0px;
+      .webadv{
+        background-size:100% 100% ;
+      }
       li {
         height: 139px;
         margin-bottom: 25px;

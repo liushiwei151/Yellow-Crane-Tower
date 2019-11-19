@@ -1,7 +1,7 @@
 <template>
   <div class="modal" @touchmove.prevent :class="{ show: isshow }">
     <!-- 老用户跳转 -->
-    <div class="modal-box" v-if="ismodal.isuser && ismodal.isaddress === 'isuser'">
+    <div class="modal-box" v-if="ismodal.isuser==='0' && ismodal.isaddress === 'isuser'">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- 新用户跳转 -->
-    <div v-if="!ismodal.isuser && ismodal.isaddress === 'isuser'" class="modal-new">
+    <div v-if="ismodal.isuser==='1' && ismodal.isaddress === 'isuser'" class="modal-new">
       <div class="modal-new-code"></div>
       <div class="modal-new-clause">
         <p>

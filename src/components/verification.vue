@@ -3,7 +3,7 @@
     <div class="verification-img"></div>
     <div class="verification-input">
       <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode"/>
-      <button @click="subcode(verificationCode);empty();">提交</button>
+      <button @click="subcode(verificationCode);empty()">提交</button>
     </div>
   </div>
 </template>
@@ -18,12 +18,16 @@ export default {
       verificationCode:""
     };
   },
+  created(){
+    this.isNewUser(this.$route.query);
+    console.log(this.$ck.get('Authorization'))
+  },
   methods:{
-    ...mapActions(['subcode']),
+    ...mapActions(['subcode','isNewUser']),
     // 清空输入框
     empty(){
       this.verificationCode="";
-    }
+    },
   }
 };
 </script>

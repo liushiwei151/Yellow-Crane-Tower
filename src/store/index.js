@@ -12,7 +12,7 @@ const store = new Vuex.Store({
     //显示什么样的modal
     ismodal:{
        isphone:"1234567891",//客户电话
-       isuser:true,//新老用户
+       isuser:'1',//0老客户1新客户
        isaddress:'isphone'//modal是由哪里传来的
     },
     // 烟的图片和背景图片
@@ -56,14 +56,52 @@ const store = new Vuex.Store({
     startCallback({commit,state},mm){
       commit('dostartCallback',mm)
     },
+    isNewUser({commit,state},mm){
+      commit('doisNewUser',mm)
+    }
     },
   mutations: {
+    //接收开始传过来的值新老用户/验证码
+    doisNewUser(house,mm){
+       let value =JSON.parse(sessionStorage.getItem('hhl_isphone'));
+       if(value===null){
+          value =''
+       }
+      //判断验证码
+     if(mm.errorCode==='101'||value.errorCode==='101'){
+        house.ismodal.isuser='0'
+         house.ismodal.isaddress='isuser';
+        house.modalnum=4;
+         house.contentstyle=house.storagecont[house.modalnum];
+        house.isshow=true;
+      }else if(mm.errorCode==='0'||value.errorCode==='0'){
+        //判断新老客户
+         if(value&&!mm.isNewUser){
+           house.ismodal.isuser=value.isNewUser
+         }else if(mm.isNewUser){
+           house.ismodal.isuser=mm.isNewUser;
+           sessionStorage.setItem('hhl_isphone',JSON.stringify(mm));
+         }else{
+           house.ismodal.isuser='0'
+            house.ismodal.isaddress='isuser';
+           house.modalnum=1;
+            house.contentstyle=house.storagecont[house.modalnum];
+           house.isshow=true;
+         }
+      }else{
+        house.ismodal.isuser='0'
+         house.ismodal.isaddress='isuser';
+        house.modalnum=1;
+         house.contentstyle=house.storagecont[house.modalnum];
+        house.isshow=true;
+      }
+    },
     //向后台接口提交验证码
     dosubcode(house,mm){
       house.ismodal.isaddress='isuser';
-      if(mm.length<4&&house.ismodal.isuser===true){
+      if(mm.length<4&&house.ismodal.isuser==='0'){
         return;
-      }else if(mm.length==4&&house.ismodal.isuser===true){
+      }else if(mm.length==4&&house.ismodal.isuser==='0'){
         if(mm==='0000'){
           house.modalnum=0;
           house.contentstyle=house.storagecont[house.modalnum];
@@ -87,7 +125,7 @@ const store = new Vuex.Store({
         }else if(mm=='9999'){
           router.push("result")
         }
-      }else if(house.ismodal.isuser===false){
+      }else if(house.ismodal.isuser==='1'){
         house.isshow=true
       }
       house.code=mm

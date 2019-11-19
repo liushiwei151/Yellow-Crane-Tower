@@ -5,11 +5,11 @@
       <span>扫码次数: {{ QRcodeinfor.num }}</span>
     </div>
     <div class="result-content">
-      <div class="result-content-img" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'.png)'}"></div>
+      <div class="result-content-img" :style="{ backgroundImage: 'url(/static/smoke/' + smokeimg + '.png)' }"></div>
       <div class="result-content-text">
         <div class="result-content-text1">
           <div v-if="QRcodeinfor.num != 1">
-            <span>此二维码已被扫描{{QRcodeinfor.num}}次</span>
+            <span>此二维码已被扫描{{ QRcodeinfor.num }}次</span>
             <span>若商品为新开封, 请鉴别真伪</span>
           </div>
           <div class="result-really" v-if="QRcodeinfor.num === 1">
@@ -36,6 +36,7 @@
       产品鉴赏:
       <div class="result-rstar"><div v-for="(item, index) in star" :key="index" :class="item ? 'result-choose' : ''" @click="score(index)"></div></div>
     </div>
+    <!-- 刮奖按钮 -->
     <div class="result-scratch" @click="goscratch"></div>
   </div>
 </template>
@@ -46,13 +47,13 @@ export default {
   name: 'result',
   data() {
     return {
-      star: [true, true, true, false, false],
+      star: [true, true, true, false, false]
     };
   },
   computed: {
     ...mapState({
       QRcodeinfor: 'QRcodeinfor',
-      smokeimg:'smokeimg'
+      smokeimg: 'smokeimg'
     })
   },
   methods: {
@@ -65,8 +66,9 @@ export default {
       this.star = stars;
     },
     //跳转入刮卡页面
-    goscratch(){
-      this.$router.push('scratch')
+    goscratch() {
+      console.log(this.star.length)
+      this.$router.push('scratch');
     }
   }
 };
@@ -94,11 +96,11 @@ export default {
     .result-content-text {
       font-size: 21px;
       width: 280px;
-      margin-left:62px;
+      margin-left: 62px;
       .result-content-text1 {
         height: 90px;
         text-align: left;
-        span{
+        span {
           color: rgb(206, 15, 15);
           font-size: 22px;
           font-weight: 500;
@@ -128,11 +130,11 @@ export default {
     font-weight: bold;
     display: flex;
     justify-content: center;
-    margin-bottom:40px;
+    margin-bottom: 40px;
     .result-rstar {
       display: flex;
       div {
-        margin-left:10px;
+        margin-left: 10px;
         width: 42px;
         height: 39px;
         background: url(/static/star2.png) no-repeat;

@@ -3,13 +3,14 @@
     <div class="verification-img"></div>
     <div class="verification-input">
       <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode"/>
-      <button @click="subcode(verificationCode);empty()">提交</button>
+      <button @click.stop="subcode(verificationCode);empty()">提交</button>
     </div>
   </div>
 </template>
 
 <script>
-   import {mapState,mapActions} from "vuex"
+import {mapState,mapActions} from "vuex"
+import api from '../api/index.js'
 export default {
   name: 'verification',
   data() {
@@ -20,8 +21,17 @@ export default {
   },
   created(){
     this.isNewUser(this.$route.query);
-    console.log(this.$ck.get('Authorization'))
-  },
+    // api.yyys()
+    // console.log(this.$ck.get('Authorization'))
+   /* this.wx.config({
+      debug:true,
+      appId:'wx367bb7c52db262d0',
+      timestamp:Date.parse(new Date()), // 必填，生成签名的时间戳
+        nonceStr: '', // 必填，生成签名的随机串
+        signature: '',// 必填，签名
+        jsApiList: [] // 必填，需要使用的JS接口列表
+    })*/
+    },
   methods:{
     ...mapActions(['subcode','isNewUser']),
     // 清空输入框

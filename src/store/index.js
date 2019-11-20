@@ -8,7 +8,7 @@ const store = new Vuex.Store({
   state: {
     code: 0,//接收到的验证码的结果
     isshow:false,//modal框是否显示
-    modalnum:0,//显示第几条信息
+    //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal:{
        isphone:"1234567891",//客户电话
@@ -71,8 +71,8 @@ const store = new Vuex.Store({
      if(mm.errorCode==='101'||value.errorCode==='101'){
         house.ismodal.isuser='0'
          house.ismodal.isaddress='isuser';
-        house.modalnum=4;
-         house.contentstyle=house.storagecont[house.modalnum];
+        // house.modalnum=4;
+         house.contentstyle=house.storagecont[4];
         house.isshow=true;
       }else if(mm.errorCode==='0'||value.errorCode==='0'){
         //判断新老客户
@@ -84,15 +84,15 @@ const store = new Vuex.Store({
          }else{
            house.ismodal.isuser='0'
             house.ismodal.isaddress='isuser';
-           house.modalnum=1;
-            house.contentstyle=house.storagecont[house.modalnum];
+           // house.modalnum=1;
+            house.contentstyle=house.storagecont[1];
            house.isshow=true;
          }
       }else{
         house.ismodal.isuser='0'
          house.ismodal.isaddress='isuser';
-        house.modalnum=1;
-         house.contentstyle=house.storagecont[house.modalnum];
+        // house.modalnum=1;
+         house.contentstyle=house.storagecont[1];
         house.isshow=true;
       }
     },
@@ -103,24 +103,24 @@ const store = new Vuex.Store({
         return;
       }else if(mm.length==4&&house.ismodal.isuser==='0'){
         if(mm==='0000'){
-          house.modalnum=0;
-          house.contentstyle=house.storagecont[house.modalnum];
+          // house.modalnum=0;
+          house.contentstyle=house.storagecont[0];
           house.isshow=true;
         }else if(mm==='1000'){
-          house.modalnum=1;
-           house.contentstyle=house.storagecont[house.modalnum];
+          // house.modalnum=1;
+           house.contentstyle=house.storagecont[1];
           house.isshow=true
         }else if(mm==='2000'){
-          house.modalnum=2;
-           house.contentstyle=house.storagecont[house.modalnum];
+          // house.modalnum=2;
+           house.contentstyle=house.storagecont[2];
           house.isshow=true
         }else if(mm==='3000'){
-          house.modalnum=3;
-           house.contentstyle=house.storagecont[house.modalnum];
+          // house.modalnum=3;
+           house.contentstyle=house.storagecont[3];
           house.isshow=true
         }else if(mm==='4000'){
-          house.modalnum=4;
-           house.contentstyle=house.storagecont[house.modalnum];
+          // house.modalnum=4;
+           house.contentstyle=house.storagecont[4];
           house.isshow=true
         }else if(mm=='9999'){
           router.push("result")

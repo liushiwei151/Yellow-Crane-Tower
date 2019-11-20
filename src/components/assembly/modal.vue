@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" @touchmove.prevent :class="{ show: isshow }">
+  <div class="modal" @touchmove.prevent :class="{ show: isshow }" >
     <!-- 老用户跳转 -->
     <div class="modal-box" v-if="ismodal.isuser==='0' && ismodal.isaddress === 'isuser'">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
@@ -36,7 +36,7 @@
       <div class="modal-phone-QR">
         <label for="subQR"></label>
         <input id="subQR" type="text" maxlength="5" placeholder="请输入验证码" />
-        <div>获取验证码</div>
+        <div @click.capture="subQR" :style="{'pointer-events':(qrnum!='获取验证码'?'none':'')}">{{qrnum}}</div>
       </div>
       <div class="modal-box-button"><button @click.stop="close" >确定</button></div>
       <div class="modal-phone-text">手机活动仅限本次活动领奖使用, 将严格保密, 请安心填写。</div>
@@ -49,7 +49,9 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'modal',
   data() {
-    return {};
+    return {
+      qrnum:'获取验证码'
+    };
   },
   computed: {
     ...mapState({
@@ -66,6 +68,18 @@ export default {
   methods: {
     //关闭modal
     ...mapActions(['close']),
+    subQR(){
+      let num =60
+      this.qrnum=num+'s'
+      let times=setInterval(()=>{
+        num--;
+        this.qrnum=num+'s';
+        if(num<0){
+          clearInterval(times);
+          this.qrnum='获取验证码'
+        }
+      },1000)
+    },
     bcphone() {
 
     }
@@ -89,6 +103,7 @@ export default {
   display: block;
 }
 .modal {
+  z-index: -100;
   position: fixed;
   top: 0;
   right: 0;
@@ -288,5 +303,6 @@ export default {
   overflow-y: auto;
   pointer-events: auto;
   opacity: 1;
+  z-index: 100;
 }
 </style>

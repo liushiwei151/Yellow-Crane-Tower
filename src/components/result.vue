@@ -67,7 +67,6 @@ export default {
     },
     //跳转入刮卡页面
     goscratch() {
-      console.log(this.star.length)
       this.$router.push('scratch');
     }
   }

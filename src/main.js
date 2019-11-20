@@ -5,13 +5,12 @@ import YellowCraneTower from './YellowCraneTower'
 import router from './router'
 import store from './store'
 import ScratchCard from '@/components/scratch-card/index.js'
-import axios from 'vue-axios'
-import qs from 'qs'
 import ck from '@/components/cookie/index.js'
+import wx from 'weixin-js-sdk'
 Vue.prototype.$ck = ck
-Vue.prototype.$axios = axios
-Vue.prototype.qs = qs
-Vue.use(ScratchCard)
+Vue.prototype.wx=wx
+Vue.use(ScratchCard);
+Vue.use(wx);
 
 Vue.config.productionTip = false
 

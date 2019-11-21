@@ -1,5 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'
+import vue from 'vue'
+
+console.log(vue.prototype)
 
 function get(name){
     let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");

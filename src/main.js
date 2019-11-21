@@ -14,7 +14,7 @@ Vue.use(wx);
 
 Vue.config.productionTip = false
 
-
+console.log(Vue.prototype)
 
 /* eslint-disable no-new */
 new Vue({

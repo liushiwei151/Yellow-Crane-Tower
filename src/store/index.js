@@ -16,7 +16,7 @@ const store = new Vuex.Store({
        isaddress:'isphone'//modal是由哪里传来的
     },
     // 烟的图片和背景图片
-    smokeimg:'zy',//8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
+    smokeimg:'zp',//8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
     //提前存储的提示内容
     storagecont:[
       {img: true, text1: '您输入的验证码有误',text2: '请重新输入',isbutton:true,button:'重新输入'},
@@ -33,7 +33,7 @@ const store = new Vuex.Store({
       isbutton:true,
       button:"重新输入"
     },
-    //二维码传过来的信息
+    //接口传过来的烟的信息
     QRcodeinfor:{
       name:'黄鹤楼·峡谷情中支',
       //首次扫码的时间

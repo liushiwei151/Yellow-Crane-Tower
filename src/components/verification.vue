@@ -20,8 +20,7 @@ export default {
     };
   },
   created(){
-    this.isNewUser(this.$route.query);
-    // api.yyys()
+    // this.isNewUser(this.$route.query);
     // console.log(this.$ck.get('Authorization'))
    /* this.wx.config({
       debug:true,
@@ -31,6 +30,10 @@ export default {
         signature: '',// 必填，签名
         jsApiList: [] // 必填，需要使用的JS接口列表
     })*/
+    },
+    mounted() {
+      console.log(this)
+      api.yyys()
     },
   methods:{
     ...mapActions(['subcode','isNewUser']),

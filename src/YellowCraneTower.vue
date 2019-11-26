@@ -2,7 +2,6 @@
   <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
     <div :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'BG.png)'}" key="0">
      <router-view />
-     <!-- <transition :name="transitionName"><router-view /></transition> -->
     </div>
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
@@ -25,7 +24,7 @@ export default {
     return {
       //模拟传进来的值
       website: [
-        {web:'https://www.baidu.com',adv:'adv1'},
+        {web:'https://www.baidu.com',adv:'adv3'},
          {web:'https://www.taobao.com',adv:'adv2'},
          {web:'https://www.baidu.com',adv:'adv1'},
          ], //老用户页面跳转的三个链接
@@ -43,55 +42,21 @@ export default {
     })
   },
   mounted() {
-    this.$router.push('/');
-    this.ismove = true;
+    // this.$router.push('/');
     this.move();
   },
   methods: {
+    //移动动画切换
     move() {
       setTimeout(() => {
         this.card = false;
       }, 0);
     }
   },
-  /*watch: {
-    $route(to, from) {
-      if (to.meta.index > from.meta.index) {
-        //设置动画名称
-        this.transitionName = 'move-left';
-      } else {
-        this.transitionName = 'move-right';
-      }
-    }
-  }*/
 };
 </script>
 
 <style lang="less">
-/*.move-left-enter-active,
-.move-left-leave-active,
-.move-right-enter-active,
-.move-right-leave-active {
-  will-change: transform;
-  transition: all 1000ms linear;
-  position: absolute;
-}
-.move-right-enter {
-  opacity: 0;
-  transform: translate(-100%, 0);
-}
-.move-right-leave-to {
-  opacity: 0;
-  transform: translate(100%, 0);
-}
-.move-left-enter {
-  opacity: 0;
-  transform: translate(100%, 0);
-}
-.move-left-leave-to {
-  opacity: 0;
-  transform: translate(-100%, 0);
-}*/
 @backgrounds: {
   background-position: 100% 100%;
   background-size: cover;
@@ -190,7 +155,7 @@ li {
     left: 0;
     pointer-events: none;
     .bottom-old-a {
-      padding: 245px 75px 0px;
+      padding: 160px 75px 0px;
       .webadv{
         background-size:100% 100% ;
       }
@@ -204,6 +169,9 @@ li {
           width: 100%;
           height: 100%;
         }
+      }
+      li:first-of-type{
+        height:225px;
       }
     }
   }

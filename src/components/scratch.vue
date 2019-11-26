@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="textBox">
-      <transition name="slide">
+      <transition name="slide" v-if="result == ''">
         <p class="text" :key="text.id">{{ text.val }}</p>
       </transition>
+      <div v-show="result != ''">恭喜您获得福卡一份</div>
     </div>
     <div class="scratchBG">
       <vue-scratch-card
@@ -30,7 +31,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 export default {
   name: 'scratch',
   data() {
@@ -52,7 +53,7 @@ export default {
       };
     },
     ...mapState({
-      isphone:'isphone'
+      isphone: 'isphone'
     })
   },
   mounted() {

@@ -2,27 +2,34 @@
   <div>
     <div class="verification-img"></div>
     <div class="verification-input">
-      <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode"/>
-      <button @click.stop="subcode(verificationCode);empty()">提交</button>
+      <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
+      <button
+        @click.stop="
+          subcode(verificationCode);
+          empty();
+        "
+      >
+        提交
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import {mapState,mapActions} from "vuex"
-import api from '../api/index.js'
+import { mapState, mapActions } from 'vuex';
 export default {
   name: 'verification',
   data() {
     return {
       //输入的验证码
-      verificationCode:""
+      verificationCode: ''
     };
   },
-  created(){
-    // this.isNewUser(this.$route.query);
+  created() {
+    //判断初始是否是有验证码值，是新客户还是老客户
+    this.isNewUser(this.$route.query);
     // console.log(this.$ck.get('Authorization'))
-   /* this.wx.config({
+    /* this.wx.config({
       debug:true,
       appId:'wx367bb7c52db262d0',
       timestamp:Date.parse(new Date()), // 必填，生成签名的时间戳
@@ -30,17 +37,16 @@ export default {
         signature: '',// 必填，签名
         jsApiList: [] // 必填，需要使用的JS接口列表
     })*/
-    },
-    mounted() {
-      console.log(this)
-      api.yyys()
-    },
-  methods:{
-    ...mapActions(['subcode','isNewUser']),
+  },
+  mounted() {
+    // console.log(this.$ajaks.yyys)
+  },
+  methods: {
+    ...mapActions(['subcode', 'isNewUser']),
     // 清空输入框
-    empty(){
-      this.verificationCode="";
-    },
+    empty() {
+      this.verificationCode = '';
+    }
   }
 };
 </script>

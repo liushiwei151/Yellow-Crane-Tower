@@ -11,14 +11,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/liu': {
-         target: 'https://devapi.yunyutian.cn',
-         secure: true,
-         changeOrigin: true,
-         pathRewrite: {
-           '^/liu': ''
-         }
-      },
     },
 
     // Various Dev Server settings

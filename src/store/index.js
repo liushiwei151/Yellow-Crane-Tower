@@ -16,10 +16,11 @@ const store = new Vuex.Store({
     ismodal: {
       isphone: "1234567891", //客户电话
       isuser: '1', //0老客户1新客户
-      isaddress: 'isphone' //modal是由哪里传来的
+      isaddress: 'isphone', //modal是由哪里传来的
+      errnum: 0 //输入错误次数
     },
     // 烟的图片和背景图片
-    smokeimg: 'zp', //8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
+    smokeimg: '', //8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
     //提前存储的提示内容
     storagecont: [{
         img: true,
@@ -53,7 +54,7 @@ const store = new Vuex.Store({
         img: true,
         text1: '此二维码查询有误',
         text2: '',
-        isbutton: true,
+        isbutton: false,
         button: '重新扫码'
       }
     ],
@@ -110,22 +111,45 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    //接收开始传过来的值新老用户/验证码
+    //接收开始传过来的值新老用户/验证码/wx需要的数据并作判断
     doisNewUser(house, mm) {
+      //
+     /* $protocol = (!empty($_SERVER[HTTPS]) && $_SERVER[HTTPS] !== off || $_SERVER[SERVER_PORT] == 443) ? "https://" : "http://";
+        $url = $protocol.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI];
+        console.log($url)*/
+      //
+      let self = Vue
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
-      house.all = mm
+      house.all = mm;
+      localStorage.setItem('all',JSON.stringify(mm))
       console.log(mm)
-      let data = {
-        scanId: mm.scanId,
-        code: 1294
-      }
-      // api.yyys(data);
+      //获取背景图片
+      console.log(house.all.skuid)
+      api.getBackground(house.all.skuid).then((res)=>{
+        house.smokeimg=res.data.data
+      }).catch((err)=>{
+
+      })
+      //wx需要的数据
+      let url =location.href.split('#')[0];
+      api.jsSign(url).then((res) => {
+        console.log(res.data.data)
+        self.prototype.wx.config({
+          debug: false,
+          appId: res.data.data.appid,
+          timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+          nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+          signature: res.data.data.signature, // 必填，签名
+          jsApiList: ['scanQRCode'] // 必填，需要使用的JS接口列表
+        })
+      }).catch((err) => {
+        console.log(err)
+      })
+      //判断二维码进来时的状态
       let value = JSON.parse(sessionStorage.getItem('hhl_isphone'));
-      console.log(mm, value)
       if (value === null) {
         value = ''
       }
-      //判断验证码
       if (mm.errorCode === '101' || value.errorCode === '101') {
         house.ismodal.isuser = '0'
         house.ismodal.isaddress = 'isuser';
@@ -156,23 +180,34 @@ const store = new Vuex.Store({
     },
     //向后台接口提交验证码
     dosubcode(house, mm) {
+      //确定弹出的modal为判断验证码
+      house.ismodal.isaddress = 'isuser';
       let data = {
         scanId: house.all.scanId,
         code: mm
       }
-      api.yyys(data);
-      // router.push("result")
-     /* axios.post("http://qrhhl.yunyutian.cn/huanghelou1916-h5/code/checkVerifyCode", qs.stringify(data)).then((res) => {
+      //调取验证码接口
+      api.checkVerifyCode(data).then((res) => {
         console.log(res.data)
-      }).catch((err)=>{
-        console.log(err)
-      })*/
-      /*api.yyys().then((res)=>{
-        console.log(res)
-      })*/
-      house.ismodal.isaddress = 'isuser';
-      /*house.contentstyle=house.storagecont[0];
-          house.isshow=true;
+        let codes = res.data.code;
+        if (codes == 200) {
+          router.push("result")
+        } else if (codes == 500) {
+          console.log(house.ismodal.errnum)
+          house.ismodal.errnum++;
+          if (house.ismodal.errnum >= 3) {
+            house.contentstyle = house.storagecont[4];
+            house.isshow = true;
+          } else {
+            house.contentstyle = house.storagecont[0];
+            house.isshow = true;
+          }
+        }
+      }).catch((err) => {
+        console.log("调取接口失败")
+      })
+
+      /*
         else if(mm=='9999'){
           router.push("result")
         }

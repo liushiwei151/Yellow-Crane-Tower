@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div class="textBox">
-      <transition name="slide" v-if="result == ''">
+    <div class="textBox" v-show="result == ''">
+      <transition name="slide" >
         <p class="text" :key="text.id">{{ text.val }}</p>
       </transition>
-      <div v-show="result != ''">恭喜您获得福卡一份</div>
+    </div>
+    <div v-show="result != ''" class="textScratch">
+      <p>感谢您的诚信消费！</p>
     </div>
     <div class="scratchBG">
       <vue-scratch-card
@@ -17,7 +19,8 @@
         :resultText="resultText[0].prize"
       />
     </div>
-    <div class="scratch-text">
+    <scratch-text></scratch-text>
+    <!-- <div class="scratch-text">
       <p v-if="result == ''">
         涂抹刮奖区域,
         <br />
@@ -26,12 +29,13 @@
       <p v-if="result != ''">感谢您对诚信系统的支持,</p>
       <p v-if="result != ''">{{ result.prize }}, {{ result.address }}</p>
     </div>
-    <div class="scratch-a" v-if="result"><a href="#">点击查看</a></div>
+    <div class="scratch-a" v-if="result"><a href="#">点击查看</a></div> -->
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import scratchText from '@/components/assembly/scratchText'
 export default {
   name: 'scratch',
   data() {
@@ -44,6 +48,9 @@ export default {
       result: '',
       resultText: [{ prize: '恭喜您获得福卡一份', address: '赶紧去您的订单页面确认吧!' }]
     };
+  },
+  components:{
+    scratchText
   },
   computed: {
     text() {
@@ -109,6 +116,19 @@ export default {
     font-size: 30px;
   }
 }
+//刮奖头部结果
+.textScratch{
+width: 100%;
+height:100px;
+display: flex;
+justify-content: center;
+align-items: center;
+p{
+  margin-top: 50px;
+  color: rgb(200, 130, 45);
+  font-size: 36px;
+}
+  }
 //刮奖样式
 .scratchBG {
   width: 520px;
@@ -126,7 +146,6 @@ export default {
   color: rgb(85, 34, 8);
   margin-top: 15px;
   p {
-    margin-bottom: 15px;
   }
   p:first-of-type {
     font-size: 32px;

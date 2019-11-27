@@ -3,12 +3,7 @@
     <div class="verification-img"></div>
     <div class="verification-input">
       <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
-      <button
-        @click.stop="
-          subcode(verificationCode);
-          empty();
-        "
-      >
+      <button @click.stop="subcode(verificationCode);empty();" >
         提交
       </button>
     </div>
@@ -26,8 +21,6 @@ export default {
     };
   },
   created() {
-    //判断初始是否是有验证码值，是新客户还是老客户
-    this.isNewUser(this.$route.query);
     // console.log(this.$ck.get('Authorization'))
     /* this.wx.config({
       debug:true,
@@ -42,7 +35,7 @@ export default {
     // console.log(this.$ajaks.yyys)
   },
   methods: {
-    ...mapActions(['subcode', 'isNewUser']),
+    ...mapActions(['subcode']),
     // 清空输入框
     empty() {
       this.verificationCode = '';
@@ -51,7 +44,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @verification: {
   outline: none;

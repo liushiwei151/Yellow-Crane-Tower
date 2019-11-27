@@ -4,6 +4,7 @@ import verification from '@/components/verification'
 import result from '@/components/result'
 import scratch from '@/components/scratch'
 import test from '@/components/test'
+import completes from '@/components/completes'
 
 Vue.use(Router)
 
@@ -32,6 +33,12 @@ export default new Router({
       name:'scratch',
       meta:{index:2},
       component:scratch
+    },
+    {
+      path:'/completes',
+      name:'completes',
+      meta:{index:3},
+      component:completes
     }
   ]
 })

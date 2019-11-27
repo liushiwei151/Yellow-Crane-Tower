@@ -9,6 +9,7 @@
       </div>
       <div class="modal-box-button">
         <button @click="close" v-show="contentstyle.isbutton">{{ contentstyle.button }}</button>
+        <button v-if="ismodal.errnum>=3" @click="sweepcode">重新扫码</button>
       </div>
     </div>
     <!-- 新用户跳转 -->
@@ -62,7 +63,9 @@ export default {
       // 现在的样式内容
       contentstyle: 'contentstyle',
       //显示什么样的modal
-      ismodal: 'ismodal'
+      ismodal: 'ismodal',
+      //进入页面传过来的所有值
+      all:'all'
     })
   },
   methods: {
@@ -80,8 +83,15 @@ export default {
         }
       },1000)
     },
-    bcphone() {
-
+    sweepcode(){
+      console.log(this.all.scanId)
+      wx.scanQRCode({
+        needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        success: function (res) {
+          var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+        }
+      });
     }
   }
 };
@@ -286,10 +296,6 @@ export default {
     width: 313px;
     height: 79px;
     font-size: 36px;
-  }
-  .bcphone {
-    letter-spacing: 30px;
-    text-indent: 30px;
   }
 }
 .show {

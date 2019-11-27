@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
-    <div :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url(/static/smoke/'+smokeimg+'BG.png)'}" key="0">
+    <div class="cards" :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url('+smokeimg+')'}" key="0">
      <router-view />
     </div>
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
@@ -38,14 +38,25 @@ export default {
   computed: {
     ...mapState({
       ismodal: 'ismodal',
-      smokeimg:'smokeimg'
+      smokeimg:'smokeimg',
+      all:'all'
     })
   },
   mounted() {
+    //判断初始是否是有验证码值，是新客户还是老客户
+    if(this.$route.query.errorCode){
+      console.log(1)
+      this.isNewUser(this.$route.query);
+    }else{
+      console.log(2)
+       this.isNewUser(JSON.parse(localStorage.getItem('all')))
+    }
+    console.log(localStorage.getItem('all'))
     // this.$router.push('/');
     this.move();
   },
   methods: {
+     ...mapActions(['isNewUser']),
     //移动动画切换
     move() {
       setTimeout(() => {
@@ -89,29 +100,23 @@ li {
   color: #2c3e50;
 }
 //香烟的卡片样式
+.cards{
+   // background: url(/static/smoke/xgqzBG.png) no-repeat;
+   width: 700px;
+   height: 744px;
+   @backgrounds();
+   overflow: hidden;
+   position: absolute;
+   left: 25px;
+   z-index: 5;
+}
 .card1 {
-  background: url(/static/smoke/xgqzBG.png) no-repeat;
-  width: 700px;
-  height: 744px;
-  @backgrounds();
-  position: absolute;
-  left: 25px;
-  // top: 235px;
-  z-index: 5;
   transform: translate(0, 565px);
-  overflow: hidden;
+
 }
 .card2 {
-  overflow: hidden;
-  background: url(/static/smoke/xgqzBG.png) no-repeat;
-  width: 700px;
-  height: 744px;
-  @backgrounds();
-  position: absolute;
   transition: transform 2s ease-out;
-  left: 25px;
   top: 235px;
-  z-index: 5;
 }
 // 新用户样式
 .pages-new {

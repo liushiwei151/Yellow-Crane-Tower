@@ -24,5 +24,5 @@ const getBackground=(bg)=>{
 export default {
   checkVerifyCode,
   jsSign,
-  getBackground
+  getBackground,
 }

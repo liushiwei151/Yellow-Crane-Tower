@@ -35,7 +35,7 @@ export default {
          }else{
            this.times()
          }
-      },1500)
+      },1000)
       }
   }
 };

@@ -31,12 +31,12 @@
           <div class="hasMaterialAddress-add">湖北省武汉市江淮区泛海国际SOHO城1栋2510</div>
         </div>
         <div class='hasMaterialAddressbutton'>
-          <button>修改</button>
+          <button @click="subaddress('myadd')">修改</button>
           <button>确定</button>
         </div>
       </div>
       <!-- 没有收货地址 -->
-      <button @click="subaddress" v-if='!isaddress'>填写收货信息</button>
+      <button @click="subaddress('isadd')" v-if='!isaddress'>填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
     <div class="fictitious" v-if="result=='fictitious'">
@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'scratchText',
   data() {
@@ -62,18 +64,20 @@ export default {
       teltext: '',//电话文本
       telphone: '',//电话号码
       //假数据 是否有地址
-      isaddress:true
+      isaddress:true,
+      city:''
     };
   },
   props: {
     result: {
       type: String,
       default: function() {
-        return 'fictitious';
+        return 'MaterialAddress';
       }
     }
   },
   methods: {
+    ...mapActions(['subaddress']),
     // 电话确认
     complete() {
       if (!/^1[3456789]\d{9}$/.test(this.telphone)) {
@@ -84,7 +88,9 @@ export default {
     //去往完成页面
     gocomplete(){
      this.$router.push('completes')
-    }
+    },
+    //弹出编辑地址的页面
+
   }
 };
 </script>

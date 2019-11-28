@@ -108,30 +108,31 @@ const store = new Vuex.Store({
       state
     }, mm) {
       commit('doisNewUser', mm)
+    },
+    subaddress({
+      commit,
+      state
+    }, mm) {
+      commit('doaddress',mm)
     }
   },
   mutations: {
     //接收开始传过来的值新老用户/验证码/wx需要的数据并作判断
     doisNewUser(house, mm) {
-      //
-     /* $protocol = (!empty($_SERVER[HTTPS]) && $_SERVER[HTTPS] !== off || $_SERVER[SERVER_PORT] == 443) ? "https://" : "http://";
-        $url = $protocol.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI];
-        console.log($url)*/
-      //
       let self = Vue
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
-      localStorage.setItem('all',JSON.stringify(mm))
+      localStorage.setItem('all', JSON.stringify(mm))
       console.log(mm)
       //获取背景图片
       console.log(house.all.skuid)
-      api.getBackground(house.all.skuid).then((res)=>{
-        house.smokeimg=res.data.data
-      }).catch((err)=>{
+      api.getBackground(house.all.skuid).then((res) => {
+        house.smokeimg = res.data.data
+      }).catch((err) => {
 
       })
       //wx需要的数据
-      let url =location.href.split('#')[0];
+      let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
         console.log(res.data.data)
         self.prototype.wx.config({
@@ -225,6 +226,11 @@ const store = new Vuex.Store({
       if (house.ismodal.isphone.length != 11) {
         // house.isshow=true
       }
+    },
+   //弹出填写收货地址
+    doaddress(house,mm){
+       house.ismodal.isaddress = mm;
+       house.isshow = true;
     }
   },
 

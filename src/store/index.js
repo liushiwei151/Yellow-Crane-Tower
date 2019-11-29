@@ -7,8 +7,22 @@ import axios from 'axios'
 Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
-    //进入初始页面接收到的所有信息
+    //进入初始页面时接收到的所有信息
     all: {},
+    //收到的底部广告和地址
+    advertisement: [{
+        web: '',
+        adv: '/static/adv3.png'
+      },
+      {
+        web: '',
+        adv: '/static/adv2.png'
+      },
+      {
+        web: '',
+        adv: '/static/adv1.png'
+      },
+    ],
     // code: 0,//接收到的验证码的结果
     isshow: false, //modal框是否显示
     //modalnum:0,//显示第几条信息
@@ -78,7 +92,9 @@ const store = new Vuex.Store({
         tar: '9mg',
         monoxide: '10mg',
         alkali: '0.9mg'
-      }
+      },
+      // 奖池是否有奖
+      status:true
     }
   },
   getter: {
@@ -113,24 +129,39 @@ const store = new Vuex.Store({
       commit,
       state
     }, mm) {
-      commit('doaddress',mm)
+      commit('doaddress', mm)
+    },
+    onresult({
+      commit,
+      state
+    }, mm) {
+      commit('onresults', mm)
     }
   },
   mutations: {
-    //接收开始传过来的值新老用户/验证码/wx需要的数据并作判断
+    //接收开始传过来的值新老用户/验证码/wx需要的数据//底部的广告并作判断
     doisNewUser(house, mm) {
       let self = Vue
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
       localStorage.setItem('all', JSON.stringify(mm))
       console.log(mm)
+      //获取底部广告
+      api.getAdvertisement(mm.productId, mm.scanId).then((res) => {
+        console.log(res.data.data)
+        house.smokeimg=res.data.data.bgImgUrl;
+        house.advertisement[0].adv = res.data.data.imgUrl;
+        house.advertisement[0].web = res.data.data.outUrl;
+        console.log(house.advertisement)
+      }).catch((err) => {
+        console.log(err)
+      })
       //获取背景图片
-      console.log(house.all.skuid)
-      api.getBackground(house.all.skuid).then((res) => {
+      /*api.getBackground(house.all.skuid).then((res) => {
         house.smokeimg = res.data.data
       }).catch((err) => {
 
-      })
+      })*/
       //wx需要的数据
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
@@ -189,7 +220,6 @@ const store = new Vuex.Store({
       }
       //调取验证码接口
       api.checkVerifyCode(data).then((res) => {
-        console.log(res.data)
         let codes = res.data.code;
         if (codes == 200) {
           router.push("result")
@@ -216,6 +246,33 @@ const store = new Vuex.Store({
         house.isshow=true
       }*/
     },
+    onresults(house, mm) {
+      let data = JSON.parse(localStorage.getItem('all'));
+      axios.defaults.headers.common["Authorization"] = data.sessionId;
+      api.real(data.scanId).then((res) => {
+        let names = res.data.data;
+        house.QRcodeinfor.name = names.productName;
+        house.QRcodeinfor.firsttime = names.scanTime;
+        house.QRcodeinfor.num = names.count;
+        house.QRcodeinfor.smoke.tar = names.tar;
+        house.QRcodeinfor.smoke.monoxide = names.co;
+        house.QRcodeinfor.smoke.alkali = names.nicotine;
+        house.QRcodeinfor.smoke.img = names.productImgUrl;
+      }).catch((err) => {
+        console.log(err)
+      })
+      let lotter ={
+         scanId:data.scanId ,//扫码Id
+           latitude:0,// 纬度
+           longitude:0// 经度
+      }
+      api.getLottery(lotter).then((res) => {
+        console.log(res.data.data.status)
+        house.QRcodeinfor.status=res.data.data.status;
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     //关闭弹出框模板
     doclose(house, mm) {
       house.isshow = false
@@ -227,10 +284,10 @@ const store = new Vuex.Store({
         // house.isshow=true
       }
     },
-   //弹出填写收货地址
-    doaddress(house,mm){
-       house.ismodal.isaddress = mm;
-       house.isshow = true;
+    //弹出填写收货地址
+    doaddress(house, mm) {
+      house.ismodal.isaddress = mm;
+      house.isshow = true;
     }
   },
 

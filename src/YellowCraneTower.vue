@@ -6,7 +6,7 @@
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
       <ul class="bottom-old-a">
-        <li v-for="(item, index) in website" :key="index"><a :href="item.web" class="webadv" :style="{backgroundImage:'url(/static/'+item.adv+'.png)'}"></a></li>
+        <li v-for="(item, index) in advertisement" :key="index"><a :href="item.web" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
       </ul>
     </div>
     <div class="bottom-d" :class="ismodal.isuser==='0' ? 'bottomImgold' : 'bottomImgnew'"></div>
@@ -23,11 +23,7 @@ export default {
   data() {
     return {
       //模拟传进来的值
-      website: [
-        {web:'https://www.baidu.com',adv:'adv3'},
-         {web:'https://www.taobao.com',adv:'adv2'},
-         {web:'https://www.baidu.com',adv:'adv1'},
-         ], //老用户页面跳转的三个链接
+      // website: advertisement, //老用户页面跳转的三个链接
       card: true,
       transitionName: '',
     };
@@ -39,19 +35,17 @@ export default {
     ...mapState({
       ismodal: 'ismodal',
       smokeimg:'smokeimg',
-      all:'all'
+      all:'all',
+      advertisement:'advertisement'
     })
   },
   mounted() {
-    //判断初始是否是有验证码值，是新客户还是老客户
+    //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
     if(this.$route.query.errorCode){
-      console.log(1)
       this.isNewUser(this.$route.query);
     }else{
-      console.log(2)
        this.isNewUser(JSON.parse(localStorage.getItem('all')))
     }
-    console.log(localStorage.getItem('all'))
     // this.$router.push('/');
     this.move();
   },

@@ -81,7 +81,7 @@
       <p>我的地址</p>
       <div class="modal-myadd-box">
         <p class="box-title">注意：请填写真实姓名与详细地址, 否则订单会被取消。</p>
-        <div class="box-cart">
+        <div class="box-cart" v-for='a in 5'>
           <div class="box-cart-add">
             <div class="box-cart-add1">
               <div class="box-name">
@@ -90,13 +90,19 @@
               </div>
               <p>湖北省武汉市姜巷去泛海国际SHOH城1栋2510</p>
             </div>
-            <div class='box-cart-add-radio'></div>
+            <div class='box-cart-add-radio' @click="dotrue" :style="{backgroundImage:'url(/static/modal/'+ontrue+'.png)'}"></div>
           </div>
           <div class="box-cart-bottom">
-            <div>设为默认</div>
+            <div class="box-cart-bbox" @click="ontrued">
+              <div :style="{backgroundImage:'url(/static/modal/'+bgimg+'.png)'}"></div>
+              <div>设为默认</div></div>
             <div class="box-cart-bottom-r">
-              <div>编辑</div>
-              <div>删除</div>
+              <div class="box-cart-bottom-bg" @click="subaddress('isadd')">
+                <i></i>
+                编辑</div>
+              <div class="box-cart-bottom-del">
+                <i ></i>
+                删除</div>
             </div>
           </div>
         </div>
@@ -119,7 +125,9 @@ export default {
       province: '',
       cityname: '',
       quyu: '',
-      texta: ''
+      texta: '',
+      bgimg:'yuanx',
+      ontrue:'radio'
     };
   },
   components: {
@@ -144,6 +152,21 @@ export default {
     })
   },
   methods: {
+    ...mapActions(['subaddress']),
+    dotrue(){
+      if(this.ontrue=='radio'){
+        this.ontrue='ontrue';
+      }else if( this.ontrue=='ontrue'){
+         this.ontrue='radio';
+      }
+    },
+    ontrued(){
+    if(this.bgimg=='yuanx'){
+      this.bgimg='diany'
+    }else if(this.bgimg=='diany'){
+      this.bgimg='yuanx'
+    }
+    },
     fn() {
       console.log(this.province, this.cityname, this.quyu, this.texta);
     },
@@ -197,6 +220,11 @@ export default {
   background-position: 50% 50%;
   display: block;
 };
+@center:{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .modal {
   z-index: -100;
   position: fixed;
@@ -318,10 +346,10 @@ export default {
     // overflow: hidden;
     .modal-myadd-box {
       width: 100%;
-      height: 300px;
+      height: 500px;
       background-color: #fff;
       border-radius: 15px;
-      overflow: hidden;
+      overflow: auto;
       .box-title {
         background-color: #bf8440;
         font-size: 22px;
@@ -333,13 +361,53 @@ export default {
       .box-cart {
         padding: 15px 35px 0;
         .box-cart-bottom{
+           color: #8c8c8c;
           display: flex;
           justify-content: space-between;
           border-top: solid 1px black;
+          .box-cart-bbox{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            div:first-of-type{
+              margin-top:5px ;
+              margin-right:10px;
+              width: 23px;
+              height: 23px;
+              background-repeat: no-repeat;
+              background-size:100% 100%;
+            }
+          }
           .box-cart-bottom-r{
             width: 50%;
             display: flex;
             justify-content: space-around;
+            .box-cart-bottom-bg {
+              @center();
+              i{
+                margin-top:5px;
+                margin-right:10px;
+                display: block;
+                background: url(/static/modal/bj.png) no-repeat;
+                 background-size:100% 100% ;
+                width: 18px;
+                height: 18px;
+              }
+            }
+            .box-cart-bottom-del
+            {
+               @center();
+              i{
+                margin-top:5px;
+                margin-right:10px;
+                display: block;
+                background: url(/static/modal/del.png) no-repeat;
+                background-size:100% 100% ;
+                width: 17px;
+                height: 23px;
+              }
+            }
           }
         }
         p{
@@ -367,7 +435,7 @@ export default {
             }
           }
           .box-cart-add-radio{
-            background: url(/static/radio.png) no-repeat;
+            background-repeat:no-repeat;
             width: 48px;
             height: 48px;
             background-size:100% 100% ;

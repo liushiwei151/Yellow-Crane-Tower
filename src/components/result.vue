@@ -5,7 +5,7 @@
       <span>扫码次数: {{ QRcodeinfor.num }}</span>
     </div>
     <div class="result-content">
-      <div class="result-content-img" :style="{ backgroundImage: 'url(/static/smoke/' + smokeimg + '.png)' }"></div>
+      <div class="result-content-img" :style="{ backgroundImage: 'url(' + QRcodeinfor.smoke.img+ ')' }"></div>
       <div class="result-content-text">
         <div class="result-content-text1">
           <div v-if="QRcodeinfor.num != 1">
@@ -32,12 +32,12 @@
         </p>
       </div>
     </div>
-    <div class="result-rating">
+    <div class="result-rating" v-if="QRcodeinfor.status">
       产品鉴赏:
       <div class="result-rstar"><div v-for="(item, index) in star" :key="index" :class="item ? 'result-choose' : ''" @click="score(index)"></div></div>
     </div>
     <!-- 刮奖按钮 -->
-    <div class="result-scratch" @click="goscratch"></div>
+    <div class="result-scratch" v-if="QRcodeinfor.status" @click="goscratch"></div>
   </div>
 </template>
 
@@ -56,7 +56,11 @@ export default {
       smokeimg: 'smokeimg'
     })
   },
+  created(){
+    this.onresult();
+  },
   methods: {
+    ...mapActions(['onresult']),
     //打分
     score(e) {
       let stars = [false, false, false, false, false];

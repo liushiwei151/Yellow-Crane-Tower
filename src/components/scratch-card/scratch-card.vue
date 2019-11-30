@@ -15,7 +15,7 @@
         name : 'vueScratchCard',
         data(){
             return {
-                supportTouch : false,       //是否支持touch事件
+                supportTouch : true,       //是否支持touch事件
                 events : [],                //touch事件 or mouse事件合集
                 startMoveHandler : null,     //touchstart or mousedown 事件
                 moveHandler : null,         //touchmove or mousemove 事件

@@ -42,25 +42,27 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex'
+import api from '@/api'
 export default {
   name: 'result',
   data() {
     return {
-      star: [true, true, true, false, false]
+      star: [true, true, true, true, true]
     };
   },
   computed: {
     ...mapState({
       QRcodeinfor: 'QRcodeinfor',
-      smokeimg: 'smokeimg'
+      smokeimg: 'smokeimg',
+      all:'all'
     })
   },
   created(){
     this.onresult();
   },
   methods: {
-    ...mapActions(['onresult']),
+    ...mapActions(['onresult','goerr']),
     //打分
     score(e) {
       let stars = [false, false, false, false, false];
@@ -71,7 +73,27 @@ export default {
     },
     //跳转入刮卡页面
     goscratch() {
-      this.$router.push('scratch');
+      let self =this
+      let scores =0;
+      for(let i =0;i<=self.star.length;i++){
+        if(this.star[i]){
+          scores++
+        }
+      }
+      let data={
+        scanId:self.all.scanId,
+        score:scores
+      }
+      api.saveScore(data).then((res)=>{
+        if(res.data.code=='200'){
+           this.$router.push('scratch')
+        }else{
+          self.goerr(3);
+        }
+      }).catch((err)=>{
+        console.log(err)
+      })
+      // this.$router.push('scratch');
     }
   }
 };

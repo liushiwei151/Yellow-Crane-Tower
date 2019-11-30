@@ -28,7 +28,7 @@ const store = new Vuex.Store({
     //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal: {
-      isphone: "1234567891", //客户电话
+      isphone: "", //客户电话
       isuser: '1', //0老客户1新客户
       isaddress: 'isphone', //modal是由哪里传来的
       errnum: 0 //输入错误次数
@@ -94,7 +94,9 @@ const store = new Vuex.Store({
         alkali: '0.9mg'
       },
       // 奖池是否有奖
-      status:true
+      status:true,
+      //中奖信息
+      statusxx:'464654',
     }
   },
   getter: {
@@ -136,19 +138,42 @@ const store = new Vuex.Store({
       state
     }, mm) {
       commit('onresults', mm)
+    },
+    goerr({commit,state},mm){
+      commit('onerr',mm)
+    },
+    wait({commit,state},mm){
+      commit('onwait',mm)
+    },
+    cusphones({commit,state},mm){
+      commit('oncusphone',mm)
+    },
+    update({commit,state},mm){
+      commit('onupdate',mm)
     }
   },
   mutations: {
+    onupdate(house,mm){
+      house.statusxx=mm
+    },
+    //等待提示
+    onwait(house,mm){
+
+    },
+    //全局弹出错误
+    onerr(house,mm){
+      house.ismodal.isaddress = 'isuser';
+      house.contentstyle = house.storagecont[mm];
+      house.isshow = true;
+    },
     //接收开始传过来的值新老用户/验证码/wx需要的数据//底部的广告并作判断
     doisNewUser(house, mm) {
       let self = Vue
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
       localStorage.setItem('all', JSON.stringify(mm))
-      console.log(mm)
       //获取底部广告
       api.getAdvertisement(mm.productId, mm.scanId).then((res) => {
-        console.log(res.data.data)
         house.smokeimg=res.data.data.bgImgUrl;
         house.advertisement[0].adv = res.data.data.imgUrl;
         house.advertisement[0].web = res.data.data.outUrl;
@@ -156,12 +181,6 @@ const store = new Vuex.Store({
       }).catch((err) => {
         console.log(err)
       })
-      //获取背景图片
-      /*api.getBackground(house.all.skuid).then((res) => {
-        house.smokeimg = res.data.data
-      }).catch((err) => {
-
-      })*/
       //wx需要的数据
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
@@ -246,28 +265,46 @@ const store = new Vuex.Store({
         house.isshow=true
       }*/
     },
+    //在结果页面获取信息
     onresults(house, mm) {
       let data = JSON.parse(localStorage.getItem('all'));
       axios.defaults.headers.common["Authorization"] = data.sessionId;
-      api.real(data.scanId).then((res) => {
-        let names = res.data.data;
-        house.QRcodeinfor.name = names.productName;
-        house.QRcodeinfor.firsttime = names.scanTime;
-        house.QRcodeinfor.num = names.count;
-        house.QRcodeinfor.smoke.tar = names.tar;
-        house.QRcodeinfor.smoke.monoxide = names.co;
-        house.QRcodeinfor.smoke.alkali = names.nicotine;
-        house.QRcodeinfor.smoke.img = names.productImgUrl;
-      }).catch((err) => {
-        console.log(err)
-      })
+      let Qrc =JSON.parse(localStorage.getItem('QRcodeinfor'));
+      if(Qrc){
+        if(Qrc.mobile==""){
+          house.ismodal.isphone=""
+        }else{
+          house.ismodal.isphone=Qrc.mobile
+        }
+        house.QRcodeinfor.name = Qrc.productName;
+        house.QRcodeinfor.firsttime = Qrc.scanTime;
+        house.QRcodeinfor.num = Qrc.count;
+        house.QRcodeinfor.smoke.tar = Qrc.tar+'mg';
+        house.QRcodeinfor.smoke.monoxide = Qrc.co+'mg';
+        house.QRcodeinfor.smoke.alkali = Qrc.nicotine+'mg';
+        house.QRcodeinfor.smoke.img = Qrc.productImgUrl;
+      }else{
+        api.real(data.scanId).then((res) => {
+          let names = res.data.data;
+          console.log(names);
+          localStorage.setItem("QRcodeinfor",JSON.stringify(names));
+          house.QRcodeinfor.name = names.productName;
+          house.QRcodeinfor.firsttime = names.scanTime;
+          house.QRcodeinfor.num = names.count;
+          house.QRcodeinfor.smoke.tar = names.tar+'mg';
+          house.QRcodeinfor.smoke.monoxide = names.co+'mg';
+          house.QRcodeinfor.smoke.alkali = names.nicotine+'mg';
+          house.QRcodeinfor.smoke.img = names.productImgUrl;
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
       let lotter ={
          scanId:data.scanId ,//扫码Id
            latitude:0,// 纬度
            longitude:0// 经度
       }
       api.getLottery(lotter).then((res) => {
-        console.log(res.data.data.status)
         house.QRcodeinfor.status=res.data.data.status;
       }).catch((err) => {
         console.log(err)
@@ -277,12 +314,18 @@ const store = new Vuex.Store({
     doclose(house, mm) {
       house.isshow = false
     },
-    // 开始刮奖
+    // 第一点击刮奖
     dostartCallback(house, mm) {
       house.ismodal.isaddress = 'isphone';
-      if (house.ismodal.isphone.length != 11) {
-        // house.isshow=true
+      let date =JSON.parse(localStorage.getItem('QRcodeinfor'))
+      //如果vuex中存储的电话不为11并且local中yemen有存储为11的电话则弹出输入电话
+      if (house.ismodal.isphone.length != 11&&date.mobile.length!=11) {
+        house.isshow=true
       }
+    },
+    //添加客户电话
+    oncusphone(house,mm){
+      house.ismodal.isphone=mm
     },
     //弹出填写收货地址
     doaddress(house, mm) {

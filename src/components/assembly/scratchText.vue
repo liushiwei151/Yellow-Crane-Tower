@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- 初始 -->
-    <div class="original" v-if="result == 'original'">
+    <div class="original" v-if="result == '0'">
       <p>涂抹刮奖区域,</p>
       <p>超多奖品等您来拿！！！</p>
     </div>
     <!-- 获取实物奖品前？ -->
-    <div class="Material" v-if="result == 'Material'">
+    <div class="Material" v-if="result == '1'">
       <p>感谢您对诚信系统的支持,</p>
-      <p>恭喜您获得蓝牙耳机,赶紧去您的订单页面确认吧！</p>
+      <p>恭喜您获得楼币,赶紧去您的订单页面确认吧！</p>
       <div class="scratch-a"><a href="#">点击查看</a></div>
     </div>
     <!-- 获取虚拟奖品 手机流量 -->
-    <div class="traffic" v-if="result == 'traffic'">
+    <div class="traffic" v-if="result == '4'">
       <div>
         <label for="tel">手机号码:</label>
         <input type="tel" id="tel" maxlength="11" :placeholder="teltext" v-model="telphone" />
@@ -20,7 +20,7 @@
       <button @click="complete">确定</button>
     </div>
     <!-- 获取实物奖品，填写地址 -->
-    <div class="MaterialAddress" v-if="result == 'MaterialAddress'">
+    <div class="MaterialAddress" v-if="result == '2'">
       <!-- 有收获地址 -->
       <div v-if="isaddress">
         <div class="hasMaterialAddress">
@@ -39,7 +39,7 @@
       <button @click="subaddress('isadd')" v-if='!isaddress'>填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
-    <div class="fictitious" v-if="result=='fictitious'">
+    <div class="fictitious" v-if="result=='5'">
       <div class='fictitious-card'>
         <div class='fictitious-card-img'></div>
         <div class='fictitious-card-text'>
@@ -64,17 +64,20 @@ export default {
       teltext: '',//电话文本
       telphone: '',//电话号码
       //假数据 是否有地址
-      isaddress:true,
+      isaddress:false,
       city:''
     };
   },
   props: {
     result: {
-      type: String,
+      // type: Number,
       default: function() {
-        return 'MaterialAddress';
+        return '2';
       }
     }
+  },
+  mounted() {
+    // this.subaddress('myadd')
   },
   methods: {
     ...mapActions(['subaddress']),

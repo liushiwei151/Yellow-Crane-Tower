@@ -16,10 +16,10 @@
         coverImg="/static/cover.png"
         :ratio="0.4"
         :move-radius="25"
-        :resultText="resultText[0].prize"
+        :resultText="resultTexts[0].prize"
       />
     </div>
-    <scratch-text></scratch-text>
+    <scratch-text ></scratch-text>
     <!-- <div class="scratch-text">
       <p v-if="result == ''">
         涂抹刮奖区域,
@@ -36,6 +36,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import scratchText from '@/components/assembly/scratchText'
+import api from '@/api'
+import axios from 'axios'
 export default {
   name: 'scratch',
   data() {
@@ -46,30 +48,54 @@ export default {
       number: 0,
       // 当前结果
       result: '',
-      resultText: [{ prize: '恭喜您获得福卡一份', address: '赶紧去您的订单页面确认吧!' }]
+      resultTexts: [{ prize: '恭喜您获得福卡一份', address: '赶紧去您的订单页面确认吧!' }],
+      //接口传来的值
+      QRcode:'',
     };
   },
   components:{
     scratchText
   },
   computed: {
+    ...mapState({
+      isphone: 'isphone',
+      statusxxs:'statusxx'
+    }),
     text() {
       return {
         id: this.number,
         val: this.textArr[this.number]
       };
     },
-    ...mapState({
-      isphone: 'isphone'
-    })
   },
   mounted() {
+   // this.resultTexts[0].prize=this.statusxx.tip;
+   let QRc =JSON.parse(localStorage.getItem('QRcodeinfor'));
+   let all =JSON.parse(localStorage.getItem('all'));
+   let self =this;
+   if(QRc.mobile.length==11){
+     let draw={
+          scanId:all.scanId,
+          latitude:0,
+          longitude:0
+     }
+      axios.defaults.headers.common["Authorization"] = all.sessionId;
+     api.doLuckyDraw(draw).then((res)=>{
+       self.QRcode=res.data.data;
+       self.resultTexts[0].prize=res.data.data.tip
+       console.log(self.QRcode)
+     })
+   }
+   console.log(self.QRcode)
     this.startMove();
     if (this.number === this.textArr.length - 1) {
       this.number = 0;
     } else {
       this.number += 1;
     }
+  },
+  updated() {
+    console.log(this.statusxxs)
   },
   methods: {
     //文字轮播
@@ -85,7 +111,9 @@ export default {
     },
     //清除遮罩层后
     clearCallback() {
-      this.result = this.resultText[0];
+      this.result = this.resultTexts[0];
+      let data =this.$store.state.statusxx;
+      // this.resultTexts[0].prize=data.tip
     },
     ...mapActions(['startCallback'])
     //点击遮罩层时判断

@@ -1,7 +1,7 @@
 <template>
   <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
     <div class="cards" :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url('+smokeimg+')'}" key="0">
-     <router-view />
+     <router-view v-if="routeractive"></router-view>
     </div>
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
@@ -16,20 +16,26 @@
 </template>
 
 <script>
-import modal from '@/components/assembly/modal';
+import modal from '@/components/assembly/modal'
 import { mapState, mapActions } from 'vuex';
 export default {
   name: 'YellowCraneTower',
+  provide(){
+    return {
+      reload:this.reload
+    }
+  },
   data() {
     return {
       //模拟传进来的值
       // website: advertisement, //老用户页面跳转的三个链接
       card: true,
       transitionName: '',
+      routeractive:true
     };
   },
   components: {
-    modal
+    modal,
   },
   computed: {
     ...mapState({
@@ -56,6 +62,13 @@ export default {
       setTimeout(() => {
         this.card = false;
       }, 0);
+    },
+    //刷新页面
+    reload(){
+      this.routeractive= false;
+      this.$nextTick(function(){
+        this.routeractive=true
+      })
     }
   },
 };

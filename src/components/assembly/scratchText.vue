@@ -20,23 +20,30 @@
       <button @click="complete">确定</button>
     </div>
     <!-- 获取实物奖品，填写地址 -->
-    <div class="MaterialAddress" v-if="result == '2'">
+    <div class="MaterialAddress" v-if="result == '3'">
       <!-- 有收获地址 -->
-      <div v-if="isaddress">
-        <div class="hasMaterialAddress">
-          <div class="hasMaterialAddress-title">
-            <p>鹅鹅鹅</p>
-            <p>15172541234</p>
+      <div >
+        <div class="hasMaterialAddress" v-if="iscusadd.isDefault&&!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
+          <div class="hasMaterialAddress-title" >
+            <p>{{isaddress.province}}</p>
+            <p>{{isaddress.contactPhone}}</p>
           </div>
-          <div class="hasMaterialAddress-add">湖北省武汉市江淮区泛海国际SOHO城1栋2510</div>
+          <div class="hasMaterialAddress-add">{{isaddress.province}}{{isaddress.city}}{{isaddress.area}}{{isaddress.street}}</div>
+        </div>
+        <div class="hasMaterialAddress" v-if="cusaddress" >
+          <div class="hasMaterialAddress-title" >
+            <p>{{cusaddress.province}}</p>
+            <p>{{cusaddress.contactPhone}}</p>
+          </div>
+          <div class="hasMaterialAddress-add">{{cusaddress.province}}{{cusaddress.city}}{{cusaddress.area}}{{cusaddress.street}}</div>
         </div>
         <div class='hasMaterialAddressbutton'>
           <button @click="subaddress('myadd')">修改</button>
-          <button>确定</button>
+          <button @click="gocOrder()">确定</button>
         </div>
       </div>
       <!-- 没有收货地址 -->
-      <button @click="subaddress('isadd')" v-if='!isaddress'>填写收货信息</button>
+      <button @click="subaddress('isadd')" v-if="!iscusadd.isDefault" >填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
     <div class="fictitious" v-if="result=='5'">
@@ -56,7 +63,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-
+import api from '@/api'
 export default {
   name: 'scratchText',
   data() {
@@ -64,36 +71,98 @@ export default {
       teltext: '',//电话文本
       telphone: '',//电话号码
       //假数据 是否有地址
-      isaddress:false,
+      // isaddress:false,
       city:''
     };
   },
+  computed:{
+    ...mapState({
+      cusaddress:'cusaddress'
+    }),
+    iscusadd(){
+      return JSON.parse(localStorage.getItem('cusaddress'))[0]
+    }
+  },
   props: {
     result: {
-      // type: Number,
+       // type: String,
       default: function() {
         return '2';
       }
-    }
-  },
-  mounted() {
-    // this.subaddress('myadd')
+      },
+      isaddress:{
+        // type:Array,
+        default:function(){
+          return []
+        }
+      }
   },
   methods: {
-    ...mapActions(['subaddress']),
+    ...mapActions(['subaddress','onmyadd','ccmyadd']),
+    //提交地址跳转页面
+    gocOrder(){
+      let self =this;
+      let qrc =JSON.parse(localStorage.getItem('QRcode'))
+      if(this.cusaddress){
+        var data={
+          addressId:this.cusaddress.addressId,
+          orderId:qrc.orderId
+        }
+      }else{
+        var data ={
+          addressId:this.isaddress.addressId,
+          orderId:qrc.orderId
+        }
+      }
+      console.log(data)
+      api.cOrder(data).then((res)=>{
+        if(res.data.code==200){
+          self.$router.push('completes')
+        }
+      })
+    },
     // 电话确认
     complete() {
+      let self =this;
       if (!/^1[3456789]\d{9}$/.test(this.telphone)) {
         this.telphone = '';
         this.teltext = '请输入正确的电话号码!';
+      }else{
+         let qrc =JSON.parse(localStorage.getItem('QRcode'));
+         let data={
+           orderId:qrc.orderId,
+           rechargeMobile:this.telphone
+         }
+         console.log(data)
+        api.cOrder(data).then((res)=>{
+          console.log(res.data)
+          if(res.data.code==200){
+
+             self.$router.push('/completes')
+          }
+        })
       }
     },
     //去往完成页面
     gocomplete(){
      this.$router.push('completes')
     },
-    //弹出编辑地址的页面
-
+    //获取我的地址
+    getmyadd(){
+      let self =this;
+      let QRcode =JSON.parse(localStorage.getItem('QRcode'));
+     api.getAddress(QRcode.memberId).then((res)=>{
+       if(res.data.code==200){
+         console.log(res.data.data)
+         localStorage.setItem('cusaddress',JSON.stringify(res.data.data))
+       }
+       // self.onmyadd(res.data.data);
+       // self.cusaddress=res.data.data;
+       // localStorage.setItem('QRcode',JSON.stringify(res.data.data));
+     }).catch((err)=>{
+       console.log(err)
+     })
+    }
   }
 };
 </script>
@@ -151,6 +220,7 @@ export default {
     border-radius: 5px;
     width: 330px;
     text-indent: 5px;
+    height:50px;
   }
   input::-webkit-input-placeholder {
     color: red;
@@ -191,7 +261,8 @@ export default {
     .hasMaterialAddress-title{
       width: 416px;
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
+      margin-left: 48px;
       align-items: center;
       color:black;
     }

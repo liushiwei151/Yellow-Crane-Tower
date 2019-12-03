@@ -24,19 +24,23 @@ export default {
   mounted() {
     this.times();
   },
-  methods:{
-    times(){
-     let self =this
-      setTimeout(()=>{
-         self.threetime--;
-         if(self.threetime<=0){
-           self.$router.push('result')
-           return
-         }else{
-           this.times()
-         }
-      },1000)
-      }
+  methods: {
+    times() {
+      let self = this;
+      setTimeout(() => {
+        self.threetime--;
+        if (self.threetime <= 0) {
+          this.goout()
+          return;
+        } else {
+          this.times();
+        }
+      }, 1000);
+    },
+    goout(){
+      // this.$router.push('')
+      localStorage.clear('QRcode');
+    }
   }
 };
 </script>
@@ -47,17 +51,17 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  .completes-box{
-    height:282px;
+  .completes-box {
+    height: 282px;
     p {
       font-size: 30px;
       font-weight: 600;
-      margin-top:10px;
-      color:#552208;
+      margin-top: 10px;
+      color: #552208;
     }
     span {
       font-size: 36px;
-      color:#F83D41
+      color: #f83d41;
     }
     button {
       background: url(/static/button2.png) no-repeat;
@@ -75,6 +79,5 @@ export default {
       margin-top: 74px;
     }
   }
-
 }
 </style>

@@ -97,6 +97,10 @@ const store = new Vuex.Store({
       status:true,
       //中奖信息
       statusxx:'464654',
+      //我的地址
+      myaddress:[],
+      //二维码界面的确认的地址
+      cusaddress:0,
     }
   },
   getter: {
@@ -150,6 +154,15 @@ const store = new Vuex.Store({
     },
     update({commit,state},mm){
       commit('onupdate',mm)
+    },
+    onmyadd({commit,state},mm){
+      commit('goonisaddress',mm)
+    },
+    bjaddress({commit,state},mm){
+      commit('gobjaddress',mm)
+    },
+    ccmyadd({commit,state},mm){
+      commit('goccmyadd',mm)
     }
   },
   mutations: {
@@ -171,28 +184,48 @@ const store = new Vuex.Store({
       let self = Vue
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
-      localStorage.setItem('all', JSON.stringify(mm))
+      localStorage.setItem('all', JSON.stringify(mm));
+      //wx需要的数据
+      let url = location.href.split('#')[0];
+      api.jsSign(url).then((res) => {
+        console.log(res.data.data)
+        self.prototype.wx.config({
+          debug: true,
+          appId: res.data.data.appid,
+          timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+          nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+          signature: res.data.data.signature, // 必填，签名
+          jsApiList: ['scanQRCode','getLocation'] // 必填，需要使用的JS接口列表
+        })
+        //获取经纬度存入local
+        self.prototype.wx.ready(function(){
+          self.prototype.wx.getLocation({
+            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+              var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+              var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+              var speed = res.speed; // 速度，以米/每秒计
+              var accuracy = res.accuracy; // 位置精度
+              let jwd ={
+                wd:latitude,
+                jd:longitude,
+                sd:speed,
+                weiz:accuracy
+              }
+              localStorage.setItem('jwdcode',JSON.stringify(jwd));
+              alert(JSON.parse(localStorage.getItem('jwdcode')))
+            }
+          });
+        });
+      }).catch((err) => {
+        console.log(err)
+      })
       //获取底部广告
       api.getAdvertisement(mm.productId, mm.scanId).then((res) => {
         house.smokeimg=res.data.data.bgImgUrl;
         house.advertisement[0].adv = res.data.data.imgUrl;
         house.advertisement[0].web = res.data.data.outUrl;
         console.log(house.advertisement)
-      }).catch((err) => {
-        console.log(err)
-      })
-      //wx需要的数据
-      let url = location.href.split('#')[0];
-      api.jsSign(url).then((res) => {
-        console.log(res.data.data)
-        self.prototype.wx.config({
-          debug: false,
-          appId: res.data.data.appid,
-          timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
-          nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
-          signature: res.data.data.signature, // 必填，签名
-          jsApiList: ['scanQRCode'] // 必填，需要使用的JS接口列表
-        })
       }).catch((err) => {
         console.log(err)
       })
@@ -331,10 +364,23 @@ const store = new Vuex.Store({
     doaddress(house, mm) {
       house.ismodal.isaddress = mm;
       house.isshow = true;
-    }
+    },
+    //弹出编辑地址
+    gobjaddress(house,mm){
+      house.ismodal.isaddress='isadd';
+       house.isshow = true;
+    },
+    //存储我的地址
+    goonisaddress(house,mm){
+      house.myaddress=mm;
+      console.log(house.myaddress)
+      },
+      //确认显示第几个地址
+      goccmyadd(house,mm){
+        house.cusaddress=mm;
+        console.log( house.cusaddress)
+      }
   },
-
-
 })
 
 export default store;

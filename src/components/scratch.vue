@@ -19,7 +19,7 @@
         :resultText="resultTexts[0].prize"
       />
     </div>
-    <scratch-text ></scratch-text>
+    <scratch-text :result='QRcodetype' :isaddress='cusaddress' ></scratch-text>
     <!-- <div class="scratch-text">
       <p v-if="result == ''">
         涂抹刮奖区域,
@@ -48,9 +48,13 @@ export default {
       number: 0,
       // 当前结果
       result: '',
-      resultTexts: [{ prize: '恭喜您获得福卡一份', address: '赶紧去您的订单页面确认吧!' }],
+      resultTexts: [{ prize: '没有奖品了哦！', address: '赶紧去您的订单页面确认吧!' }],
       //接口传来的值
       QRcode:'',
+      //清除屏障后显示的值
+      QRcodetype:'0',
+      //客户地址
+      cusaddress:[],
     };
   },
   components:{
@@ -59,7 +63,7 @@ export default {
   computed: {
     ...mapState({
       isphone: 'isphone',
-      statusxxs:'statusxx'
+      statusxxs:'statusxx',
     }),
     text() {
       return {
@@ -70,34 +74,73 @@ export default {
   },
   mounted() {
    // this.resultTexts[0].prize=this.statusxx.tip;
-   let QRc =JSON.parse(localStorage.getItem('QRcodeinfor'));
-   let all =JSON.parse(localStorage.getItem('all'));
-   let self =this;
-   if(QRc.mobile.length==11){
-     let draw={
-          scanId:all.scanId,
-          latitude:0,
-          longitude:0
-     }
-      axios.defaults.headers.common["Authorization"] = all.sessionId;
-     api.doLuckyDraw(draw).then((res)=>{
-       self.QRcode=res.data.data;
-       self.resultTexts[0].prize=res.data.data.tip
-       console.log(self.QRcode)
-     })
+   if(!JSON.parse(localStorage.getItem('QRcode'))){
+     this.startupdate();
+   }else{
+    this.resultTexts[0].prize=JSON.parse(localStorage.getItem('QRcode')).tip;
+    this.QRcodetype=JSON.parse(localStorage.getItem('QRcode')).type;
+    let cusadd =JSON.parse(localStorage.getItem('cusaddress'));
+    for(let i =0;i<cusadd.length;i++){
+      if(cusadd[i].isDefault=='1'){
+       this.cusaddress=cusadd[i];
+      }
+    }
+    // this.result = this.resultTexts[0]
    }
-   console.log(self.QRcode)
-    this.startMove();
+   this.startMove();
     if (this.number === this.textArr.length - 1) {
       this.number = 0;
     } else {
       this.number += 1;
     }
-  },
-  updated() {
-    console.log(this.statusxxs)
+
   },
   methods: {
+    ...mapActions(['startCallback']),
+    //进入页面根据local中的Qrc是否有电话判断是否调取奖品接口
+    startupdate(){
+      let QRc =JSON.parse(localStorage.getItem('QRcodeinfor'));
+      let all =JSON.parse(localStorage.getItem('all'));
+      let self =this;
+      if(QRc.mobile.length==11){
+        let draw={
+             scanId:all.scanId,
+             latitude:0,
+             longitude:0
+        }
+         axios.defaults.headers.common["Authorization"] = all.sessionId;
+        api.doLuckyDraw(draw).then((res)=>{
+          self.resultTexts[0].prize=res.data.data.tip;
+          //假数据中了什么奖
+          // res.data.data.type='2';
+          //
+          self.QRcode=res.data.data;
+          localStorage.setItem('QRcode',JSON.stringify(self.QRcode));
+          if(self.QRcode.type=='3'){
+            api.getAddress(self.QRcode.memberId).then((res)=>{
+              console.log(res.data.data);
+              localStorage.setItem('cusaddress',JSON.stringify(res.data.data));
+              for(let i =0;i<res.data.data.length;i++){
+                if(res.data.data[i].isDefault=='1'){
+                 self.cusaddress=res.data.data[i];
+                }
+              }
+              // localStorage.setItem('QRcode',JSON.stringify(self.cusaddress));
+            }).catch((err)=>{
+              console.log(err)
+            })
+          }
+          console.log(self.QRcodeinfo)
+        })
+      }else{
+        return;
+      }
+      console.log(self.QRcode)
+    },
+    //获取地址
+    getaddress(){
+
+    },
     //文字轮播
     startMove() {
       let timer = setTimeout(() => {
@@ -111,18 +154,19 @@ export default {
     },
     //清除遮罩层后
     clearCallback() {
-      this.result = this.resultTexts[0];
-      let data =this.$store.state.statusxx;
+      // this.result = this.resultTexts[0];
+      // let data =this.$store.state.statusxx;
       // this.resultTexts[0].prize=data.tip
+      this.QRcodetype=JSON.parse(localStorage.getItem('QRcode')).type;
+      // this.QRcodetype='2';
     },
-    ...mapActions(['startCallback'])
     //点击遮罩层时判断
     // startCallback(){
     //   if(!this.isphone){
 
     //   }
     // }
-  }
+  },
 };
 </script>
 

@@ -43,22 +43,22 @@
       <div class="modal-box-button"><button @click.stop="checkmob">确定</button></div>
       <div class="modal-phone-text">手机活动仅限本次活动领奖使用, 将严格保密, 请安心填写。</div>
     </div>
-    <!-- 编辑地址 -->
+    <!-- 新增地址 -->
     <div v-if="ismodal.isaddress === 'isadd'" class="modal-address">
-      <p>编辑地址</p>
+      <p>新增地址</p>
       <div class="modal-address-input">
         <label for="contacts">联系人:</label>
-        <input type="text" id="contacts" />
+        <input type="text" id="contacts" v-model="cusadd.name" />
       </div>
       <div class="modal-address-input">
         <label for="telp">手机号:</label>
-        <input type="tel" id="telp" maxlength="11" />
+        <input type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
       </div>
       <div class="modal-address-three">
         <div class="modal-address-text">联系地址:</div>
         <div>
           <select v-model="province" @change="onprovince(province)">
-            <option v-for="(item, index) in cityjson" :key="index" >{{ item.p }}</option>
+            <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
           </select>
           <select v-model="cityname" @change="oncityname(cityname)">
             <option v-for="(item, index) in cityjsons" :key="index">{{ item.n }}</option>
@@ -70,11 +70,45 @@
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        <textarea name="address" rows="auto" v-model="texta"></textarea>
+        <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
         <button @click="close">取消</button>
-        <button >确认</button>
+        <button @click="apiaddadress()">确认</button>
+      </div>
+    </div>
+    <!-- 编辑地址 -->
+    <div v-if="ismodal.isaddress === 'bjadd'" class="modal-address">
+      <p>编辑地址</p>
+      <div class="modal-address-input">
+        <label for="contacts">联系人:</label>
+        <input type="text" id="contacts" v-model="cusadd.name" />
+      </div>
+      <div class="modal-address-input">
+        <label for="telp">手机号:</label>
+        <input type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
+      </div>
+      <div class="modal-address-three">
+        <div class="modal-address-text">联系地址:</div>
+        <div>
+          <select v-model="province" @change="onprovince(province)">
+            <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
+          </select>
+          <select v-model="cityname" @change="oncityname(cityname)">
+            <option v-for="(item, index) in cityjsons" :key="index">{{ item.n }}</option>
+          </select>
+          <select v-model="quyu">
+            <option v-for="(item, index) in cityjsonq" :key="index">{{ item.s }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-address-texta">
+        <div>联系地址:</div>
+        <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
+      </div>
+      <div class="modal-address-button">
+        <button @click="close">取消</button>
+        <button @click="bjaddadress()">确认</button>
       </div>
     </div>
     <!-- 我的地址 -->
@@ -83,28 +117,28 @@
       <div class="modal-myadd-box">
         <p class="box-title">注意：请填写真实姓名与详细地址, 否则订单会被取消。</p>
         <div class="modal-myadd-cart">
-          <div class="box-cart" v-for="a in 5">
+          <div class="box-cart" v-for="(item, index) in myaddress" :key="index">
             <div class="box-cart-add">
               <div class="box-cart-add1">
                 <div class="box-name">
-                  <div>里脊</div>
-                  <div>13661237891</div>
+                  <div>{{ item.contactName }}</div>
+                  <div>{{ item.contactPhone }}</div>
                 </div>
-                <p>湖北省武汉市姜巷去泛海国际SHOH城1栋2510</p>
+                <p>{{ item.province }}{{ item.city }}{{ item.area }}{{ item.street }}</p>
               </div>
-              <div class="box-cart-add-radio" @click="dotrue" :style="{ backgroundImage: 'url(/static/modal/' + ontrue + '.png)' }"></div>
+              <div class="box-cart-add-radio" @click="dotrue(index)" :style="{ backgroundImage: 'url(/static/modal/' + (turenum == index ? 'ontrue' : 'radio') + '.png)' }"></div>
             </div>
             <div class="box-cart-bottom">
-              <div class="box-cart-bbox" @click="ontrued">
-                <div :style="{ backgroundImage: 'url(/static/modal/' + bgimg + '.png)' }"></div>
+              <div class="box-cart-bbox" @click="ontrued(index)">
+                <div :style="{ backgroundImage: 'url(/static/modal/' + (item.isDefault == 1 ? 'diany' : 'yuanx') + '.png)' }"></div>
                 <div>设为默认</div>
               </div>
               <div class="box-cart-bottom-r">
-                <div class="box-cart-bottom-bg" @click="subaddress('isadd')">
+                <div class="box-cart-bottom-bg" @click="bjaddress(index)">
                   <i></i>
                   编辑
                 </div>
-                <div class="box-cart-bottom-del">
+                <div class="box-cart-bottom-del" @click="deladd(index)">
                   <i></i>
                   删除
                 </div>
@@ -114,8 +148,8 @@
         </div>
       </div>
       <div class="modal-myadd-button">
-        <button>新增地址</button>
-        <button>确定</button>
+        <button @click="subaddress('isadd')">新增地址</button>
+        <button @click="trueaddress">确定</button>
       </div>
     </div>
     <!-- 转圈圈 -->
@@ -125,8 +159,10 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import axios from 'axios';
 import city from '@/api/city.data.js';
 import api from '@/api';
+
 export default {
   name: 'modal',
   data() {
@@ -138,30 +174,46 @@ export default {
       province: '',
       cityname: '',
       quyu: '',
-      texta: '',
-      bgimg: 'yuanx',
-      ontrue: 'radio',
       // 验证手机号
       cusphone: '',
       //手机号验证码
-      cusQR: ''
+      cusQR: '',
+      //用户编辑的地址信息
+      cusadd: {
+        name: '',
+        phone: '',
+        add: '',
+        texta: ''
+      },
+      myaddress: '',
+      //编辑的第几个
+      bjaddnum: '',
+      //第几个选择
+      turenum: 0,
+      //选择第几个默认
+      bgimg: 0
     };
   },
+  inject:['reload'],
   components: {
     city
   },
   mounted() {
     this.cityjson = city.citylist;
+    this.myaddress = JSON.parse(localStorage.getItem('cusaddress'));
   },
   watch: {
     isshow() {
-      console.log(this.isshow);
       if (this.isshow) {
+        console.log()
+        if(this.ismodal.isaddress=='myadd'){
+          this.getmyadd();
+        }
         document.querySelector('#app').setAttribute('style', 'position: fixed;');
       } else {
         document.querySelector('#app').removeAttribute('style');
       }
-    }
+    },
   },
   computed: {
     ...mapState({
@@ -173,26 +225,147 @@ export default {
       contentstyle: 'contentstyle',
       //显示什么样的modal
       ismodal: 'ismodal',
-      //进入页面传过来的所有值
+      //进入初始页面传过来的所有值
       all: 'all'
-      //
+      //进入我的地址页面接收到的地址
+      // myaddress:'myaddress'
     })
   },
   methods: {
-    ...mapActions(['subaddress','update']),
-    dotrue() {
-      if (this.ontrue == 'radio') {
-        this.ontrue = 'ontrue';
-      } else if (this.ontrue == 'ontrue') {
-        this.ontrue = 'radio';
+    ...mapActions(['subaddress', 'update', 'ccmyadd']),
+    //确认地址
+    trueaddress() {
+       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      if (this.myaddress[this.bgimg].isDefault == 1) {
+        let data = {
+          addressId: this.myaddress[this.bgimg].addressId,
+          contactName: this.myaddress[this.bgimg].contactName,
+          contactPhone: this.myaddress[this.bgimg].contactPhone,
+          province: this.myaddress[this.bgimg].province,
+          city: this.myaddress[this.bgimg].city,
+          area: this.myaddress[this.bgimg].area,
+          street: this.myaddress[this.bgimg].street,
+          isDefault: 1,
+          memberId:QRcode.memberId
+        };
+        api.editAddress(data).then((res)=>{
+          if(res.data.code==500){
+            alert('确认默认失败')
+          }
+        })
       }
+      this.ccmyadd(this.myaddress[this.turenum]);
+      this.close();
+      this.reload();
     },
-    ontrued() {
-      if (this.bgimg == 'yuanx') {
-        this.bgimg = 'diany';
-      } else if (this.bgimg == 'diany') {
-        this.bgimg = 'yuanx';
+    //编辑选中地址
+    bjaddress(e) {
+      let self = this;
+      let data = JSON.parse(localStorage.getItem('cusaddress'))[e].addressId;
+      api.oneAddress(data).then(res => {
+        self.cusadd.name = res.data.data.contactName;
+        self.cusadd.phone = res.data.data.contactPhone;
+        self.cusadd.texta = res.data.data.contactName;
+        self.province = res.data.data.province.street;
+        self.cityname = res.data.data.province.city;
+        self.quyu = res.data.data.province.area;
+        self.bjaddnum = e;
+        self.subaddress('bjadd');
+        console.log(res.data.data);
+      });
+    },
+    //确定编辑选中地址
+    bjaddadress() {
+      let self = this;
+      let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      let addid = JSON.parse(localStorage.getItem('cusaddress'))[this.bjaddnum].addressId;
+      console.log(addid);
+      let data = {
+        addressId: addid,
+        contactName: this.cusadd.name,
+        contactPhone: this.cusadd.phone,
+        province: this.province,
+        city: this.cityname,
+        area: this.quyu,
+        street: this.cusadd.texta,
+        isDefault: -1,
+        memberId: QRcode.memberId
+      };
+      api.editAddress(data).then(res => {
+        if (res.data.code == 200) {
+          self.getmyadd();
+          self.close();
+        }
+      });
+    },
+    //更新数组我的地址
+    gxmyadd() {
+      this.myaddress = JSON.parse(localStorage.getItem('cusaddress'));
+      console.log(this.myaddress);
+    },
+    //删除所选地址
+    deladd(e) {
+      let self = this;
+      let data = {
+        addressId: this.myaddress[e].addressId
+      };
+      api.deleteAddress(data).then(res => {
+        self.getmyadd();
+      });
+    },
+    //获取我的地址
+    getmyadd() {
+      let self = this;
+      let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      api
+        .getAddress(QRcode.memberId)
+        .then(res => {
+          // self.onmyadd(res.data.data);
+          // self.cusaddress=res.data.data;
+          localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+          self.gxmyadd();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    //新增地址
+    apiaddadress() {
+      let self = this;
+      let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      let cusaddress = {
+        contactName: this.cusadd.name,
+        contactPhone: this.cusadd.phone,
+        province: this.province,
+        city: this.cityname,
+        area: this.quyu,
+        street: this.cusadd.texta,
+        isDefault: -1,
+        memberId: QRcode.memberId
+      };
+      api
+        .addAddress(cusaddress)
+        .then(res => {
+          self.getmyadd();
+          self.close();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    dotrue(e) {
+      this.turenum = e;
+    },
+    ontrued(e) {
+      if (this.myaddress[e].isDefault == -1) {
+        for (let i = 0; i < this.myaddress.length; i++) {
+          this.myaddress[i].isDefault = -1;
+        }
+        this.myaddress[e].isDefault = 1;
+      } else {
+        this.myaddress[e].isDefault = -1;
       }
+      this.bgimg = e;
     },
     onprovince(e) {
       this.cityjsons = this.cityjson.find(item => item.p == e).c;
@@ -202,7 +375,7 @@ export default {
       this.cityjsonq = this.cityjsons.find(item => item.n == e).a;
     },
     //关闭modal
-    ...mapActions(['close','cusphones']),
+    ...mapActions(['close', 'cusphones']),
     subQR() {
       if (/^1[3456789]\d{9}$/.test(this.cusphone)) {
         let data = {
@@ -236,26 +409,37 @@ export default {
         mobile: self.cusphone,
         code: self.cusQR
       };
-      api.checkMobileValidate(data).then(res => {
+      api
+        .checkMobileValidate(data)
+        .then(res => {
           if (res.data.code == '200') {
             let Qr = JSON.parse(localStorage.getItem('QRcodeinfor'));
-             Qr.mobile = self.cusphone;
-             localStorage.setItem('QRcodeinfor', JSON.stringify(Qr));
-             self.cusphones(Qr.mobile);
-              this.$router.go(0);
-             let all =JSON.parse(localStorage.getItem('all'));
-             let draw ={
-               scanId:all.scanId,
-               latitude:0,
-               longitude:0
-             }
-            //调取奖品接口
-            api.doLuckyDraw(draw).then((res)=>{
-              this.update(res.data.data);
-               this.close();
-            })
+            Qr.mobile = self.cusphone;
+            localStorage.setItem('QRcodeinfor', JSON.stringify(Qr));
+            self.cusphones(Qr.mobile);
+            // this.$router.go(0);
+            this.reload();
+            let all = JSON.parse(localStorage.getItem('all'));
+            wx.getLocation({
+              type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function (res) {
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                let draw = {
+                  scanId: all.scanId,
+                  latitude: res.latitude,// 纬度，浮点数，范围为90 ~ -90
+                  longitude: res.longitude// 经度，浮点数，范围为180 ~ -180
+                };
+                //调取奖品接口
+                api.doLuckyDraw(draw).then(res => {
+                  this.update(res.data.data);
+                  this.close();
+                });
+              }
+            });
           } else alert('验证失败');
-        }).catch(err => {
+        })
+        .catch(err => {
           console.log(err);
         });
     },
@@ -437,7 +621,6 @@ export default {
       width: 100%;
       height: 490px;
       margin-top: 20px;
-      background-color: rgb(229, 206, 179);
       border-radius: 15px;
       overflow: hidden;
       .box-title {
@@ -452,11 +635,11 @@ export default {
         overflow: auto;
         height: 100%;
         .box-cart:first-of-type {
-          margin: 0;
+          border: none;
         }
         .box-cart {
           padding: 20px 35px 0;
-          margin-top: 10px;
+          border-top: 10px solid rgb(229, 206, 179);
           background-color: #fff;
           .box-cart-bottom {
             color: #8c8c8c;

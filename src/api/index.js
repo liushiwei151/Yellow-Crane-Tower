@@ -63,7 +63,7 @@ const checkMobileValidate = (date) => {
 }
 //获取客户的地址信息
 const getAddress = (add) => {
-  return axios.get('http://qrhhl.yunyutian.cn/huanghelou1916-h/user/getAddress', {
+  return axios.get('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/getAddress', {
     params: {
       memberId: add
     }
@@ -71,23 +71,28 @@ const getAddress = (add) => {
 }
 //新增地址
 const addAddress =(addr)=>{
-  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h/user/addAddress',qs.stringify(addr))
+  axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded; charset=UTF-8';
+  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/addAddress',addr)
 }
 //获取客户的地址是否默认
 const oneAddress = (one) => {
-  return axios.get('http://qrhhl.yunyutian.cn/huanghelou1916-h/user/oneAddress', {
+  return axios.get('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/oneAddress', {
     params: {
       addressId: one
     }
   })
 }
-//???
+//确认编辑地址
 const editAddress =(edit)=>{
-  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h/user/editAddress',qs.stringify(edit))
+  axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded; charset=UTF-8';
+  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/editAddress',edit)
 }
 //充值订单
 const cOrder =(rder)=>{
-  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h/lottery/cOrder',qs.stringify(rder))
+  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/cOrder',qs.stringify(rder))
+}
+const deleteAddress =(address)=>{
+  return axios.post('http://qrhhl.yunyutian.cn/huanghelou1916-h5/luckyDraw/deleteAddress',qs.stringify(address))
 }
 export default {
   checkVerifyCode,
@@ -104,5 +109,6 @@ export default {
   addAddress,
   oneAddress,
   editAddress,
-  cOrder
+  cOrder,
+  deleteAddress
 }

@@ -41,7 +41,7 @@
         <div @click.capture="subQR" :style="{ 'pointer-events': qrnum != '获取验证码' ? 'none' : '' }">{{ qrnum }}</div>
       </div>
       <div class="modal-box-button"><button @click.stop="checkmob">确定</button></div>
-      <div class="modal-phone-text">手机活动仅限本次活动领奖使用, 将严格保密, 请安心填写。</div>
+      <div class="modal-phone-text">手机号仅限本次活动领奖使用, 将严格保密, 请安心填写。</div>
     </div>
     <!-- 新增地址 -->
     <div v-if="ismodal.isaddress === 'isadd'" class="modal-address">
@@ -126,11 +126,15 @@
                 </div>
                 <p>{{ item.province }}{{ item.city }}{{ item.area }}{{ item.street }}</p>
               </div>
-              <div class="box-cart-add-radio" @click="dotrue(index)" :style="{ backgroundImage: 'url(/static/modal/' + (turenum == index ? 'ontrue' : 'radio') + '.png)' }"></div>
+              <div
+                class="box-cart-add-radio"
+                @click="dotrue(index)"
+                :style="{ backgroundImage: 'url(./static/modal/' + (turenum == index ? 'ontrue' : 'radio') + '.png)' }"
+              ></div>
             </div>
             <div class="box-cart-bottom">
               <div class="box-cart-bbox" @click="ontrued(index)">
-                <div :style="{ backgroundImage: 'url(/static/modal/' + (item.isDefault == 1 ? 'diany' : 'yuanx') + '.png)' }"></div>
+                <div :style="{ backgroundImage: 'url(./static/modal/' + (item.isDefault == 1 ? 'diany' : 'yuanx') + '.png)' }"></div>
                 <div>设为默认</div>
               </div>
               <div class="box-cart-bottom-r">
@@ -194,7 +198,7 @@ export default {
       bgimg: 0
     };
   },
-  inject:['reload'],
+  inject: ['reload'],
   components: {
     city
   },
@@ -205,15 +209,15 @@ export default {
   watch: {
     isshow() {
       if (this.isshow) {
-        console.log()
-        if(this.ismodal.isaddress=='myadd'){
+        console.log();
+        if (this.ismodal.isaddress == 'myadd') {
           this.getmyadd();
         }
         document.querySelector('#app').setAttribute('style', 'position: fixed;');
       } else {
         document.querySelector('#app').removeAttribute('style');
       }
-    },
+    }
   },
   computed: {
     ...mapState({
@@ -235,8 +239,9 @@ export default {
     ...mapActions(['subaddress', 'update', 'ccmyadd']),
     //确认地址
     trueaddress() {
-       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      if (this.myaddress[this.bgimg].isDefault == 1) {
+      let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      console.log(this.myaddress)
+      if (this.myaddress[this.bgimg]!=undefined&&this.myaddress[this.bgimg].isDefault == 1) {
         let data = {
           addressId: this.myaddress[this.bgimg].addressId,
           contactName: this.myaddress[this.bgimg].contactName,
@@ -246,13 +251,13 @@ export default {
           area: this.myaddress[this.bgimg].area,
           street: this.myaddress[this.bgimg].street,
           isDefault: 1,
-          memberId:QRcode.memberId
+          memberId: QRcode.memberId
         };
-        api.editAddress(data).then((res)=>{
-          if(res.data.code==500){
-            alert('确认默认失败')
+        api.editAddress(data).then(res => {
+          if (res.data.code == 500) {
+            alert('确认默认失败');
           }
-        })
+        });
       }
       this.ccmyadd(this.myaddress[this.turenum]);
       this.close();
@@ -420,22 +425,23 @@ export default {
             // this.$router.go(0);
             this.reload();
             let all = JSON.parse(localStorage.getItem('all'));
-            wx.getLocation({
+            /*wx.getLocation({
               type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              success: function (res) {
+              success: function(res) {
                 var speed = res.speed; // 速度，以米/每秒计
                 var accuracy = res.accuracy; // 位置精度
-                let draw = {
-                  scanId: all.scanId,
-                  latitude: res.latitude,// 纬度，浮点数，范围为90 ~ -90
-                  longitude: res.longitude// 经度，浮点数，范围为180 ~ -180
-                };
-                //调取奖品接口
-                api.doLuckyDraw(draw).then(res => {
-                  this.update(res.data.data);
-                  this.close();
-                });
+
               }
+            });*/
+            let draw = {
+              scanId: all.scanId,
+              latitude: 0, // 纬度，浮点数，范围为90 ~ -90
+              longitude: 0 // 经度，浮点数，范围为180 ~ -180
+            };
+            //调取奖品接口
+            api.doLuckyDraw(draw).then(res => {
+              this.update(res.data.data);
+              this.close();
             });
           } else alert('验证失败');
         })
@@ -462,7 +468,7 @@ export default {
   color: #fff;
   width: 700px;
   height: 744px;
-  background: url(/static/popp.png) no-repeat;
+  background: url(https://pic.cwyyt.cn//upload/img/20191203/1732133213_popp.png) no-repeat;
   background-size: 100% 100%;
 };
 @label: {
@@ -553,7 +559,7 @@ export default {
       justify-content: space-around;
       margin-top: 65px;
       button {
-        background: url(/static/button2.png) no-repeat;
+        background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
         background-size: 100% 100%;
         outline: none;
         border: none;
@@ -600,7 +606,7 @@ export default {
       justify-content: space-around;
       margin-top: 20px;
       button {
-        background: url(/static/button2.png) no-repeat;
+        background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
         background-size: 100% 100%;
         outline: none;
         border: none;
@@ -633,7 +639,7 @@ export default {
       }
       .modal-myadd-cart {
         overflow: auto;
-        height: 100%;
+        height: 445px;
         .box-cart:first-of-type {
           border: none;
         }
@@ -671,7 +677,7 @@ export default {
                   margin-top: 5px;
                   margin-right: 10px;
                   display: block;
-                  background: url(/static/modal/bj.png) no-repeat;
+                  background: url(../../../static/modal/bj.png) no-repeat;
                   background-size: 100% 100%;
                   width: 18px;
                   height: 18px;
@@ -683,7 +689,7 @@ export default {
                   margin-top: 5px;
                   margin-right: 10px;
                   display: block;
-                  background: url(/static/modal/del.png) no-repeat;
+                  background: url(../../../static/modal/del.png) no-repeat;
                   background-size: 100% 100%;
                   width: 17px;
                   height: 23px;
@@ -736,7 +742,7 @@ export default {
   .modal-new {
     width: 703px;
     height: 874px;
-    background: url(/static/modal02.png) no-repeat;
+    background: url(../../../static/modal02.png) no-repeat;
     background-size: 100% 100%;
     display: flex;
     flex-direction: column;
@@ -745,7 +751,7 @@ export default {
     .modal-new-code {
       width: 290px;
       height: 290px;
-      background: url(/static/QRcode.png) no-repeat;
+      background: url(../../../static/QRcode.png) no-repeat;
       background-size: 100% 100%;
       margin-top: 373px;
     }
@@ -793,7 +799,7 @@ export default {
       margin-bottom: 37px;
       box-sizing: border-box;
       label {
-        background: url(/static/phone.png) no-repeat;
+        background: url(https://pic.cwyyt.cn/upload/img/20191203/173506356_phone.png) no-repeat;
         background-size: 30px 43px;
         @label();
       }
@@ -820,7 +826,7 @@ export default {
       margin-bottom: 145px;
       position: relative;
       label {
-        background: url(/static/clock.png) no-repeat;
+        background: url(https://pic.cwyyt.cn/upload/img/20191203/1739353935_clock.png) no-repeat;
         background-size: 28px 37px;
         @label();
       }
@@ -856,11 +862,11 @@ export default {
       margin-top: 96px;
     }
     .modal-box-img1 {
-      background: url(/static/img1.png) no-repeat;
+      background: url(../../../static/img1.png) no-repeat;
       background-size: 100% 100%;
     }
     .modal-box-img2 {
-      background: url(/static/img2.png) no-repeat;
+      background: url(../../../static/img2.png) no-repeat;
       background-size: 100% 100%;
     }
     .modal-box-text {
@@ -882,7 +888,7 @@ export default {
 }
 .modal-box-button {
   button {
-    background: url(/static/button2.png) no-repeat;
+    background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
     background-size: 100% 100%;
     outline: none;
     border: none;

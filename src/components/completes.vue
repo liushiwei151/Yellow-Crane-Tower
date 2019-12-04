@@ -64,7 +64,7 @@ export default {
       color: #f83d41;
     }
     button {
-      background: url(/static/button2.png) no-repeat;
+      background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
       background-size: 100% 100%;
       outline: none;
       border: none;

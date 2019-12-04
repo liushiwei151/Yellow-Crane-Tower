@@ -32,6 +32,7 @@ export default {
     })*/
   },
   mounted() {
+    localStorage.clear('QRcode');
     // console.log(this.$ajaks.yyys)
   },
   methods: {
@@ -61,7 +62,7 @@ export default {
     border: solid 3px #f1d2ad;
     color: #a6a6a6;
     @verification();
-    font-size: 28px;
+    font-size: 36px;
   }
   input::-webkit-input-placeholder {
     color: #a6a6a6;
@@ -76,7 +77,7 @@ export default {
     @verification();
     border: solid 3px #fff;
     color: #fff;
-    font-size: 35px;
+    font-size: 25px;
     letter-spacing: 7px;
     text-indent: 7px;
     background: url(../../static/button.png) no-repeat;

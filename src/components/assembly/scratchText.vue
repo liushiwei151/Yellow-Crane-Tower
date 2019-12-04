@@ -23,7 +23,7 @@
     <div class="MaterialAddress" v-if="result == '3'">
       <!-- 有收获地址 -->
       <div >
-        <div class="hasMaterialAddress" v-if="iscusadd.isDefault&&!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
+        <div class="hasMaterialAddress" v-if="iscusadd!=undefined&&iscusadd[0]&&!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
           <div class="hasMaterialAddress-title" >
             <p>{{isaddress.province}}</p>
             <p>{{isaddress.contactPhone}}</p>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <!-- 没有收货地址 -->
-      <button @click="subaddress('isadd')" v-if="!iscusadd.isDefault" >填写收货信息</button>
+      <button @click="subaddress('isadd')" v-if="iscusadd!=undefined&&!iscusadd[0]" >填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
     <div class="fictitious" v-if="result=='5'">
@@ -175,7 +175,7 @@ export default {
   font-size: 28px;
 };
 @button:{
-  background: url(/static/button2.png) no-repeat;
+  background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
   background-size: 100% 100%;
   outline: none;
   border: none;
@@ -301,7 +301,7 @@ export default {
     .fictitious-card-img{
       width: 124px;
       height: 102px;
-      background: url(/static/card.png) no-repeat;
+      background: url(../../../static/card.png) no-repeat;
       background-size:100% 100%;
       border-right: solid 1px #955409;
     }

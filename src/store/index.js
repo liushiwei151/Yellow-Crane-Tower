@@ -12,15 +12,15 @@ const store = new Vuex.Store({
     //收到的底部广告和地址
     advertisement: [{
         web: '',
-        adv: '/static/adv3.png'
+        adv: './static/adv3.png'
       },
       {
         web: '',
-        adv: '/static/adv2.png'
+        adv: './static/adv2.png'
       },
       {
         web: '',
-        adv: '/static/adv1.png'
+        adv: './static/adv1.png'
       },
     ],
     // code: 0,//接收到的验证码的结果
@@ -94,7 +94,7 @@ const store = new Vuex.Store({
         alkali: '0.9mg'
       },
       // 奖池是否有奖
-      status:true,
+      status:false,
       //中奖信息
       statusxx:'464654',
       //我的地址
@@ -190,7 +190,7 @@ const store = new Vuex.Store({
       api.jsSign(url).then((res) => {
         console.log(res.data.data)
         self.prototype.wx.config({
-          debug: true,
+          debug: false,
           appId: res.data.data.appid,
           timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
           nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
@@ -213,7 +213,7 @@ const store = new Vuex.Store({
                 weiz:accuracy
               }
               localStorage.setItem('jwdcode',JSON.stringify(jwd));
-              alert(JSON.parse(localStorage.getItem('jwdcode')))
+              // alert(JSON.parse(localStorage.getItem('jwdcode')))
             }
           });
         });
@@ -303,7 +303,7 @@ const store = new Vuex.Store({
       let data = JSON.parse(localStorage.getItem('all'));
       axios.defaults.headers.common["Authorization"] = data.sessionId;
       let Qrc =JSON.parse(localStorage.getItem('QRcodeinfor'));
-      if(Qrc){
+     /* if(Qrc){
         if(Qrc.mobile==""){
           house.ismodal.isphone=""
         }else{
@@ -316,10 +316,10 @@ const store = new Vuex.Store({
         house.QRcodeinfor.smoke.monoxide = Qrc.co+'mg';
         house.QRcodeinfor.smoke.alkali = Qrc.nicotine+'mg';
         house.QRcodeinfor.smoke.img = Qrc.productImgUrl;
-      }else{
+      }else{*/
         api.real(data.scanId).then((res) => {
           let names = res.data.data;
-          console.log(names);
+          house.ismodal.isphone=names.mobile;
           localStorage.setItem("QRcodeinfor",JSON.stringify(names));
           house.QRcodeinfor.name = names.productName;
           house.QRcodeinfor.firsttime = names.scanTime;
@@ -331,7 +331,6 @@ const store = new Vuex.Store({
         }).catch((err) => {
           console.log(err)
         })
-      }
       let lotter ={
          scanId:data.scanId ,//扫码Id
            latitude:0,// 纬度

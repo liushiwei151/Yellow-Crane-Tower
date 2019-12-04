@@ -13,7 +13,7 @@
         :start-callback="startCallback"
         :clear-callback="clearCallback"
         element-id="scratchWrap"
-        coverImg="/static/cover.png"
+        coverImg="./static/cover.png"
         :ratio="0.4"
         :move-radius="25"
         :resultText="resultTexts[0].prize"
@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       //轮播内容
-      textArr: ['恭喜******获得马克杯一个', '恭喜******获得iphone11一部', '恭喜******获得别墅一栋', '恭喜******获得航母一艘', '恭喜******获得核弹一枚'],
+      textArr: ['恭喜******获得18楼币', '恭喜******获得18楼币', '恭喜******获得10元话费', '恭喜******获得拼手气福卡', '恭喜******获得10元话费'],
       //轮播第几个
       number: 0,
       // 当前结果
@@ -52,7 +52,7 @@ export default {
       //接口传来的值
       QRcode:'',
       //清除屏障后显示的值
-      QRcodetype:'0',
+      QRcodetype:0,
       //客户地址
       cusaddress:[],
     };
@@ -73,12 +73,15 @@ export default {
     },
   },
   mounted() {
+    let a ={};
+    let b =a.c
    // this.resultTexts[0].prize=this.statusxx.tip;
    if(!JSON.parse(localStorage.getItem('QRcode'))){
      this.startupdate();
    }else{
     this.resultTexts[0].prize=JSON.parse(localStorage.getItem('QRcode')).tip;
     this.QRcodetype=JSON.parse(localStorage.getItem('QRcode')).type;
+    this.result = this.resultTexts[0];
     let cusadd =JSON.parse(localStorage.getItem('cusaddress'));
     for(let i =0;i<cusadd.length;i++){
       if(cusadd[i].isDefault=='1'){
@@ -118,7 +121,6 @@ export default {
           localStorage.setItem('QRcode',JSON.stringify(self.QRcode));
           if(self.QRcode.type=='3'){
             api.getAddress(self.QRcode.memberId).then((res)=>{
-              console.log(res.data.data);
               localStorage.setItem('cusaddress',JSON.stringify(res.data.data));
               for(let i =0;i<res.data.data.length;i++){
                 if(res.data.data[i].isDefault=='1'){
@@ -154,9 +156,9 @@ export default {
     },
     //清除遮罩层后
     clearCallback() {
-      // this.result = this.resultTexts[0];
+      this.result = this.resultTexts[0];
       // let data =this.$store.state.statusxx;
-      // this.resultTexts[0].prize=data.tip
+      // this.resultTexts[0].prize=data.tip;
       this.QRcodetype=JSON.parse(localStorage.getItem('QRcode')).type;
       // this.QRcodetype='2';
     },
@@ -205,7 +207,7 @@ p{
 .scratchBG {
   width: 520px;
   height: 320px;
-  background: url(/static/gjbg.png) no-repeat;
+  background: url(../../static/gjbg.png) no-repeat;
   background-size: 100% 100%;
   margin: 35px 89px 0;
   box-sizing: border-box;

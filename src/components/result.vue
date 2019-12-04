@@ -115,7 +115,7 @@ export default {
     .result-content-img {
       width: 190px;
       height: 343px;
-      background: url(/static/smoke/xgqz.png) no-repeat;
+      background: url(../../static/smoke/xgqz.png) no-repeat;
       background-size: 100% 100%;
     }
     .result-content-text {
@@ -162,17 +162,17 @@ export default {
         margin-left: 10px;
         width: 42px;
         height: 39px;
-        background: url(/static/star2.png) no-repeat;
+        background: url(../../static/star2.png) no-repeat;
         background-size: 100% 100%;
       }
       .result-choose {
-        background: url(/static/star.png) no-repeat;
+        background: url(../../static/star.png) no-repeat;
         background-size: 100% 100%;
       }
     }
   }
   .result-scratch {
-    background: url(/static/button3.png) no-repeat;
+    background: url(../../static/button3.png) no-repeat;
     background-size: 100% 100%;
     width: 314px;
     height: 96px;

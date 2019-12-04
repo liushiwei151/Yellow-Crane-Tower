@@ -32,11 +32,18 @@ export default {
     })*/
   },
   mounted() {
-    localStorage.clear('QRcode');
+     localStorage.clear('QRcode');
+     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
+     if(this.$route.query.errorCode){
+       this.isNewUser(this.$route.query);
+     }else{
+        this.isNewUser(JSON.parse(localStorage.getItem('all')))
+     }
+      // this.$router.go(0);
     // console.log(this.$ajaks.yyys)
   },
   methods: {
-    ...mapActions(['subcode']),
+    ...mapActions(['subcode','isNewUser']),
     // 清空输入框
     empty() {
       this.verificationCode = '';
@@ -62,7 +69,7 @@ export default {
     border: solid 3px #f1d2ad;
     color: #a6a6a6;
     @verification();
-    font-size: 36px;
+    font-size: 32px;
   }
   input::-webkit-input-placeholder {
     color: #a6a6a6;
@@ -77,7 +84,7 @@ export default {
     @verification();
     border: solid 3px #fff;
     color: #fff;
-    font-size: 25px;
+    font-size: 30px;
     letter-spacing: 7px;
     text-indent: 7px;
     background: url(../../static/button.png) no-repeat;

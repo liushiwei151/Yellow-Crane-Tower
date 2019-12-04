@@ -14,7 +14,7 @@
     <!-- 获取虚拟奖品 手机流量 -->
     <div class="traffic" v-if="result == '4'">
       <div>
-        <label for="tel">手机号码:</label>
+        <label for="tel">充值号码:</label>
         <input type="tel" id="tel" maxlength="11" :placeholder="teltext" v-model="telphone" />
       </div>
       <button @click="complete">确定</button>
@@ -22,8 +22,8 @@
     <!-- 获取实物奖品，填写地址 -->
     <div class="MaterialAddress" v-if="result == '3'">
       <!-- 有收获地址 -->
-      <div >
-        <div class="hasMaterialAddress" v-if="iscusadd!=undefined&&iscusadd[0]&&!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
+      <div v-if="iscusadd!=undefined&&result == '3'">
+        <div class="hasMaterialAddress" v-if="!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
           <div class="hasMaterialAddress-title" >
             <p>{{isaddress.province}}</p>
             <p>{{isaddress.contactPhone}}</p>
@@ -43,16 +43,15 @@
         </div>
       </div>
       <!-- 没有收货地址 -->
-      <button @click="subaddress('isadd')" v-if="iscusadd!=undefined&&!iscusadd[0]" >填写收货信息</button>
+      <button @click="subaddress('isadd')" v-if="iscusadd==undefined" >填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
     <div class="fictitious" v-if="result=='5'">
       <div class='fictitious-card'>
-        <div class='fictitious-card-img'></div>
+        <div class='fictitious-card-img' :style="{backgroundImage:'url('+cardxx.prizeImg+')'}"></div>
         <div class='fictitious-card-text'>
           <div>
-            <p>滴滴快车代金卷--10元</p>
-            <p>合计:1200楼币</p>
+            <p>{{cardxx.prizeName}}</p>
           </div>
         </div>
       </div>
@@ -76,11 +75,17 @@ export default {
     };
   },
   computed:{
+    //显示第几个
     ...mapState({
       cusaddress:'cusaddress'
     }),
+    //有没有客户地址
     iscusadd(){
       return JSON.parse(localStorage.getItem('cusaddress'))[0]
+    },
+    // 卡卷信息
+    cardxx(){
+      return JSON.parse(localStorage.getItem('QRcode'))
     }
   },
   props: {

@@ -38,7 +38,7 @@ export default {
       }, 1000);
     },
     goout(){
-      // this.$router.push('')
+      //跳转页面https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA
       localStorage.clear('QRcode');
     }
   }

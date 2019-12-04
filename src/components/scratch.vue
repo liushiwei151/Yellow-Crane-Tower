@@ -73,8 +73,6 @@ export default {
     },
   },
   mounted() {
-    let a ={};
-    let b =a.c
    // this.resultTexts[0].prize=this.statusxx.tip;
    if(!JSON.parse(localStorage.getItem('QRcode'))){
      this.startupdate();
@@ -83,20 +81,22 @@ export default {
     this.QRcodetype=JSON.parse(localStorage.getItem('QRcode')).type;
     this.result = this.resultTexts[0];
     let cusadd =JSON.parse(localStorage.getItem('cusaddress'));
-    for(let i =0;i<cusadd.length;i++){
-      if(cusadd[i].isDefault=='1'){
-       this.cusaddress=cusadd[i];
+    if(cusadd){
+      for(let i =0;i<cusadd.length;i++){
+        if(cusadd[i].isDefault=='1'){
+         this.cusaddress=cusadd[i];
+        }
       }
     }
     // this.result = this.resultTexts[0]
    }
-   this.startMove();
-    if (this.number === this.textArr.length - 1) {
-      this.number = 0;
-    } else {
-      this.number += 1;
-    }
 
+      this.startMove();
+       if (this.number === this.textArr.length - 1) {
+         this.number = 0;
+       } else {
+         this.number += 1;
+       }
   },
   methods: {
     ...mapActions(['startCallback']),
@@ -105,7 +105,8 @@ export default {
       let QRc =JSON.parse(localStorage.getItem('QRcodeinfor'));
       let all =JSON.parse(localStorage.getItem('all'));
       let self =this;
-      if(QRc.mobile.length==11){
+      console.log(QRc.mobile)
+      if(QRc.mobile!=undefined&&QRc.mobile.length==11){
         let draw={
              scanId:all.scanId,
              latitude:0,
@@ -116,7 +117,7 @@ export default {
           self.resultTexts[0].prize=res.data.data.tip;
           //假数据中了什么奖
           // res.data.data.type='2';
-          //
+          console.log(res.data.data)
           self.QRcode=res.data.data;
           localStorage.setItem('QRcode',JSON.stringify(self.QRcode));
           if(self.QRcode.type=='3'){
@@ -131,8 +132,9 @@ export default {
             }).catch((err)=>{
               console.log(err)
             })
+          }else if(self.QRcode.type=='5'){
+            self.cusaddress=JSON.parse(localStorage.getItem('QRcode'));
           }
-          console.log(self.QRcodeinfo)
         })
       }else{
         return;

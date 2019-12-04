@@ -209,7 +209,6 @@ export default {
   watch: {
     isshow() {
       if (this.isshow) {
-        console.log();
         if (this.ismodal.isaddress == 'myadd') {
           this.getmyadd();
         }
@@ -284,7 +283,6 @@ export default {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
       let addid = JSON.parse(localStorage.getItem('cusaddress'))[this.bjaddnum].addressId;
-      console.log(addid);
       let data = {
         addressId: addid,
         contactName: this.cusadd.name,
@@ -300,6 +298,8 @@ export default {
         if (res.data.code == 200) {
           self.getmyadd();
           self.close();
+        }else{
+          alert('编辑接口报错')
         }
       });
     },
@@ -322,15 +322,12 @@ export default {
     getmyadd() {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      api
-        .getAddress(QRcode.memberId)
-        .then(res => {
+      api.getAddress(QRcode.memberId).then(res => {
           // self.onmyadd(res.data.data);
           // self.cusaddress=res.data.data;
           localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
           self.gxmyadd();
-        })
-        .catch(err => {
+        }).catch(err => {
           console.log(err);
         });
     },
@@ -345,14 +342,23 @@ export default {
         city: this.cityname,
         area: this.quyu,
         street: this.cusadd.texta,
-        isDefault: -1,
+        isDefault: 1,
         memberId: QRcode.memberId
       };
-      api
-        .addAddress(cusaddress)
-        .then(res => {
-          self.getmyadd();
-          self.close();
+      api.addAddress(cusaddress).then(res => {
+          console.log(999)
+          let self = this;
+          let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+          api.getAddress(QRcode.memberId).then(res => {
+            console.log(666)
+              localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+              self.gxmyadd();
+              self.reload();
+              self.close();
+            }).catch(err => {
+              console.log(err);
+            });
+
         })
         .catch(err => {
           console.log(err);

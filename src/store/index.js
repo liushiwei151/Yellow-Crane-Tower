@@ -29,9 +29,10 @@ const store = new Vuex.Store({
     //显示什么样的modal
     ismodal: {
       isphone: "", //客户电话
-      isuser: '1', //0老客户1新客户
+      isuser: '1', //1第一次进入这个页面0非第一次
       isaddress: 'isphone', //modal是由哪里传来的
-      errnum: 0 //输入错误次数
+      errnum: 0 ,//输入错误次数
+      follow:true//是否关注true没关注false关注了
     },
     // 烟的图片和背景图片
     smokeimg: '', //8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
@@ -237,11 +238,10 @@ const store = new Vuex.Store({
       if (mm.errorCode === '101' || value.errorCode === '101') {
         house.ismodal.isuser = '0'
         house.ismodal.isaddress = 'isuser';
-        // house.modalnum=4;
         house.contentstyle = house.storagecont[4];
         house.isshow = true;
       } else if (mm.errorCode === '0' || value.errorCode === '0') {
-        //判断新老客户
+        //判断是否是第一次进入
         if (value && !mm.isNewUser) {
           house.ismodal.isuser = value.isNewUser
         } else if (mm.isNewUser) {
@@ -250,7 +250,6 @@ const store = new Vuex.Store({
         } else {
           house.ismodal.isuser = '0'
           house.ismodal.isaddress = 'isuser';
-          // house.modalnum=1;
           house.contentstyle = house.storagecont[1];
           house.isshow = true;
         }
@@ -273,18 +272,25 @@ const store = new Vuex.Store({
       //调取验证码接口
       api.checkVerifyCode(data).then((res) => {
         let codes = res.data.code;
-        if (codes == 200) {
-          router.push("result")
-        } else if (codes == 500) {
-          console.log(house.ismodal.errnum)
-          house.ismodal.errnum++;
-          if (house.ismodal.errnum >= 3) {
-            house.contentstyle = house.storagecont[4];
-            house.isshow = true;
-          } else {
-            house.contentstyle = house.storagecont[0];
-            house.isshow = true;
+        console.log(res.data)
+        if(!res.data.data.follow){
+          house.ismodal.follow=res.data.data.follow;
+          if (codes == 200) {
+            router.push("result")
+          } else if (codes == 500) {
+            house.ismodal.errnum++;
+            if (house.ismodal.errnum >= 3) {
+              house.contentstyle = house.storagecont[4];
+              house.isshow = true;
+            } else {
+              house.contentstyle = house.storagecont[0];
+              house.isshow = true;
+            }
           }
+        }else{
+          house.ismodal.follow =res.data.data.follow;
+          house.isshow = true;
+          console.log(house.ismodal.follow)
         }
       }).catch((err) => {
         console.log("调取接口失败")

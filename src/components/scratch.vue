@@ -72,6 +72,11 @@ export default {
       };
     },
   },
+  created(){
+    api.getTop20Record().then((res)=>{
+      console.log(res)
+    })
+  },
   mounted() {
    // this.resultTexts[0].prize=this.statusxx.tip;
    if(!JSON.parse(localStorage.getItem('QRcode'))){

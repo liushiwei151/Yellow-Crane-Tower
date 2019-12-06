@@ -6,6 +6,13 @@ let httpurl ="http://qrhhl.yunyutian.cn"
 const checkVerifyCode = (code) => {
   return axios.post(httpurl+"/huanghelou1916-h5/code/checkVerifyCode", qs.stringify(code))
 }
+/***
+返回 "scanId": "",//后续配置需要的用户id
+    "verifyTimes": 1,
+    "count": 1,
+    "isTest": 1,
+    "follow": false关注/true没关注
+***/
 //接收wx必要数据
 const jsSign = (url) => {
   return axios.get(httpurl+'/huanghelou1916-h5/common/jsSign', {
@@ -14,6 +21,7 @@ const jsSign = (url) => {
     }
   })
 }
+
 //获取背景图片
 const getBackground = (bg) => {
   return axios.get(httpurl+'/huanghelou1916-h5/common/getBackground', {
@@ -95,6 +103,9 @@ const cOrder =(rder)=>{
 const deleteAddress =(address)=>{
   return axios.post(httpurl+'/huanghelou1916-h5/luckyDraw/deleteAddress',qs.stringify(address))
 }
+const getTop20Record =()=>{
+  return axios.get(httpurl+'/huanghelou1916-h5/luckyDraw/getTop20Record ')
+}
 export default {
   checkVerifyCode,
   jsSign,
@@ -111,5 +122,6 @@ export default {
   oneAddress,
   editAddress,
   cOrder,
-  deleteAddress
+  deleteAddress,
+  getTop20Record
 }

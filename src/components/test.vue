@@ -2,6 +2,7 @@
   <div>
     <div @click="fn">test</div>
     <input type="text" :value="verificationCode.value">
+    <div ref="num">999</div>
   </div>
 </template>
 
@@ -23,7 +24,27 @@ export default {
       this.$ck.del('name')
       console.log(this.$ck.get('name'))
     },
-  }
+    dj(){
+
+    }
+  },
+  created() {
+    console.log(1);
+    console.log(this.$refs['num']);
+    this.$nextTick(()=>{
+      console.log(2);
+      console.log(this.$refs['num']);
+    })
+  },
+  mounted() {
+console.log(3);
+    console.log(this.$refs['num']);
+    this.$nextTick(()=>{
+      console.log(4);
+      console.log(this.$refs['num']);
+    })
+  },
+
 };
 </script>
 

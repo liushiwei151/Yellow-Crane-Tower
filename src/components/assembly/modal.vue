@@ -2,7 +2,7 @@
   <div class="modal" :class="{ show: isshow }">
     <!-- @touchmove.prevent -->
     <!-- 老用户跳转 -->
-    <div class="modal-box" v-if="ismodal.isuser === '0' && ismodal.isaddress === 'isuser'">
+    <div class="modal-box" v-if="ismodal.isaddress === 'isuser'&&!ismodal.follow">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
@@ -14,8 +14,8 @@
       </div>
     </div>
     <!-- 新用户跳转 -->
-    <div v-if="ismodal.isuser === '1' && ismodal.isaddress === 'isuser'" class="modal-new">
-      <div class="modal-new-code"></div>
+    <div v-if="ismodal.isaddress === 'isuser'&&ismodal.follow" class="modal-new">
+      <img src="../../../static/QRcode.png" class="modal-new-code">
       <div class="modal-new-clause">
         <p>
           关注前请仔细阅读
@@ -754,11 +754,11 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    .modal-new-code {
+    .modal-new-code{
       width: 290px;
       height: 290px;
-      background: url(../../../static/QRcode.png) no-repeat;
-      background-size: 100% 100%;
+      // background: url(../../../static/QRcode.png) no-repeat;
+      // background-size: 100% 100%;
       margin-top: 373px;
     }
     .modal-new-clause {

@@ -16,12 +16,12 @@ export default new Router({
       meta:{index:0},
       component: verification
     },
-    /*{
-      path: '/',
+    {
+      path: '/test',
       name: 'test',
       meta:{index:0},
       component: test
-    },*/
+    },
     {
       path:'/result',
       name:'result',

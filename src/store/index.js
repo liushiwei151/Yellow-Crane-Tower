@@ -325,6 +325,7 @@ const store = new Vuex.Store({
       }else{*/
         api.real(data.scanId).then((res) => {
           let names = res.data.data;
+          console.log(names)
           house.ismodal.isphone=names.mobile;
           localStorage.setItem("QRcodeinfor",JSON.stringify(names));
           house.QRcodeinfor.name = names.productName;
@@ -344,6 +345,7 @@ const store = new Vuex.Store({
       }
       api.getLottery(lotter).then((res) => {
         house.QRcodeinfor.status=res.data.data.status;
+        console.log(house.QRcodeinfor.status)
       }).catch((err) => {
         console.log(err)
       })

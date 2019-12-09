@@ -25,6 +25,7 @@ const store = new Vuex.Store({
     ],
     // code: 0,//接收到的验证码的结果
     isshow: false, //modal框是否显示
+    isloading:false,//loading是否显示
     //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal: {
@@ -120,11 +121,11 @@ const store = new Vuex.Store({
     }, mm) {
       commit('doclose', mm)
     },
-    startCallback({
+    Callback({
       commit,
       state
     }, mm) {
-      commit('dostartCallback', mm)
+      commit('doCallback', mm)
     },
     isNewUser({
       commit,
@@ -147,9 +148,6 @@ const store = new Vuex.Store({
     goerr({commit,state},mm){
       commit('onerr',mm)
     },
-    wait({commit,state},mm){
-      commit('onwait',mm)
-    },
     cusphones({commit,state},mm){
       commit('oncusphone',mm)
     },
@@ -164,15 +162,17 @@ const store = new Vuex.Store({
     },
     ccmyadd({commit,state},mm){
       commit('goccmyadd',mm)
-    }
+    },
+    changeloading({commit,state},mm){
+      commit('onchangeloading',mm)
+    },
   },
   mutations: {
+    onchangeloading(house,mm){
+      house.isloading=mm
+    },
     onupdate(house,mm){
       house.statusxx=mm
-    },
-    //等待提示
-    onwait(house,mm){
-
     },
     //全局弹出错误
     onerr(house,mm){
@@ -186,10 +186,11 @@ const store = new Vuex.Store({
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
       localStorage.setItem('all', JSON.stringify(mm));
+      house.isloading =true;
       //wx需要的数据
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
-        console.log(res.data.data)
+        house.isloading =false;
         self.prototype.wx.config({
           debug: false,
           appId: res.data.data.appid,
@@ -223,10 +224,17 @@ const store = new Vuex.Store({
       })
       //获取底部广告
       api.getAdvertisement(mm.productId, mm.scanId).then((res) => {
-        house.smokeimg=res.data.data.bgImgUrl;
-        house.advertisement[0].adv = res.data.data.imgUrl;
-        house.advertisement[0].web = res.data.data.outUrl;
-        console.log(house.advertisement)
+        let bottomimg =JSON.parse(localStorage.getItem('qrcbottomimg'));
+        if(bottomimg){
+          house.smokeimg = bottomimg.bgImgUrl;
+          house.advertisement[0].adv = bottomimg.imgUrl;
+          house.advertisement[0].web = bottomimg.outUrl;
+        }else{
+          localStorage.setItem('qrcbottomimg',JSON.stringify(res.data.data));
+          house.smokeimg = res.data.data.bgImgUrl;
+          house.advertisement[0].adv = res.data.data.imgUrl;
+          house.advertisement[0].web = res.data.data.outUrl;
+        }
       }).catch((err) => {
         console.log(err)
       })
@@ -269,10 +277,11 @@ const store = new Vuex.Store({
         scanId: house.all.scanId,
         code: mm
       }
+      house.isloading =true;
       //调取验证码接口
       api.checkVerifyCode(data).then((res) => {
         let codes = res.data.code;
-        console.log(res.data)
+        house.isloading =false;
         if(!res.data.data.follow){
           house.ismodal.follow=res.data.data.follow;
           if (codes == 200) {
@@ -323,9 +332,10 @@ const store = new Vuex.Store({
         house.QRcodeinfor.smoke.alkali = Qrc.nicotine+'mg';
         house.QRcodeinfor.smoke.img = Qrc.productImgUrl;
       }else{*/
+      house.isloading =true;
         api.real(data.scanId).then((res) => {
+          house.isloading =false;
           let names = res.data.data;
-          console.log(names)
           house.ismodal.isphone=names.mobile;
           localStorage.setItem("QRcodeinfor",JSON.stringify(names));
           house.QRcodeinfor.name = names.productName;
@@ -354,14 +364,10 @@ const store = new Vuex.Store({
     doclose(house, mm) {
       house.isshow = false
     },
-    // 第一点击刮奖
-    dostartCallback(house, mm) {
+    // 弹出输入电话
+    doCallback(house, mm) {
       house.ismodal.isaddress = 'isphone';
-      let date =JSON.parse(localStorage.getItem('QRcodeinfor'))
-      //如果vuex中存储的电话不为11并且local中yemen有存储为11的电话则弹出输入电话
-      if (house.ismodal.isphone.length != 11&&date.mobile.length!=11) {
         house.isshow=true
-      }
     },
     //添加客户电话
     oncusphone(house,mm){
@@ -385,7 +391,6 @@ const store = new Vuex.Store({
       //确认显示第几个地址
       goccmyadd(house,mm){
         house.cusaddress=mm;
-        console.log( house.cusaddress)
       }
   },
 })

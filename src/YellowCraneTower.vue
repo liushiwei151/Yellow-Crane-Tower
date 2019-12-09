@@ -1,7 +1,7 @@
 <template>
   <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
     <div class="cards" :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url('+smokeimg+')'}" key="0">
-     <router-view v-if="routeractive"></router-view>
+     <keep-alive exclude='scratch'><router-view v-if="routeractive"></router-view></keep-alive>
     </div>
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
@@ -12,11 +12,14 @@
     <div class="bottom-d" :class="ismodal.isuser==='0' ? 'bottomImgold' : 'bottomImgnew'"></div>
     <!-- 弹出的提示model -->
     <modal></modal>
+    <!-- 等待框 -->
+    <wait></wait>
   </div>
 </template>
 
 <script>
 import modal from '@/components/assembly/modal'
+import wait from '@/components/assembly/wait'
 import { mapState, mapActions } from 'vuex';
 export default {
   name: 'YellowCraneTower',
@@ -36,6 +39,7 @@ export default {
   },
   components: {
     modal,
+    wait
   },
   computed: {
     ...mapState({

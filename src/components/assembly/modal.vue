@@ -235,11 +235,10 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['subaddress', 'update', 'ccmyadd']),
+    ...mapActions(['subaddress', 'ccmyadd','changeloading']),
     //确认地址
     trueaddress() {
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      console.log(this.myaddress)
       if (this.myaddress[this.bgimg]!=undefined&&this.myaddress[this.bgimg].isDefault == 1) {
         let data = {
           addressId: this.myaddress[this.bgimg].addressId,
@@ -252,21 +251,26 @@ export default {
           isDefault: 1,
           memberId: QRcode.memberId
         };
+         this.changeloading(true);
         api.editAddress(data).then(res => {
+          this.changeloading(false);
           if (res.data.code == 500) {
             alert('确认默认失败');
           }
         });
       }
+      console.log(this.myaddress[this.turenum])
       this.ccmyadd(this.myaddress[this.turenum]);
       this.close();
-      this.reload();
+      this.reload()
     },
     //编辑选中地址
     bjaddress(e) {
       let self = this;
       let data = JSON.parse(localStorage.getItem('cusaddress'))[e].addressId;
+      this.changeloading(true);
       api.oneAddress(data).then(res => {
+        self.changeloading(false);
         self.cusadd.name = res.data.data.contactName;
         self.cusadd.phone = res.data.data.contactPhone;
         self.cusadd.texta = res.data.data.contactName;
@@ -294,7 +298,9 @@ export default {
         isDefault: -1,
         memberId: QRcode.memberId
       };
+      this.changeloading(true);
       api.editAddress(data).then(res => {
+        self.changeloading(false);
         if (res.data.code == 200) {
           self.getmyadd();
           self.close();
@@ -345,12 +351,11 @@ export default {
         isDefault: 1,
         memberId: QRcode.memberId
       };
+      this.changeloading(true);
       api.addAddress(cusaddress).then(res => {
-          console.log(999)
-          let self = this;
           let QRcode = JSON.parse(localStorage.getItem('QRcode'));
           api.getAddress(QRcode.memberId).then(res => {
-            console.log(666)
+            self.changeloading(false);
               localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
               self.gxmyadd();
               self.reload();
@@ -388,13 +393,15 @@ export default {
     //关闭modal
     ...mapActions(['close', 'cusphones']),
     subQR() {
+      let self =this;
       if (/^1[3456789]\d{9}$/.test(this.cusphone)) {
         let data = {
           mobile: this.cusphone
         };
-        api
-          .getMobileValidate(data)
+        this.changeloading(true);
+        api.getMobileValidate(data)
           .then(res => {
+            self.changeloading(false);
             let num = 60;
             this.qrnum = num + 's';
             let times = setInterval(() => {
@@ -420,9 +427,10 @@ export default {
         mobile: self.cusphone,
         code: self.cusQR
       };
-      api
-        .checkMobileValidate(data)
+      this.changeloading(true);
+      api.checkMobileValidate(data)
         .then(res => {
+          self.changeloading(false);
           if (res.data.code == '200') {
             let Qr = JSON.parse(localStorage.getItem('QRcodeinfor'));
             Qr.mobile = self.cusphone;
@@ -430,25 +438,7 @@ export default {
             self.cusphones(Qr.mobile);
             // this.$router.go(0);
             this.reload();
-            let all = JSON.parse(localStorage.getItem('all'));
-            /*wx.getLocation({
-              type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              success: function(res) {
-                var speed = res.speed; // 速度，以米/每秒计
-                var accuracy = res.accuracy; // 位置精度
-
-              }
-            });*/
-            let draw = {
-              scanId: all.scanId,
-              latitude: 0, // 纬度，浮点数，范围为90 ~ -90
-              longitude: 0 // 经度，浮点数，范围为180 ~ -180
-            };
-            //调取奖品接口
-            api.doLuckyDraw(draw).then(res => {
-              this.update(res.data.data);
-              this.close();
-            });
+             this.close();
           } else alert('验证失败');
         })
         .catch(err => {

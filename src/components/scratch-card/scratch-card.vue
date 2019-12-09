@@ -61,12 +61,21 @@
             resultText:{
               type:String,
               default : '恭喜您获得副卡一份'
+            },
+            showup:{
+              type: Boolean,
+              default: function() {
+              	return false;
+              }
             }
         },
         mounted : function(){
             this.$nextTick(() => {
                 this.init();
             })
+            /*this.$nextTick(()=>{
+               this.showupfunction();
+            })*/
         },
         methods : {
             init : function(){
@@ -83,7 +92,7 @@
 
                 this.createCanvasStyle();
                 this.bindEvent();
-            },
+              },
             isSupportCanvas : function(){
                 var elem = document.createElement('canvas');
                 return !!(elem.getContext && elem.getContext('2d'))
@@ -97,6 +106,7 @@
                     coverImg.onload = function(){
                         _this.ctx.drawImage(coverImg , 0 , 0 , _this.canvas.width , _this.canvas.height);
                     }
+
                 }else{
                     _this.ctx.fillStyle = _this.coverColor;
                     _this.ctx.fillRect(0,0,_this.canvas.width , _this.canvas.height);
@@ -144,7 +154,6 @@
             },
             endEventHandler : function(e){
                 e.preventDefault();
-
                 this.canvas.removeEventListener(this.events[1] , this.moveHandler , false);
                 document.removeEventListener(this.events[2] , this.endMoveHandler , false);
                 this.endMoveHandler = null;
@@ -161,15 +170,21 @@
                         transPixels.push(pixel);
                     }
                 })
-
                 if(transPixels.length / pixels.data.length > this.ratio){
                     this.ctx.clearRect(0,0,this.canvas.width , this.canvas.height);
                     this.canvas.removeEventListener(this.events[0],this.startMoveHandler);
                     this.canvas.removeEventListener(this.events[1] , this.moveHandler , false);
                     document.removeEventListener(this.events[2] , this.endMoveHandler , false);
-
                     this.clearCallback();
                 }
+            },
+            //重复进入的时候自动清除表面的图
+            showupfunction:function(){
+              this.ctx.clearRect(0,0,this.canvas.width , this.canvas.height);
+              this.canvas.removeEventListener(this.events[0],this.startMoveHandler);
+              this.canvas.removeEventListener(this.events[1] , this.moveHandler , false);
+              document.removeEventListener(this.events[2] , this.endMoveHandler , false);
+              this.clearCallback();
             }
         }
     }

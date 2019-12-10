@@ -197,7 +197,7 @@ const store = new Vuex.Store({
           timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
           nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
           signature: res.data.data.signature, // 必填，签名
-          jsApiList: ['scanQRCode','getLocation'] // 必填，需要使用的JS接口列表
+          jsApiList: ['scanQRCode','getLocation','startRecord','stopRecord'] // 必填，需要使用的JS接口列表
         })
         //获取经纬度存入local
         self.prototype.wx.ready(function(){
@@ -215,7 +215,7 @@ const store = new Vuex.Store({
                 weiz:accuracy
               }
               localStorage.setItem('jwdcode',JSON.stringify(jwd));
-              // alert(JSON.parse(localStorage.getItem('jwdcode')))
+               alert(JSON.parse(localStorage.getItem('jwdcode')))
             }
           });
         });

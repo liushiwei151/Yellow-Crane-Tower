@@ -11,7 +11,7 @@
         :start-callback="startCallback"
         :clear-callback="clearCallback"
         element-id="scratchWrap"
-        coverImg="./static/cover.png"
+        coverImg="./static/cover.jpg"
         :ratio="0.4"
         :move-radius="25"
         :resultText="resultTexts[0].prize"

@@ -20,17 +20,6 @@ export default {
       verificationCode: ''
     };
   },
-  created() {
-    // console.log(this.$ck.get('Authorization'))
-    /* this.wx.config({
-      debug:true,
-      appId:'wx367bb7c52db262d0',
-      timestamp:Date.parse(new Date()), // 必填，生成签名的时间戳
-        nonceStr: '', // 必填，生成签名的随机串
-        signature: '',// 必填，签名
-        jsApiList: [] // 必填，需要使用的JS接口列表
-    })*/
-  },
   mounted() {
      localStorage.clear('QRcode');
      //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
@@ -47,7 +36,7 @@ export default {
     // 清空输入框
     empty() {
       this.verificationCode = '';
-    }
+    },
   }
 };
 </script>

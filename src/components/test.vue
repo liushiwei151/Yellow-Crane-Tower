@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div @click="fn">test</div>
+    <!-- <div @click="fn">test</div>
     <input type="text" :value="verificationCode.value">
-    <div ref="num">999</div>
+    <div ref="num">999</div> -->
+    
   </div>
 </template>
 

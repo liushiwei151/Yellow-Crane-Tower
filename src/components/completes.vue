@@ -8,7 +8,7 @@
         <span class="text">{{ threetime }}s</span>
         后为您呈现！
       </p>
-      <button>直接前往</button>
+      <a href="https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA">直接前往</a>
     </div>
   </div>
 </template>
@@ -38,8 +38,10 @@ export default {
       }, 1000);
     },
     goout(){
-      //跳转页面https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA
-      localStorage.clear('QRcode');
+      if(this.$route.path=='/completes'){
+         // localStorage.clear('QRcode');
+         window.location.href ='https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA'
+      }
     }
   }
 };
@@ -63,7 +65,9 @@ export default {
       font-size: 36px;
       color: #f83d41;
     }
-    button {
+    a {
+      display: block;
+      text-decoration: none;
       background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
       background-size: 100% 100%;
       outline: none;
@@ -71,12 +75,13 @@ export default {
       cursor: pointer;
       color: #fff;
       height: 79px;
+      line-height: 79px;
       font-size: 36px;
       width: 315px;
       border-radius: 50px;
       letter-spacing: 5px;
       text-indent: 5px;
-      margin-top: 74px;
+      margin: 74px auto 0;
     }
   }
 }

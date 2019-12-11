@@ -2,7 +2,7 @@
   <div class="modal" :class="{ show: isshow }">
     <!-- @touchmove.prevent -->
     <!-- 老用户跳转 -->
-    <div class="modal-box" v-if="ismodal.isaddress === 'isuser'&&!ismodal.follow">
+    <div class="modal-box" v-if="ismodal.isaddress === 'isuser' && !ismodal.follow">
       <div class="center"><div class="modal-box-img" :class="contentstyle.img ? 'modal-box-img1' : 'modal-box-img2'"></div></div>
       <div class="modal-box-text">
         <div>{{ contentstyle.text1 }}</div>
@@ -14,8 +14,8 @@
       </div>
     </div>
     <!-- 新用户跳转 -->
-    <div v-if="ismodal.isaddress === 'isuser'&&ismodal.follow" class="modal-new">
-      <img src="../../../static/QRcode.png" class="modal-new-code">
+    <div v-if="ismodal.isaddress === 'isuser' && ismodal.follow" class="modal-new">
+      <div class="modal-img"><img src="../../../static/QRcode.png" class="modal-new-code" /></div>
       <div class="modal-new-clause">
         <p>
           关注前请仔细阅读
@@ -73,7 +73,14 @@
         <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
-        <button @click="close">取消</button>
+        <button
+          @click="
+            close();
+            clear();
+          "
+        >
+          取消
+        </button>
         <button @click="apiaddadress()">确认</button>
       </div>
     </div>
@@ -95,7 +102,7 @@
             <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
           </select>
           <select v-model="cityname" @change="oncityname(cityname)">
-            <option v-for="(item, index) in cityjsons" :key="index">{{ item.n }}</option>
+            <option v-for="(item, index) in cityjsons" :key="index" :value="item.n">{{ item.n }}</option>
           </select>
           <select v-model="quyu">
             <option v-for="(item, index) in cityjsonq" :key="index">{{ item.s }}</option>
@@ -107,7 +114,14 @@
         <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
-        <button @click="close">取消</button>
+        <button
+          @click="
+            close();
+            clear();
+          "
+        >
+          取消
+        </button>
         <button @click="bjaddadress()">确认</button>
       </div>
     </div>
@@ -156,8 +170,6 @@
         <button @click="trueaddress">确定</button>
       </div>
     </div>
-    <!-- 转圈圈 -->
-    <div v-if="ismodal.isaddress === 'zqq'"></div>
   </div>
 </template>
 
@@ -209,7 +221,7 @@ export default {
   watch: {
     isshow() {
       if (this.isshow) {
-        if (this.ismodal.isaddress == 'myadd') {
+        if (this.ismodal.isaddress == 'myadd'||this.ismodal.isaddress=='bjadd') {
           this.getmyadd();
         }
         document.querySelector('#app').setAttribute('style', 'position: fixed;');
@@ -235,11 +247,11 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['subaddress', 'ccmyadd','changeloading']),
+    ...mapActions(['subaddress', 'ccmyadd', 'changeloading']),
     //确认地址
     trueaddress() {
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      if (this.myaddress[this.bgimg]!=undefined&&this.myaddress[this.bgimg].isDefault == 1) {
+      if (this.myaddress[this.bgimg] != undefined && this.myaddress[this.bgimg].isDefault == 1) {
         let data = {
           addressId: this.myaddress[this.bgimg].addressId,
           contactName: this.myaddress[this.bgimg].contactName,
@@ -251,68 +263,110 @@ export default {
           isDefault: 1,
           memberId: QRcode.memberId
         };
-         this.changeloading(true);
+        this.changeloading(true);
         api.editAddress(data).then(res => {
-          this.changeloading(false);
-          if (res.data.code == 500) {
+          if (res.data.code == 200) {
+            this.changeloading(false);
+            this.ccmyadd(this.myaddress[this.turenum]);
+            this.close();
+            this.reload();
+          }else{
             alert('确认默认失败');
           }
         });
       }
-      console.log(this.myaddress[this.turenum])
-      this.ccmyadd(this.myaddress[this.turenum]);
-      this.close();
-      this.reload()
+
     },
     //编辑选中地址
     bjaddress(e) {
       let self = this;
+      this.turenum=e;
       let data = JSON.parse(localStorage.getItem('cusaddress'))[e].addressId;
       this.changeloading(true);
       api.oneAddress(data).then(res => {
         self.changeloading(false);
         self.cusadd.name = res.data.data.contactName;
         self.cusadd.phone = res.data.data.contactPhone;
-        self.cusadd.texta = res.data.data.contactName;
-        self.province = res.data.data.province.street;
-        self.cityname = res.data.data.province.city;
-        self.quyu = res.data.data.province.area;
+        self.cusadd.texta = res.data.data.street;
+        self.province = res.data.data.province;
+        self.onprovince(res.data.data.province);
+        self.cityname = res.data.data.city;
+        self.oncityname(res.data.data.city);
+        self.quyu = res.data.data.area;
         self.bjaddnum = e;
         self.subaddress('bjadd');
-        console.log(res.data.data);
       });
     },
     //确定编辑选中地址
     bjaddadress() {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      let addid = JSON.parse(localStorage.getItem('cusaddress'))[this.bjaddnum].addressId;
+      let addid = JSON.parse(localStorage.getItem('cusaddress'))[this.bjaddnum];
+console.log(addid)
       let data = {
-        addressId: addid,
+        addressId: addid.addressId,
         contactName: this.cusadd.name,
         contactPhone: this.cusadd.phone,
         province: this.province,
         city: this.cityname,
         area: this.quyu,
         street: this.cusadd.texta,
-        isDefault: -1,
+        isDefault: addid.isDefault,
         memberId: QRcode.memberId
       };
-      this.changeloading(true);
-      api.editAddress(data).then(res => {
-        self.changeloading(false);
-        if (res.data.code == 200) {
-          self.getmyadd();
-          self.close();
-        }else{
-          alert('编辑接口报错')
+      // console.log(addid)
+      addid.street=this.cusadd.texta;
+      addid.contactName=this.cusadd.name;
+      addid.contactPhone=this.cusadd.phone;
+      addid.province =this.province;
+      addid.city=this.cityname;
+      addid.area =this.quyu;
+      /***只要改了在哪都能console的到？***/
+      // console.log(addid)
+      if (this.cusadd.name == '') {
+        alert('姓名不能为空');
+        return;
+      } else if (this.cusadd.name.length > 10) {
+        alert('请不要输入过长的名字');
+      } else {
+        if (this.cusadd.phone == '') {
+          alert('手机不能为空');
+        } else if (!/^1[3456789]\d{9}$/.test(this.cusadd.phone)) {
+          alert('请输入正确的手机号');
+        } else {
+          if (this.province != '' && this.cityname != '' && this.quyu != '') {
+            this.changeloading(true);
+            api.editAddress(data).then(res => {
+              self.changeloading(false);
+              if (res.data.code == 200) {
+                self.clear();
+                self.getmyadd();
+                this.ccmyadd(addid);
+                this.close();
+                this.reload();
+                self.changeloading(false);
+              } else {
+                alert('编辑接口报错');
+              }
+            });
+          } else {
+            alert('请输入正确的地址');
+          }
         }
-      });
+      }
+    },
+    //清除地址
+    clear() {
+      this.cusadd.name = '';
+      this.cusadd.phone = '';
+      this.cusadd.texta = '';
+      this.province = '';
+      this.cityname = '';
+      this.quyu = '';
     },
     //更新数组我的地址
     gxmyadd() {
       this.myaddress = JSON.parse(localStorage.getItem('cusaddress'));
-      console.log(this.myaddress);
     },
     //删除所选地址
     deladd(e) {
@@ -328,19 +382,25 @@ export default {
     getmyadd() {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      api.getAddress(QRcode.memberId).then(res => {
+      api.getAddress(QRcode.memberId)
+        .then(res => {
           // self.onmyadd(res.data.data);
           // self.cusaddress=res.data.data;
           localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
           self.gxmyadd();
-        }).catch(err => {
-          console.log(err);
+        })
+        .catch(err => {
+          alert(err);
         });
     },
     //新增地址
     apiaddadress() {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      let num = -1;
+      if(!JSON.parse(localStorage.getItem('cusaddress'))[0]){
+        num = 1;
+      }
       let cusaddress = {
         contactName: this.cusadd.name,
         contactPhone: this.cusadd.phone,
@@ -348,26 +408,43 @@ export default {
         city: this.cityname,
         area: this.quyu,
         street: this.cusadd.texta,
-        isDefault: 1,
+        isDefault: num,
         memberId: QRcode.memberId
       };
-      this.changeloading(true);
-      api.addAddress(cusaddress).then(res => {
-          let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-          api.getAddress(QRcode.memberId).then(res => {
-            self.changeloading(false);
-              localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
-              self.gxmyadd();
-              self.reload();
-              self.close();
-            }).catch(err => {
-              console.log(err);
+      if (this.cusadd.name == '') {
+        alert('姓名不能为空');
+        return;
+      } else if (this.cusadd.name.length > 10) {
+        alert('请不要输入过长的名字');
+      } else {
+        if (this.cusadd.phone == '') {
+          alert('手机不能为空');
+        } else if (!/^1[3456789]\d{9}$/.test(this.cusadd.phone)) {
+          alert('请输入正确的手机号');
+        } else {
+          if (this.province != '' && this.cityname != '' && this.quyu != '') {
+            this.changeloading(true);
+            api.addAddress(cusaddress).then(res => {
+              let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+              api
+                .getAddress(QRcode.memberId)
+                .then(res => {
+                  self.clear();
+                  self.changeloading(false);
+                  localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+                  self.gxmyadd();
+                  self.reload();
+                  self.close();
+                })
+                .catch(err => {
+                  alert(err);
+                });
             });
-
-        })
-        .catch(err => {
-          console.log(err);
-        });
+          } else {
+            alert('请输入正确的地址');
+          }
+        }
+      }
     },
     dotrue(e) {
       this.turenum = e;
@@ -393,13 +470,14 @@ export default {
     //关闭modal
     ...mapActions(['close', 'cusphones']),
     subQR() {
-      let self =this;
+      let self = this;
       if (/^1[3456789]\d{9}$/.test(this.cusphone)) {
         let data = {
           mobile: this.cusphone
         };
         this.changeloading(true);
-        api.getMobileValidate(data)
+        api
+          .getMobileValidate(data)
           .then(res => {
             self.changeloading(false);
             let num = 60;
@@ -414,7 +492,7 @@ export default {
             }, 1000);
           })
           .catch(err => {
-            console.log(err);
+            alert(err);
           });
       } else {
         alert('请输入正确的手机号');
@@ -428,7 +506,8 @@ export default {
         code: self.cusQR
       };
       this.changeloading(true);
-      api.checkMobileValidate(data)
+      api
+        .checkMobileValidate(data)
         .then(res => {
           self.changeloading(false);
           if (res.data.code == '200') {
@@ -438,11 +517,11 @@ export default {
             self.cusphones(Qr.mobile);
             // this.$router.go(0);
             this.reload();
-             this.close();
+            this.close();
           } else alert('验证失败');
         })
         .catch(err => {
-          console.log(err);
+          alert(err);
         });
     },
     sweepcode() {
@@ -511,6 +590,9 @@ export default {
     box-sizing: border-box;
     color: #955409;
     font-size: 30px;
+    input{
+      font-size: 30px;
+    }
     p {
       font-size: 36px;
       color: #552208;
@@ -527,6 +609,7 @@ export default {
         flex: 1;
         margin-left: 10px;
         height: 140px;
+        font-size: 30px;
       }
     }
     .modal-address-three {
@@ -552,7 +635,7 @@ export default {
     .modal-address-button {
       display: flex;
       justify-content: space-around;
-      margin-top: 65px;
+      margin-top: 50px;
       button {
         background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
         background-size: 100% 100%;
@@ -608,9 +691,11 @@ export default {
         cursor: pointer;
         color: #fff;
         height: 79px;
-        font-size: 36px;
+        font-size: 32px;
         border-radius: 50px;
         width: 210px;
+        white-space: nowrap;
+        overflow: hidden;
       }
       button:last-of-type {
         letter-spacing: 30px;
@@ -743,12 +828,14 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    .modal-new-code{
+    .modal-img{
       width: 290px;
       height: 290px;
-      // background: url(../../../static/QRcode.png) no-repeat;
-      // background-size: 100% 100%;
       margin-top: 373px;
+    }
+    .modal-new-code {
+      width: 100%;
+      height: 100%;
     }
     .modal-new-clause {
       color: rgb(85, 34, 8);

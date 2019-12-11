@@ -15,11 +15,11 @@ const store = new Vuex.Store({
         adv: './static/adv3.png'
       },
       {
-        web: '',
+        web: 'https://mp.weixin.qq.com/mp/homepage?__biz=MzIwNzE0MDUyMw==&hid=4&sn=53c00ccf532c568472653f528f444de9',
         adv: './static/adv2.png'
       },
       {
-        web: '',
+        web: 'https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toMe',
         adv: './static/adv1.png'
       },
     ],
@@ -305,13 +305,6 @@ const store = new Vuex.Store({
         console.log("调取接口失败")
       })
 
-      /*
-        else if(mm=='9999'){
-          router.push("result")
-        }
-      }else if(house.ismodal.isuser==='1'){
-        house.isshow=true
-      }*/
     },
     //在结果页面获取信息
     onresults(house, mm) {
@@ -391,6 +384,7 @@ const store = new Vuex.Store({
       //确认显示第几个地址
       goccmyadd(house,mm){
         house.cusaddress=mm;
+        console.log(house.cusaddress)
       }
   },
 })

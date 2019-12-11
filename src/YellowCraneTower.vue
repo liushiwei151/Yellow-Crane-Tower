@@ -1,7 +1,7 @@
 <template>
   <div id="app" :class="ismodal.isuser==='0' ? 'pages-old' : 'pages-new'">
     <div class="cards" :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url('+smokeimg+')'}" key="0">
-     <keep-alive exclude='scratch'><router-view v-if="routeractive"></router-view></keep-alive>
+     <router-view v-if="routeractive"></router-view>
     </div>
     <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">

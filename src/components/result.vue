@@ -48,7 +48,7 @@ export default {
   name: 'result',
   data() {
     return {
-      star: [true, true, true, true, true]
+      star: [false, false, false, false, false]
     };
   },
   computed: {
@@ -80,10 +80,14 @@ export default {
           scores++
         }
       }
+      if(scores==0){
+        scores=5
+      }
       let data={
         scanId:self.all.scanId,
         score:scores
       }
+      console.log(data)
       api.saveScore(data).then((res)=>{
         if(res.data.code=='200'){
            this.$router.push('scratch')

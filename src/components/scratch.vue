@@ -6,7 +6,7 @@
       </transition>
     </div>
     <div v-show="result != ''" class="textScratch"><p>感谢您的诚信消费！</p></div>
-    <div class="scratchBG">
+    <div class="scratchBG" v-if="result == ''">
       <vue-scratch-card
         :start-callback="startCallback"
         :clear-callback="clearCallback"
@@ -17,6 +17,11 @@
         :resultText="resultTexts[0].prize"
         :showup="isshowup"
       />
+    </div>
+    <div class="scratchBG" v-if="result != ''">
+      <div class="scratchCard">
+        <div class="scratchCard-cont">{{resultTexts[0].prize}}</div>
+      </div>
     </div>
     <scratch-text :result="QRcodetype" :isaddress="cusaddress"></scratch-text>
     <!-- <div class="scratch-text">
@@ -83,7 +88,6 @@ export default {
   mounted() {
    if(JSON.parse(localStorage.getItem('QRcode'))){
      this.isshowup=false;
-     console.log(this.isshowup)
      this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;
      this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
      this.result = this.resultTexts[0];
@@ -105,7 +109,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Callback']),
+    ...mapActions(['Callback','changeloading']),
     //调取奖品接口
     startupdate() {
       let QRc = JSON.parse(localStorage.getItem('QRcodeinfor'));
@@ -120,8 +124,6 @@ export default {
         axios.defaults.headers.common['Authorization'] = all.sessionId;
         api.doLuckyDraw(draw).then(res => {
           self.resultTexts[0].prize = res.data.data.tip;
-          //假数据中了什么奖
-          // res.data.data.type='2';
           self.QRcode = res.data.data;
           localStorage.setItem('QRcode', JSON.stringify(self.QRcode));
           if (self.QRcode.type == '3') {
@@ -160,10 +162,24 @@ export default {
     },
     //清除遮罩层后Callback
     clearCallback() {
-      this.result = this.resultTexts[0];
-      // let data =this.$store.state.statusxx;
-      // this.resultTexts[0].prize=data.tip;
-      this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
+      let self =this;
+      let a = 1
+      let getjp = setInterval((res)=>{
+        console.log(a++);
+        if(this.resultTexts[0]&&JSON.parse(localStorage.getItem('QRcode')).type){
+        if(JSON.parse(localStorage.getItem('QRcode')).type!=3){
+            self.result = this.resultTexts[0];
+            self.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
+            clearInterval(getjp);
+          }else{
+            if(JSON.parse(localStorage.getItem('cusaddress'))){
+              self.result = this.resultTexts[0];
+              self.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
+              clearInterval(getjp);
+            }
+          }}
+      },1000)
+
       // this.QRcodetype='2';
     },
     //点击遮罩层时判断
@@ -195,6 +211,24 @@ export default {
 </script>
 
 <style scoped lang="less">
+  //模拟的刮奖
+  .scratchCard{
+      position: relative;
+      width:486px;
+      height:279px;
+      margin:21px;
+      .scratchCard-cont{
+        background-color:rgb(251,159,80);
+        background-size: 100% 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 98%;
+        font-size:36px;
+        color:#fff;
+        height: 100%;
+      }
+      }
 //轮播文字
 .textBox {
   width: 100%;

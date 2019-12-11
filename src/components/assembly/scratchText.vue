@@ -103,7 +103,7 @@ export default {
       }
   },
   methods: {
-    ...mapActions(['subaddress','onmyadd','ccmyadd']),
+    ...mapActions(['subaddress','onmyadd','ccmyadd','changeloading']),
     //提交地址跳转页面
     gocOrder(){
       let self =this;
@@ -119,11 +119,14 @@ export default {
           orderId:qrc.orderId
         }
       }
-      console.log(data)
+      this.changeloading(true);
       api.cOrder(data).then((res)=>{
         if(res.data.code==200){
+          self.changeloading(false);
           self.$router.push('completes')
         }
+      }).catch((err)=>{
+        alert("提交错误")
       })
     },
     // 电话确认
@@ -138,11 +141,10 @@ export default {
            orderId:qrc.orderId,
            rechargeMobile:this.telphone
          }
-         console.log(data)
+         this.changeloading(true);
         api.cOrder(data).then((res)=>{
-          console.log(res.data)
           if(res.data.code==200){
-
+            self.changeloading(false);
              self.$router.push('/completes')
           }
         })
@@ -150,7 +152,27 @@ export default {
     },
     //去往完成页面
     gocomplete(){
-     this.$router.push('completes')
+      let self =this;
+      let qrc =JSON.parse(localStorage.getItem('QRcode'))
+      if(this.cusaddress){
+        var data={
+          orderId:qrc.orderId
+        }
+      }else{
+        var data ={
+          orderId:qrc.orderId
+        }
+      }
+      this.changeloading(true);
+      api.cOrder(data).then((res)=>{
+        if(res.data.code==200){
+          self.changeloading(false);
+          self.$router.push('/completes')
+        }
+      }).catch((err)=>{
+        alert("提交错误")
+      })
+     // this.$router.push('completes');
     },
     //获取我的地址
     getmyadd(){
@@ -233,12 +255,14 @@ export default {
   }
   button {
    @button();
-    font-size: 36px;
+    font-size: 32px;
     width: 227px;
     border-radius: 50px;
     letter-spacing: 30px;
     text-indent: 30px;
     margin-top: 22px;
+    white-space:nowrap;
+    overflow: hidden;
   }
 }
 // 实物中奖新

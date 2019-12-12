@@ -123,11 +123,22 @@
             },
             startEventHandler : function(e){
                 e.preventDefault();
-
                 if(this.firstTouch){
                     this.startCallback();
                     this.firstTouch = false;
                 }
+                e = this.supportTouch ? e.touches[0] : e;
+                const canvasPos = this.canvas.getBoundingClientRect(),
+                      scrollT = document.documentElement.scrollTop || document.body.scrollTop,
+                      scrollL = document.documentElement.scrollLeft || document.body.scrollLeft,
+                      mouseX = e.pageX - canvasPos.left - scrollL,
+                      mouseY = e.pageY - canvasPos.top - scrollT;
+                this.ctx.beginPath();
+                this.ctx.fillStyle = '#FFFFFF';
+                this.ctx.globalCompositeOperation = "destination-out";
+                this.ctx.arc(mouseX, mouseY, this.moveRadius, 0, 2 * Math.PI);
+                this.ctx.fill();
+                
                 this.showLucky = true;
                 this.moveHandler = this.moveEventHandler.bind(this);
                 this.endMoveHandler = this.endEventHandler.bind(this);
@@ -136,7 +147,6 @@
             },
             moveEventHandler : function(e){
                 e.preventDefault();
-
                 e = this.supportTouch ? e.touches[0] : e;
 
                 const canvasPos = this.canvas.getBoundingClientRect(),

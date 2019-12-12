@@ -9,7 +9,7 @@
     <div class="Material" v-if="result == '1'">
       <p>感谢您对诚信系统的支持,</p>
       <p>恭喜您获得楼币,赶紧去您的订单页面确认吧！</p>
-      <div class="scratch-a"><a href="#">点击查看</a></div>
+      <div class="scratch-a"><a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toQueryScoreLogList">点击查看</a></div>
     </div>
     <!-- 获取虚拟奖品 手机流量 -->
     <div class="traffic" v-if="result == '4'">

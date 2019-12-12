@@ -14,6 +14,8 @@
     <modal></modal>
     <!-- 等待框 -->
     <wait></wait>
+    <!-- 双旦分数 -->
+    <div class="twod" v-if="ishasjp"></div>
   </div>
 </template>
 
@@ -46,10 +48,19 @@ export default {
       ismodal: 'ismodal',
       smokeimg:'smokeimg',
       all:'all',
-      advertisement:'advertisement'
+      advertisement:'advertisement',
+      ishasjp:'ishasjp'
     })
   },
   mounted() {
+    this.startheight=window.innerHeight;
+     let that = this;
+        window.onresize = function(){
+           let nowheight=window.innerHeight;
+            if(that.startheight==nowheight){
+              window.scrollTo(0,0);
+            }
+        }
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
     if(this.$route.query.errorCode){
       this.isNewUser(this.$route.query);
@@ -79,6 +90,17 @@ export default {
 </script>
 
 <style lang="less">
+  // 双旦分数样式
+  .twod{
+    background: url(../static/twod.png) no-repeat;
+    width: 167px;
+    height: 191px;
+    background-size:100% 100% ;
+    position: fixed;
+    right: 0px;
+    bottom:200px ;
+    z-index: 9999;
+    }
 @backgrounds: {
   background-position: 100% 100%;
   background-size: cover;

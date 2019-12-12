@@ -7,6 +7,8 @@ import axios from 'axios'
 Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
+    //双旦兑换码是否存在
+    ishasjp:true,
     //进入初始页面时接收到的所有信息
     all: {},
     //收到的底部广告和地址
@@ -215,7 +217,7 @@ const store = new Vuex.Store({
                 weiz:accuracy
               }
               localStorage.setItem('jwdcode',JSON.stringify(jwd));
-               alert(JSON.parse(localStorage.getItem('jwdcode')))
+               console.log(JSON.parse(localStorage.getItem('jwdcode')))
             }
           });
         });

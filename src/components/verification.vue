@@ -2,8 +2,8 @@
   <div>
     <div class="verification-img"></div>
     <div class="verification-input">
-      <input type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
-      <button @click.stop="subcode(verificationCode);empty();" >
+      <input  type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
+      <button @click.stop="subcode(verificationCode);empty();">
         提交
       </button>
     </div>
@@ -17,7 +17,8 @@ export default {
   data() {
     return {
       //输入的验证码
-      verificationCode: ''
+      verificationCode: '',
+      startheight:'',
     };
   },
   mounted() {
@@ -37,6 +38,9 @@ export default {
     empty() {
       this.verificationCode = '';
     },
+    scrollToTop() {
+    　　var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    }
   }
 };
 </script>

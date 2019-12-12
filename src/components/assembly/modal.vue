@@ -386,6 +386,13 @@ console.log(addid)
         .then(res => {
           // self.onmyadd(res.data.data);
           // self.cusaddress=res.data.data;
+         if(res.data.data){
+            for(let i =0;i<res.data.data.length;i++){
+              if(res.data.data[i].isDefault==1){
+                self.bgimg=i;
+              }
+            }
+         }
           localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
           self.gxmyadd();
         })
@@ -789,7 +796,11 @@ console.log(addid)
             justify-content: center;
             align-items: center;
             .box-cart-add1 {
-              flex: 1;
+              width: 480px;
+              p{
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
               .box-name {
                 display: flex;
                 justify-content: flex-start;

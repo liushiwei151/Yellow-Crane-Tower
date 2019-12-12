@@ -296,10 +296,12 @@ export default {
       color:black;
     }
     .hasMaterialAddress-add{
-      width: 368px;
+      width: 450px;
       text-align: left;
       margin-left: 48px;
       font-size: 22.4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .hasMaterialAddressbutton{

@@ -6,7 +6,7 @@
       </transition>
     </div>
     <div v-show="result != ''" class="textScratch"><p>感谢您的诚信消费！</p></div>
-    <div class="scratchBG" v-if="result == ''">
+    <div class="scratchBG" v-show="result == ''">
       <vue-scratch-card
         :start-callback="startCallback"
         :clear-callback="clearCallback"
@@ -18,7 +18,7 @@
         :showup="isshowup"
       />
     </div>
-    <div class="scratchBG" v-if="result != ''">
+    <div class="scratchBG" v-show="result != ''">
       <div class="scratchCard">
         <div class="scratchCard-cont">{{resultTexts[0].prize}}</div>
       </div>

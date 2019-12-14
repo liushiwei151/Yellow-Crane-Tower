@@ -20,10 +20,10 @@
     </div>
     <div class="scratchBG" v-show="result != ''">
       <div class="scratchCard">
-        <div class="scratchCard-cont">{{resultTexts[0].prize}}</div>
+        <div class="scratchCard-cont">{{ resultTexts[0].prize }}</div>
       </div>
     </div>
-    <scratch-text :result="QRcodetype" :isaddress="cusaddress"></scratch-text>
+    <scratch-text  :result="QRcodetype" :isaddress="cusaddress"></scratch-text>
     <!-- <div class="scratch-text">
       <p v-if="result == ''">
         涂抹刮奖区域,
@@ -60,7 +60,7 @@ export default {
       //客户地址
       cusaddress: [],
       //刮奖的图片是否显示
-      isshowup:true
+      isshowup: true,
     };
   },
   components: {
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     ...mapState({
-      isphone: 'isphone',
+      isphone: 'isphone'
     }),
     text() {
       return {
@@ -78,29 +78,29 @@ export default {
     }
   },
   created() {
-    let self =this;
+    let self = this;
     let data = JSON.parse(localStorage.getItem('all'));
-    axios.defaults.headers.common["Authorization"] = data.sessionId;
+    axios.defaults.headers.common['Authorization'] = data.sessionId;
     api.getTop20Record().then(res => {
-      self.textArr=res.data.data
+      self.textArr = res.data.data;
     });
     this.changetub(false);
   },
   mounted() {
-   if(JSON.parse(localStorage.getItem('QRcode'))){
-     this.isshowup=false;
-     this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;
-     this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
-     this.result = this.resultTexts[0];
-     let cusadd = JSON.parse(localStorage.getItem('cusaddress'));
-     if (cusadd) {
-       for (let i = 0; i < cusadd.length; i++) {
-         if (cusadd[i].isDefault == '1') {
-           this.cusaddress = cusadd[i];
-         }
-       }
-     }
-   }
+    if (JSON.parse(localStorage.getItem('QRcode'))) {
+      this.isshowup = false;
+      this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;
+      this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
+      this.result = this.resultTexts[0];
+      let cusadd = JSON.parse(localStorage.getItem('cusaddress'));
+      if (cusadd) {
+        for (let i = 0; i < cusadd.length; i++) {
+          if (cusadd[i].isDefault == '1') {
+            this.cusaddress = cusadd[i];
+          }
+        }
+      }
+    }
     // this.resultTexts[0].prize=this.statusxx.tip;
     this.startMove();
     if (this.number === this.textArr.length - 1) {
@@ -110,25 +110,36 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Callback','changeloading','changetub']),
+    ...mapActions(['Callback', 'changeloading', 'changetub']),
     //调取奖品接口
     startupdate() {
       let QRc = JSON.parse(localStorage.getItem('QRcodeinfor'));
       let all = JSON.parse(localStorage.getItem('all'));
       let self = this;
+      let jwd = JSON.parse(localStorage.getItem('jwdcode'));
       if (QRc.mobile != undefined && QRc.mobile.length == 11) {
-        let draw = {
-          scanId: all.scanId,
-          latitude: 0,
-          longitude: 0
-        };
+        if(jwd){
+          var draw ={
+              scanId:all.scanId ,//扫码Id
+               latitude:jwd.wd,// 纬度
+               longitude:jwd.jd// 经度
+          }
+        }else{
+          var draw ={
+              scanId:all.scanId ,//扫码Id
+               latitude:0,// 纬度
+               longitude:0// 经度
+          }
+        }
         axios.defaults.headers.common['Authorization'] = all.sessionId;
         api.doLuckyDraw(draw).then(res => {
           self.resultTexts[0].prize = res.data.data.tip;
           self.QRcode = res.data.data;
           localStorage.setItem('QRcode', JSON.stringify(self.QRcode));
           if (self.QRcode.type == '3') {
-            api.getAddress(self.QRcode.memberId).then(res => {
+            api
+              .getAddress(self.QRcode.memberId)
+              .then(res => {
                 localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
                 for (let i = 0; i < res.data.data.length; i++) {
                   if (res.data.data[i].isDefault == '1') {
@@ -163,73 +174,74 @@ export default {
     },
     //清除遮罩层后Callback
     clearCallback() {
-      let self =this;
-      let a = 1
-      let getjp = setInterval((res)=>{
+      localStorage.setItem("isbottomtext",true);
+      let self = this;
+      let a = 1;
+      let getjp = setInterval(res => {
         console.log(a++);
-        if(this.resultTexts[0]&&JSON.parse(localStorage.getItem('QRcode')).type){
-        if(JSON.parse(localStorage.getItem('QRcode')).type!=3){
+        if (this.resultTexts[0] && JSON.parse(localStorage.getItem('QRcode')).type) {
+          if (JSON.parse(localStorage.getItem('QRcode')).type != 3) {
             self.result = this.resultTexts[0];
             self.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
             clearInterval(getjp);
-          }else{
-            if(JSON.parse(localStorage.getItem('cusaddress'))){
+          } else {
+            if (JSON.parse(localStorage.getItem('cusaddress'))) {
               self.result = this.resultTexts[0];
               self.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
               clearInterval(getjp);
             }
-          }}
-      },1000)
+          }
+        }
+      }, 1000);
 
       // this.QRcodetype='2';
     },
     //点击遮罩层时判断
-     startCallback(){
-       let cusphone =JSON.parse(localStorage.getItem('QRcodeinfor')).mobile
-       if(cusphone&&cusphone.length==11){
-         if (!JSON.parse(localStorage.getItem('QRcode'))) {
-           this.startupdate();
-         } else {
-           this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;
-           this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
-           this.result = this.resultTexts[0];
-           let cusadd = JSON.parse(localStorage.getItem('cusaddress'));
-           if (cusadd) {
-             for (let i = 0; i < cusadd.length; i++) {
-               if (cusadd[i].isDefault == '1') {
-                 this.cusaddress = cusadd[i];
-               }
-             }
-           }
-         }
-       }else{
-         this.Callback();
-       }
-
-     }
+    startCallback() {
+      let cusphone = JSON.parse(localStorage.getItem('QRcodeinfor')).mobile;
+      if (cusphone && cusphone.length == 11) {
+        if (!JSON.parse(localStorage.getItem('QRcode'))) {
+          this.startupdate();
+        } else {
+          this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;
+          this.QRcodetype = JSON.parse(localStorage.getItem('QRcode')).type;
+          this.result = this.resultTexts[0];
+          let cusadd = JSON.parse(localStorage.getItem('cusaddress'));
+          if (cusadd) {
+            for (let i = 0; i < cusadd.length; i++) {
+              if (cusadd[i].isDefault == '1') {
+                this.cusaddress = cusadd[i];
+              }
+            }
+          }
+        }
+      } else {
+        this.Callback();
+      }
+    }
   }
 };
 </script>
 
 <style scoped lang="less">
-  //模拟的刮奖
-  .scratchCard{
-      position: relative;
-      width:486px;
-      height:279px;
-      margin:21px;
-      .scratchCard-cont{
-        background-color:rgb(251,159,80);
-        background-size: 100% 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 98%;
-        font-size:36px;
-        color:#fff;
-        height: 100%;
-      }
-      }
+//模拟的刮奖
+.scratchCard {
+  position: relative;
+  width: 486px;
+  height: 279px;
+  margin: 21px;
+  .scratchCard-cont {
+    background-color: rgb(251, 159, 80);
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 98%;
+    font-size: 36px;
+    color: #fff;
+    height: 100%;
+  }
+}
 //轮播文字
 .textBox {
   width: 100%;

@@ -73,7 +73,6 @@
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        {{province}}{{cityname}}{{quyu}}
         <textarea @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
@@ -528,8 +527,7 @@ console.log(addid)
         code: self.cusQR
       };
       this.changeloading(true);
-      api
-        .checkMobileValidate(data)
+      api.checkMobileValidate(data)
         .then(res => {
           self.changeloading(false);
           if (res.data.code == '200') {

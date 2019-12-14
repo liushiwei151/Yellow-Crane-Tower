@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="bottomshow">
     <!-- 初始 -->
     <div class="original" v-if="result == '0'">
       <p>涂抹刮奖区域,</p>
@@ -22,36 +22,36 @@
     <!-- 获取实物奖品，填写地址 -->
     <div class="MaterialAddress" v-if="result == '3'">
       <!-- 有收获地址 -->
-      <div v-if="iscusadd!=undefined&&result == '3'">
-        <div class="hasMaterialAddress" v-if="!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
-          <div class="hasMaterialAddress-title" >
-            <p>{{isaddress.contactName}}</p>
-            <p>{{isaddress.contactPhone}}</p>
+      <div v-if="iscusadd != undefined && result == '3'">
+        <div class="hasMaterialAddress" v-if="!cusaddress" :style="{ opacity: isaddress.isDefault ? 1 : 0 }">
+          <div class="hasMaterialAddress-title">
+            <p>{{ isaddress.contactName }}</p>
+            <p>{{ isaddress.contactPhone }}</p>
           </div>
-          <div class="hasMaterialAddress-add">{{isaddress.province}}{{isaddress.city}}{{isaddress.area}}{{isaddress.street}}</div>
+          <div class="hasMaterialAddress-add">{{ isaddress.province }}{{ isaddress.city }}{{ isaddress.area }}{{ isaddress.street }}</div>
         </div>
-        <div class="hasMaterialAddress" v-if="cusaddress" >
-          <div class="hasMaterialAddress-title" >
-            <p>{{cusaddress.contactName}}</p>
-            <p>{{cusaddress.contactPhone}}</p>
+        <div class="hasMaterialAddress" v-if="cusaddress">
+          <div class="hasMaterialAddress-title">
+            <p>{{ cusaddress.contactName }}</p>
+            <p>{{ cusaddress.contactPhone }}</p>
           </div>
-          <div class="hasMaterialAddress-add">{{cusaddress.province}}{{cusaddress.city}}{{cusaddress.area}}{{cusaddress.street}}</div>
+          <div class="hasMaterialAddress-add">{{ cusaddress.province }}{{ cusaddress.city }}{{ cusaddress.area }}{{ cusaddress.street }}</div>
         </div>
-        <div class='hasMaterialAddressbutton'>
+        <div class="hasMaterialAddressbutton">
           <button @click="subaddress('myadd')">修改</button>
           <button @click="gocOrder()">确定</button>
         </div>
       </div>
       <!-- 没有收货地址 -->
-      <button @click="subaddress('isadd')" v-if="iscusadd==undefined" >填写收货信息</button>
+      <button @click="subaddress('isadd')" v-if="iscusadd == undefined">填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
-    <div class="fictitious" v-if="result=='5'">
-      <div class='fictitious-card'>
-        <div class='fictitious-card-img' :style="{backgroundImage:'url('+cardxx.prizeImg+')'}"></div>
-        <div class='fictitious-card-text'>
+    <div class="fictitious" v-if="result == '5'">
+      <div class="fictitious-card">
+        <div class="fictitious-card-img" :style="{ backgroundImage: 'url(' + cardxx.prizeImg + ')' }"></div>
+        <div class="fictitious-card-text">
           <div>
-            <p>{{cardxx.prizeName}}</p>
+            <p>{{ cardxx.prizeName }}</p>
           </div>
         </div>
       </div>
@@ -62,133 +62,159 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import api from '@/api'
+import api from '@/api';
 export default {
   name: 'scratchText',
   data() {
     return {
-      teltext: '',//电话文本
-      telphone: '',//电话号码
+      teltext: '', //电话文本
+      telphone: '', //电话号码
       //假数据 是否有地址
       // isaddress:false,
-      city:''
+      city: '',
+      bottomshow:''
     };
   },
-  computed:{
+  computed: {
     //显示第几个
     ...mapState({
-      cusaddress:'cusaddress'
+      cusaddress: 'cusaddress'
     }),
     //有没有客户地址
-    iscusadd(){
-      return JSON.parse(localStorage.getItem('cusaddress'))[0]
+    iscusadd() {
+      return JSON.parse(localStorage.getItem('cusaddress'))[0];
     },
     // 卡卷信息
-    cardxx(){
-      return JSON.parse(localStorage.getItem('QRcode'))
+    cardxx() {
+      return JSON.parse(localStorage.getItem('QRcode'));
     }
   },
   props: {
     result: {
-       // type: String,
+      // type: String,
       default: function() {
-        return '2';
+        return '0';
       }
-      },
-      isaddress:{
-        // type:Array,
-        default:function(){
-          return []
-        }
+    },
+    isaddress: {
+      // type:Array,
+      default: function() {
+        return [];
       }
+    }
+  },
+  mounted() {
+    this.xunhuan()
   },
   methods: {
-    ...mapActions(['subaddress','onmyadd','ccmyadd','changeloading']),
+    ...mapActions(['subaddress', 'onmyadd', 'ccmyadd', 'changeloading']),
+    //循环判断是否存在isbottomtext
+    xunhuan(){
+      let ishasbottom =setInterval((res)=>{
+        let a =localStorage.getItem('isbottomtext');
+        if(a){
+          this.bottomshow=JSON.parse(localStorage.getItem('isbottomtext'))
+          clearInterval(ishasbottom);
+        }
+        console.log('判定中')
+      },100)
+    },
     //提交地址跳转页面
-    gocOrder(){
-      let self =this;
-      let qrc =JSON.parse(localStorage.getItem('QRcode'))
-      if(this.cusaddress){
-        var data={
-          addressId:this.cusaddress.addressId,
-          orderId:qrc.orderId
-        }
-      }else{
-        var data ={
-          addressId:this.isaddress.addressId,
-          orderId:qrc.orderId
-        }
+    gocOrder() {
+      let self = this;
+      let qrc = JSON.parse(localStorage.getItem('QRcode'));
+      if (this.cusaddress) {
+        var data = {
+          addressId: this.cusaddress.addressId,
+          orderId: qrc.orderId
+        };
+      } else {
+        var data = {
+          addressId: this.isaddress.addressId,
+          orderId: qrc.orderId
+        };
       }
       this.changeloading(true);
-      api.cOrder(data).then((res)=>{
-        if(res.data.code==200){
-          self.changeloading(false);
-          self.$router.push('completes')
-        }
-      }).catch((err)=>{
-        alert("提交错误")
-      })
+      api
+        .cOrder(data)
+        .then(res => {
+          if (res.data.code == 200) {
+            localStorage.setItem('isbottomtext',false);
+            self.changeloading(false);
+            self.$router.push('completes');
+          }
+        })
+        .catch(err => {
+          alert('提交错误');
+        });
     },
     // 电话确认
     complete() {
-      let self =this;
+      let self = this;
       if (!/^1[3456789]\d{9}$/.test(this.telphone)) {
         this.telphone = '';
         this.teltext = '请输入正确的电话号码!';
-      }else{
-         let qrc =JSON.parse(localStorage.getItem('QRcode'));
-         let data={
-           orderId:qrc.orderId,
-           rechargeMobile:this.telphone
-         }
-         this.changeloading(true);
-        api.cOrder(data).then((res)=>{
-          if(res.data.code==200){
+      } else {
+        let qrc = JSON.parse(localStorage.getItem('QRcode'));
+        let data = {
+          orderId: qrc.orderId,
+          rechargeMobile: this.telphone
+        };
+        this.changeloading(true);
+        api.cOrder(data).then(res => {
+          if (res.data.code == 200) {
+            localStorage.setItem('isbottomtext',false);
             self.changeloading(false);
-             self.$router.push('/completes')
+            self.$router.push('/completes');
           }
-        })
+        });
       }
     },
     //去往完成页面
-    gocomplete(){
-      let self =this;
-      let qrc =JSON.parse(localStorage.getItem('QRcode'))
-      if(this.cusaddress){
-        var data={
-          orderId:qrc.orderId
-        }
-      }else{
-        var data ={
-          orderId:qrc.orderId
-        }
+    gocomplete() {
+      let self = this;
+      let qrc = JSON.parse(localStorage.getItem('QRcode'));
+      if (this.cusaddress) {
+        var data = {
+          orderId: qrc.orderId
+        };
+      } else {
+        var data = {
+          orderId: qrc.orderId
+        };
       }
       this.changeloading(true);
-      api.cOrder(data).then((res)=>{
-        if(res.data.code==200){
-          self.changeloading(false);
-          self.$router.push('/completes')
-        }
-      }).catch((err)=>{
-        alert("提交错误")
-      })
-     // this.$router.push('completes');
+      api
+        .cOrder(data)
+        .then(res => {
+          if (res.data.code == 200) {
+            localStorage.setItem('isbottomtext',false);
+            self.changeloading(false);
+            self.$router.push('/completes');
+          }
+        })
+        .catch(err => {
+          alert('提交错误');
+        });
     },
     //获取我的地址
-    getmyadd(){
-      let self =this;
-      let QRcode =JSON.parse(localStorage.getItem('QRcode'));
-     api.getAddress(QRcode.memberId).then((res)=>{
-       if(res.data.code==200){
-         console.log(res.data.data)
-         localStorage.setItem('cusaddress',JSON.stringify(res.data.data))
-       }
-       // self.onmyadd(res.data.data);
-       // self.cusaddress=res.data.data;
-       // localStorage.setItem('QRcode',JSON.stringify(res.data.data));
-     }).catch((err)=>{
-       console.log(err)
-     })
+    getmyadd() {
+      let self = this;
+      let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+      api
+        .getAddress(QRcode.memberId)
+        .then(res => {
+          if (res.data.code == 200) {
+            console.log(res.data.data);
+            localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+          }
+          // self.onmyadd(res.data.data);
+          // self.cusaddress=res.data.data;
+          // localStorage.setItem('QRcode',JSON.stringify(res.data.data));
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
@@ -201,7 +227,7 @@ export default {
   margin-top: 30px;
   font-size: 28px;
 };
-@button:{
+@button: {
   background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
   background-size: 100% 100%;
   outline: none;
@@ -210,7 +236,7 @@ export default {
   color: #fff;
   height: 79px;
   font-size: 36px;
-}
+};
 // 默认情况
 .original {
   @pp();
@@ -247,62 +273,62 @@ export default {
     border-radius: 5px;
     width: 330px;
     text-indent: 5px;
-    height:50px;
+    height: 50px;
   }
   input::-webkit-input-placeholder {
     color: red;
     font-size: 25px;
   }
   button {
-   @button();
+    @button();
     font-size: 32px;
     width: 227px;
     border-radius: 50px;
     letter-spacing: 30px;
     text-indent: 30px;
     margin-top: 22px;
-    white-space:nowrap;
+    white-space: nowrap;
     overflow: hidden;
   }
 }
 // 实物中奖新
 .MaterialAddress {
   width: 520px;
-  margin:0 89px;
+  margin: 0 89px;
   button {
-   @button();
+    @button();
     width: 315px;
     border-radius: 50px;
     margin-top: 70px;
     letter-spacing: 2px;
     text-indent: 2px;
   }
-  .hasMaterialAddress{
-    height:103px;
+  .hasMaterialAddress {
+    height: 103px;
     width: 520px;
     background-color: #fff;
     border-radius: 20px;
     box-sizing: border-box;
-    border:solid 2px #955409;
-    margin:15px 0;
+    border: solid 2px #955409;
+    margin: 15px 0;
     font-size: 24px;
-    padding:5px 0;
-    .hasMaterialAddress-title{
+    padding: 5px 0;
+    .hasMaterialAddress-title {
       width: 416px;
       display: flex;
       justify-content: space-between;
       margin-left: 48px;
       align-items: center;
-      color:black;
-      p:first-of-type{
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow:ellipsis;
-            width: 250px;
-            text-align: left;
+      color: black;
+      p:first-of-type {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 250px;
+        text-align: left;
       }
     }
-    .hasMaterialAddress-add{
+    .hasMaterialAddress-add {
       width: 450px;
       text-align: left;
       margin-left: 48px;
@@ -311,21 +337,21 @@ export default {
       text-overflow: ellipsis;
     }
   }
-  .hasMaterialAddressbutton{
+  .hasMaterialAddressbutton {
     display: flex;
     justify-content: space-between;
-    button{
+    button {
       margin: 0;
-     width: 225px;
+      width: 225px;
     }
   }
 }
 //虚拟中奖 滴滴卷
-.fictitious{
+.fictitious {
   margin: 0 autp;
-  margin:0 89px;
+  margin: 0 89px;
   width: 520px;
-  .fictitious-card{
+  .fictitious-card {
     width: 520px;
     height: 103px;
     background-color: #fff;
@@ -336,28 +362,28 @@ export default {
     display: flex;
     justify-content: center;
     margin: 12px 0;
-    .fictitious-card-img{
+    .fictitious-card-img {
       width: 124px;
       height: 102px;
       background: url(../../../static/card.png) no-repeat;
-      background-size:100% 100%;
+      background-size: 100% 100%;
       border-right: solid 1px #955409;
     }
-    .fictitious-card-text{
+    .fictitious-card-text {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
       font-size: 22.55px;
       flex: 1;
-      p{
+      p {
         text-align: left;
       }
-      p:first-of-type{
-        margin-bottom:5px ;
+      p:first-of-type {
+        margin-bottom: 5px;
         font-weight: 600;
         font-size: 24.17px;
-        color:black;
+        color: black;
       }
     }
   }
@@ -368,5 +394,5 @@ export default {
     text-indent: 25px;
     width: 226px;
   }
-  }
+}
 </style>

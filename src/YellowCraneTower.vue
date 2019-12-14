@@ -36,7 +36,7 @@ export default {
       // website: advertisement, //老用户页面跳转的三个链接
       card: true,
       transitionName: '',
-      routeractive:true
+      routeractive:true,
     };
   },
   components: {
@@ -58,7 +58,6 @@ export default {
         window.onresize = function(){
            let nowheight=window.innerHeight;
             if(that.startheight==nowheight){
-              alert('复原');
               window.scrollTo(0,0);
             }
         }

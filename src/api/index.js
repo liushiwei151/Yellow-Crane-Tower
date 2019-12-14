@@ -31,14 +31,14 @@ const getBackground = (bg) => {
   })
 }
 //获取底部的广告
-const getAdvertisement = (prod, adv) => {
+const getAdvertisement = (prod, adv,wd,jd) => {
   return axios.get(httpurl+'/huanghelou1916-h5/common/getAdvertisement', {
     params: {
       productId: prod,
       scanId: adv, //(扫码ID)
       tp: 1, //(广告位置，就传1)
-      latitude: 0, //(纬度，调试传0)
-      longitude: 0 //(经度，调试传0)
+      latitude: wd, //(纬度，调试传0)
+      longitude: jd //(经度，调试传0)
     }
   })
 }

@@ -12,9 +12,10 @@ const store = new Vuex.Store({
     //进入初始页面时接收到的所有信息
     all: {},
     //收到的底部广告和地址
-    advertisement: [{
-        web: '',
-        adv: './static/adv3.png'
+    advertisement: [
+      {
+        web:'',
+        adv:''
       },
       {
         web: 'https://mp.weixin.qq.com/mp/homepage?__biz=MzIwNzE0MDUyMw==&hid=4&sn=53c00ccf532c568472653f528f444de9',
@@ -224,26 +225,33 @@ const store = new Vuex.Store({
                 weiz:accuracy
               }
               localStorage.setItem('jwdcode',JSON.stringify(jwd));
-               console.log(JSON.parse(localStorage.getItem('jwdcode')))
+              //获取底部广告
+              api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
+                  house.smokeimg = res.data.data.bgImgUrl;
+                  house.advertisement[0].adv = res.data.data.imgUrl;
+                  house.advertisement[0].web = res.data.data.outUrl;
+              }).catch((err) => {
+                console.log(err)
+              })
             }
           });
         });
       }).catch((err) => {
         console.log(err)
       })
-      //获取底部广告
-      api.getAdvertisement(mm.productId, mm.scanId).then((res) => {
-        let bottomimg =JSON.parse(localStorage.getItem('qrcbottomimg'));
-        if(bottomimg){
-          house.smokeimg = bottomimg.bgImgUrl;
-          house.advertisement[0].adv = bottomimg.imgUrl;
-          house.advertisement[0].web = bottomimg.outUrl;
-        }else{
-          localStorage.setItem('qrcbottomimg',JSON.stringify(res.data.data));
+      // 本体获取底部广告,正式服关闭
+      let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+     if(jwd){
+       var latitude =jwd.wd;
+       var longitude =jwd.jd;
+     }else{
+       var latitude =0;
+       var longitude =0;
+     }
+      api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
           house.smokeimg = res.data.data.bgImgUrl;
           house.advertisement[0].adv = res.data.data.imgUrl;
           house.advertisement[0].web = res.data.data.outUrl;
-        }
       }).catch((err) => {
         console.log(err)
       })
@@ -351,10 +359,19 @@ const store = new Vuex.Store({
         }).catch((err) => {
           console.log(err)
         })
-      let lotter ={
-         scanId:data.scanId ,//扫码Id
-           latitude:0,// 纬度
-           longitude:0// 经度
+         let jwd = JSON.parse(localStorage.getItem('jwdcode'));
+      if(jwd){
+        var lotter ={
+            scanId:data.scanId ,//扫码Id
+             latitude:jwd.wd,// 纬度
+             longitude:jwd.jd// 经度
+        }
+      }else{
+        var lotter ={
+            scanId:data.scanId ,//扫码Id
+             latitude:0,// 纬度
+             longitude:0// 经度
+        }
       }
       api.getLottery(lotter).then((res) => {
         house.QRcodeinfor.status=res.data.data.status;

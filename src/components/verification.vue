@@ -2,7 +2,7 @@
   <div>
     <div class="verification-img"></div>
     <div class="verification-input">
-      <input  type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
+      <input @blur="fn"  type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
       <button @click.stop="subcode(verificationCode);empty();">
         提交
       </button>
@@ -22,6 +22,7 @@ export default {
     };
   },
   mounted() {
+    this.changetub(false);
      localStorage.clear('QRcode');
      //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
      if(this.$route.query.errorCode){
@@ -33,7 +34,10 @@ export default {
     // console.log(this.$ajaks.yyys)
   },
   methods: {
-    ...mapActions(['subcode','isNewUser']),
+    ...mapActions(['subcode','isNewUser','changetub']),
+    fn(){
+      alert("失去焦点")
+    },
     // 清空输入框
     empty() {
       this.verificationCode = '';

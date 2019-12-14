@@ -168,8 +168,15 @@ const store = new Vuex.Store({
     changeloading({commit,state},mm){
       commit('onchangeloading',mm)
     },
+    changetub({commit,state},mm){
+      commit('onchangetub',mm)
+    },
   },
   mutations: {
+    // 改变双旦节图标样式
+    onchangetub(house,mm){
+      house.ishasjp=mm
+      },
     onchangeloading(house,mm){
       house.isloading=mm
     },
@@ -331,6 +338,7 @@ const store = new Vuex.Store({
         api.real(data.scanId).then((res) => {
           house.isloading =false;
           let names = res.data.data;
+          house.ishasjp=names.isPopup;
           house.ismodal.isphone=names.mobile;
           localStorage.setItem("QRcodeinfor",JSON.stringify(names));
           house.QRcodeinfor.name = names.productName;

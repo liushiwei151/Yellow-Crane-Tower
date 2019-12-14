@@ -84,6 +84,7 @@ export default {
     api.getTop20Record().then(res => {
       self.textArr=res.data.data
     });
+    this.changetub(false);
   },
   mounted() {
    if(JSON.parse(localStorage.getItem('QRcode'))){
@@ -109,7 +110,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Callback','changeloading']),
+    ...mapActions(['Callback','changeloading','changetub']),
     //调取奖品接口
     startupdate() {
       let QRc = JSON.parse(localStorage.getItem('QRcodeinfor'));

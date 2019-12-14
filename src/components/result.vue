@@ -62,7 +62,7 @@ export default {
     this.onresult();
   },
   methods: {
-    ...mapActions(['onresult','goerr']),
+    ...mapActions(['onresult','goerr','changetub']),
     //打分
     score(e) {
       let stars = [false, false, false, false, false];

@@ -56,8 +56,7 @@
       </div>
       <div class="modal-address-three">
         <div class="modal-address-text">联系地址:</div>
-        <div>
-          <select v-model="province" @change="onprovince(province)">
+         <!-- <select v-model="province" @change="onprovince(province)">
             <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
           </select>
           <select v-model="cityname" @change="oncityname(cityname)">
@@ -65,8 +64,8 @@
           </select>
           <select v-model="quyu">
             <option v-for="(item, index) in cityjsonq" :key="index">{{ item.s }}</option>
-          </select>
-        </div>
+          </select> -->
+           <v-distpicker @selected="onSelected" :province="select.province" :city="select.city" :area="select.area"></v-distpicker>
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
@@ -178,7 +177,7 @@ import { mapState, mapActions } from 'vuex';
 import axios from 'axios';
 import city from '@/api/city.data.js';
 import api from '@/api';
-
+ import VDistpicker from 'v-distpicker'
 export default {
   name: 'modal',
   data() {
@@ -207,12 +206,14 @@ export default {
       //第几个选择
       turenum: 0,
       //选择第几个默认
-      bgimg: 0
+      bgimg: 0,
+       select:{ province: '', city: '', area: '' }
     };
   },
   inject: ['reload'],
   components: {
-    city
+    city,
+    VDistpicker
   },
   mounted() {
     this.cityjson = city.citylist;
@@ -248,6 +249,12 @@ export default {
   },
   methods: {
     ...mapActions(['subaddress', 'ccmyadd', 'changeloading']),
+    onSelected(data){
+      this.province=data.province.value;
+      this.cityname=data.city.value;
+      this.quyu=data.area.value;
+      console.log(this.province,this.cityname,this.quyu)
+    },
     //确认地址
     trueaddress() {
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
@@ -326,7 +333,7 @@ console.log(addid)
       if (this.cusadd.name == '') {
         alert('姓名不能为空');
         return;
-      } else if (this.cusadd.name.length > 10) {
+      } else if (this.cusadd.name.length > 20) {
         alert('请不要输入过长的名字');
       } else {
         if (this.cusadd.phone == '') {
@@ -626,18 +633,23 @@ console.log(addid)
       .modal-address-text {
         width: 137px;
       }
-      div:last-of-type {
-        flex: 1;
+      .distpicker-address-wrapper{
         display: flex;
-        justify-content: space-between;
+        flex: 1;
         margin-left: 10px;
       }
-      select {
-        width: 150px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 30px;
-      }
+      // div:last-of-type {
+      //   flex: 1;
+      //   display: flex;
+      //   justify-content: space-between;
+      //   margin-left: 10px;
+      // }
+      // select {
+      //   width: 150px;
+      //   border-radius: 10px;
+      //   cursor: pointer;
+      //   font-size: 30px;
+      // }
     }
     .modal-address-button {
       display: flex;
@@ -805,7 +817,9 @@ console.log(addid)
                 display: flex;
                 justify-content: flex-start;
                 div:first-of-type {
-                  margin-right: 124px;
+                  width: 290px;
+                  text-align: left;
+                  overflow:hidden
                 }
                 div {
                   font-size: 30px;

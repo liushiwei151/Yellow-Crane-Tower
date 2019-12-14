@@ -25,14 +25,14 @@
       <div v-if="iscusadd!=undefined&&result == '3'">
         <div class="hasMaterialAddress" v-if="!cusaddress" :style="{opacity:(isaddress.isDefault?1:0)}">
           <div class="hasMaterialAddress-title" >
-            <p>{{isaddress.province}}</p>
+            <p>{{isaddress.contactName}}</p>
             <p>{{isaddress.contactPhone}}</p>
           </div>
           <div class="hasMaterialAddress-add">{{isaddress.province}}{{isaddress.city}}{{isaddress.area}}{{isaddress.street}}</div>
         </div>
         <div class="hasMaterialAddress" v-if="cusaddress" >
           <div class="hasMaterialAddress-title" >
-            <p>{{cusaddress.province}}</p>
+            <p>{{cusaddress.contactName}}</p>
             <p>{{cusaddress.contactPhone}}</p>
           </div>
           <div class="hasMaterialAddress-add">{{cusaddress.province}}{{cusaddress.city}}{{cusaddress.area}}{{cusaddress.street}}</div>
@@ -294,6 +294,13 @@ export default {
       margin-left: 48px;
       align-items: center;
       color:black;
+      p:first-of-type{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            width: 250px;
+            text-align: left;
+      }
     }
     .hasMaterialAddress-add{
       width: 450px;

@@ -58,6 +58,7 @@ export default {
         window.onresize = function(){
            let nowheight=window.innerHeight;
             if(that.startheight==nowheight){
+              alert('复原');
               window.scrollTo(0,0);
             }
         }

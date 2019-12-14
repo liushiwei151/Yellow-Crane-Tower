@@ -14,6 +14,7 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex';
 export default {
   name: 'completes',
   data() {
@@ -23,8 +24,10 @@ export default {
   },
   mounted() {
     this.times();
+    this.changetub(false);
   },
   methods: {
+    ...mapActions(['changetub']),
     times() {
       let self = this;
       setTimeout(() => {

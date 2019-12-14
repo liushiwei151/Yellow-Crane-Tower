@@ -33,11 +33,11 @@
       <div class="modal-phone-title">请输入手机号</div>
       <div class="modal-phone-tel">
         <label for="subtel"></label>
-        <input id="subtel" type="tel" maxlength="11" placeholder="请输入手机号" v-model="cusphone" />
+        <input @blur="onblur" id="subtel" type="tel" maxlength="11" placeholder="请输入手机号" v-model="cusphone" />
       </div>
       <div class="modal-phone-QR">
         <label for="subQR"></label>
-        <input id="subQR" type="text" maxlength="6" placeholder="请输入验证码" v-model="cusQR" />
+        <input @blur="onblur" id="subQR" type="text" maxlength="6" placeholder="请输入验证码" v-model="cusQR" />
         <div @click.capture="subQR" :style="{ 'pointer-events': qrnum != '获取验证码' ? 'none' : '' }">{{ qrnum }}</div>
       </div>
       <div class="modal-box-button"><button @click.stop="checkmob">确定</button></div>
@@ -48,28 +48,33 @@
       <p>新增地址</p>
       <div class="modal-address-input">
         <label for="contacts">联系人:</label>
-        <input type="text" id="contacts" v-model="cusadd.name" />
+        <input type="text" id="contacts" v-model="cusadd.name" @blur="onblur"/>
       </div>
       <div class="modal-address-input">
         <label for="telp">手机号:</label>
-        <input type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
+        <input @blur="onblur" type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
       </div>
       <div class="modal-address-three">
         <div class="modal-address-text">联系地址:</div>
-         <!-- <select v-model="province" @change="onprovince(province)">
-            <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
-          </select>
-          <select v-model="cityname" @change="oncityname(cityname)">
-            <option v-for="(item, index) in cityjsons" :key="index">{{ item.n }}</option>
-          </select>
-          <select v-model="quyu">
-            <option v-for="(item, index) in cityjsonq" :key="index">{{ item.s }}</option>
-          </select> -->
-           <v-distpicker @selected="onSelected" :province="select.province" :city="select.city" :area="select.area"></v-distpicker>
+         <div>
+           <select v-model="province" @change="onprovince(province)" @blur="onblur">
+              <option style="display:none" value="" disabled>请选择</option>
+              <option v-for="(item, index) in cityjson" :key="index">{{ item }}</option>
+            </select>
+            <select v-model="cityname" @change="oncityname(cityname)" @blur="onblur">
+              <option style="display:none" value="" disabled>请选择</option>
+              <option v-for="(item, index) in cityjsons" :key="index">{{ item }}</option>
+            </select>
+            <select v-model="quyu" @blur="onblur">
+              <option style="display:none" value="" disabled>请选择</option>
+              <option v-for="(item, index) in cityjsonq" :key="index">{{ item }}</option>
+            </select>
+         </div>
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
+        {{province}}{{cityname}}{{quyu}}
+        <textarea @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
         <button
@@ -88,29 +93,32 @@
       <p>编辑地址</p>
       <div class="modal-address-input">
         <label for="contacts">联系人:</label>
-        <input type="text" id="contacts" v-model="cusadd.name" />
+        <input @blur="onblur" type="text" id="contacts" v-model="cusadd.name" />
       </div>
       <div class="modal-address-input">
         <label for="telp">手机号:</label>
-        <input type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
+        <input @blur="onblur" type="tel" id="telp" maxlength="11" v-model="cusadd.phone" />
       </div>
       <div class="modal-address-three">
         <div class="modal-address-text">联系地址:</div>
         <div>
-          <select v-model="province" @change="onprovince(province)">
-            <option v-for="(item, index) in cityjson" :key="index">{{ item.p }}</option>
+          <select v-model="province" @change="onprovince(province)" @blur="onblur">
+            <option style="display:none" value="" disabled>请选择</option>
+            <option v-for="(item, index) in cityjson" :key="index">{{ item }}</option>
           </select>
-          <select v-model="cityname" @change="oncityname(cityname)">
-            <option v-for="(item, index) in cityjsons" :key="index" :value="item.n">{{ item.n }}</option>
+          <select v-model="cityname" @change="oncityname(cityname)" @blur="onblur">
+            <option style="display:none" value="" disabled>请选择</option>
+            <option v-for="(item, index) in cityjsons" :key="index">{{ item }}</option>
           </select>
-          <select v-model="quyu">
-            <option v-for="(item, index) in cityjsonq" :key="index">{{ item.s }}</option>
+          <select v-model="quyu" @blur="onblur">
+            <option style="display:none" value="" disabled>请选择</option>
+            <option v-for="(item, index) in cityjsonq" :key="index">{{ item }}</option>
           </select>
         </div>
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        <textarea name="address" rows="auto" v-model="cusadd.texta"></textarea>
+        <textarea @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
         <button
@@ -177,7 +185,6 @@ import { mapState, mapActions } from 'vuex';
 import axios from 'axios';
 import city from '@/api/city.data.js';
 import api from '@/api';
- import VDistpicker from 'v-distpicker'
 export default {
   name: 'modal',
   data() {
@@ -207,16 +214,16 @@ export default {
       turenum: 0,
       //选择第几个默认
       bgimg: 0,
-       select:{ province: '', city: '', area: '' }
+      //临时中转数据
+      linshi:''
     };
   },
   inject: ['reload'],
   components: {
     city,
-    VDistpicker
   },
   mounted() {
-    this.cityjson = city.citylist;
+    this.cityjson = Object.keys(city)
     this.myaddress = JSON.parse(localStorage.getItem('cusaddress'));
   },
   watch: {
@@ -249,11 +256,8 @@ export default {
   },
   methods: {
     ...mapActions(['subaddress', 'ccmyadd', 'changeloading']),
-    onSelected(data){
-      this.province=data.province.value;
-      this.cityname=data.city.value;
-      this.quyu=data.area.value;
-      console.log(this.province,this.cityname,this.quyu)
+    onblur(){
+      window.scrollTo(0,0);
     },
     //确认地址
     trueaddress() {
@@ -475,11 +479,15 @@ console.log(addid)
       this.bgimg = e;
     },
     onprovince(e) {
-      this.cityjsons = this.cityjson.find(item => item.p == e).c;
+      this.cityjsons = Object.keys(Object.values(city)[this.cityjson.indexOf(e)][0]);
+      this.linshi =Object.values(city)[this.cityjson.indexOf(e)][0];
       this.cityjsonq = '';
+      this.cityname='';
+      this.quyu='';
     },
     oncityname(e) {
-      this.cityjsonq = this.cityjsons.find(item => item.n == e).a;
+    this.cityjsonq = Object.values(this.linshi)[Object.keys(this.linshi).indexOf(e)];
+    this.quyu='';
     },
     //关闭modal
     ...mapActions(['close', 'cusphones']),
@@ -633,28 +641,28 @@ console.log(addid)
       .modal-address-text {
         width: 137px;
       }
-      .distpicker-address-wrapper{
+      /*.distpicker-address-wrapper{
         display: flex;
         flex: 1;
         margin-left: 10px;
+      }*/
+      div:last-of-type {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        margin-left: 10px;
       }
-      // div:last-of-type {
-      //   flex: 1;
-      //   display: flex;
-      //   justify-content: space-between;
-      //   margin-left: 10px;
-      // }
-      // select {
-      //   width: 150px;
-      //   border-radius: 10px;
-      //   cursor: pointer;
-      //   font-size: 30px;
-      // }
+      select {
+        width: 150px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 30px;
+      }
     }
     .modal-address-button {
       display: flex;
       justify-content: space-around;
-      margin-top: 50px;
+      margin-top: 40px;
       button {
         background: url(https://pic.cwyyt.cn/upload/img/20191203/1736453645_button2.png) no-repeat;
         background-size: 100% 100%;

@@ -240,7 +240,7 @@ const store = new Vuex.Store({
         console.log(err)
       })
       // 本体获取底部广告,正式服关闭
-      let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+    /*  let jwd =JSON.parse(localStorage.getItem('jwdcode'));
      if(jwd){
        var latitude =jwd.wd;
        var longitude =jwd.jd;
@@ -254,7 +254,7 @@ const store = new Vuex.Store({
           house.advertisement[0].web = res.data.data.outUrl;
       }).catch((err) => {
         console.log(err)
-      })
+      })*/
       //判断二维码进来时的状态
       let value = JSON.parse(sessionStorage.getItem('hhl_isphone'));
       if (value === null) {

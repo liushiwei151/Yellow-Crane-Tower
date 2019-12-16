@@ -312,7 +312,6 @@ export default {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
       let addid = JSON.parse(localStorage.getItem('cusaddress'))[this.bjaddnum];
-console.log(addid)
       let data = {
         addressId: addid.addressId,
         contactName: this.cusadd.name,
@@ -443,12 +442,13 @@ console.log(addid)
             this.changeloading(true);
             api.addAddress(cusaddress).then(res => {
               let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-              api
-                .getAddress(QRcode.memberId)
+              api.getAddress(QRcode.memberId)
                 .then(res => {
                   self.clear();
                   self.changeloading(false);
                   localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+                  self.ccmyadd(res.data.data[res.data.data.length-1]);
+                  self.turenum=res.data.data.length-1;
                   self.gxmyadd();
                   self.reload();
                   self.close();

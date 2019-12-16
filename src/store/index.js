@@ -328,20 +328,6 @@ const store = new Vuex.Store({
       let data = JSON.parse(localStorage.getItem('all'));
       axios.defaults.headers.common["Authorization"] = data.sessionId;
       let Qrc =JSON.parse(localStorage.getItem('QRcodeinfor'));
-     /* if(Qrc){
-        if(Qrc.mobile==""){
-          house.ismodal.isphone=""
-        }else{
-          house.ismodal.isphone=Qrc.mobile
-        }
-        house.QRcodeinfor.name = Qrc.productName;
-        house.QRcodeinfor.firsttime = Qrc.scanTime;
-        house.QRcodeinfor.num = Qrc.count;
-        house.QRcodeinfor.smoke.tar = Qrc.tar+'mg';
-        house.QRcodeinfor.smoke.monoxide = Qrc.co+'mg';
-        house.QRcodeinfor.smoke.alkali = Qrc.nicotine+'mg';
-        house.QRcodeinfor.smoke.img = Qrc.productImgUrl;
-      }else{*/
       house.isloading =true;
         api.real(data.scanId).then((res) => {
           house.isloading =false;

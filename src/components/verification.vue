@@ -2,7 +2,7 @@
   <div>
     <div class="verification-img"></div>
     <div class="verification-input">
-      <input   type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
+      <input @blur="onblur"  type="tel" maxlength="4" placeholder="请输入验证码" v-model="verificationCode" />
       <button @click.stop="subcode(verificationCode);empty();">
         提交
       </button>
@@ -35,6 +35,9 @@ export default {
   },
   methods: {
     ...mapActions(['subcode','isNewUser','changetub']),
+    onblur(){
+      window.scrollTo(0,0);
+    },
     // 清空输入框
     empty() {
       this.verificationCode = '';

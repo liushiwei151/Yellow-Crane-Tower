@@ -82,7 +82,11 @@ export default {
     let data = JSON.parse(localStorage.getItem('all'));
     axios.defaults.headers.common['Authorization'] = data.sessionId;
     api.getTop20Record().then(res => {
-      self.textArr = res.data.data;
+      if(res.code==200){
+        self.textArr = res.data.data;
+      }else{
+        alert(res.msg)
+      }
     });
     this.changetub(false);
   },

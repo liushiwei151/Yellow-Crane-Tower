@@ -8,14 +8,13 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     //双旦兑换码是否存在
-    ishasjp:true,
+    ishasjp: true,
     //进入初始页面时接收到的所有信息
     all: {},
     //收到的底部广告和地址
-    advertisement: [
-      {
-        web:'',
-        adv:''
+    advertisement: [{
+        web: '',
+        adv: ''
       },
       {
         web: 'https://mp.weixin.qq.com/mp/homepage?__biz=MzIwNzE0MDUyMw==&hid=4&sn=53c00ccf532c568472653f528f444de9',
@@ -28,15 +27,15 @@ const store = new Vuex.Store({
     ],
     // code: 0,//接收到的验证码的结果
     isshow: false, //modal框是否显示
-    isloading:false,//loading是否显示
+    isloading: false, //loading是否显示
     //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal: {
       isphone: "", //客户电话
       isuser: '1', //1第一次进入这个页面0非第一次
       isaddress: 'isphone', //modal是由哪里传来的
-      errnum: 0 ,//输入错误次数
-      follow:true//是否关注true没关注false关注了
+      errnum: 0, //输入错误次数
+      follow: true //是否关注true没关注false关注了
     },
     // 烟的图片和背景图片
     smokeimg: '', //8d,dc,gezz,jxy,qj,xgqxz,xgqz,yy,zp,zy
@@ -99,13 +98,13 @@ const store = new Vuex.Store({
         alkali: '0.9mg'
       },
       // 奖池是否有奖
-      status:false,
+      status: false,
       //中奖信息
-      statusxx:'464654',
+      statusxx: '464654',
       //我的地址
-      myaddress:[],
+      myaddress: [],
       //二维码界面的确认的地址
-      cusaddress:0,
+      cusaddress: 0,
     }
   },
   getter: {
@@ -148,44 +147,68 @@ const store = new Vuex.Store({
     }, mm) {
       commit('onresults', mm)
     },
-    goerr({commit,state},mm){
-      commit('onerr',mm)
+    goerr({
+      commit,
+      state
+    }, mm) {
+      commit('onerr', mm)
     },
-    cusphones({commit,state},mm){
-      commit('oncusphone',mm)
+    cusphones({
+      commit,
+      state
+    }, mm) {
+      commit('oncusphone', mm)
     },
-    update({commit,state},mm){
-      commit('onupdate',mm)
+    update({
+      commit,
+      state
+    }, mm) {
+      commit('onupdate', mm)
     },
-    onmyadd({commit,state},mm){
-      commit('goonisaddress',mm)
+    onmyadd({
+      commit,
+      state
+    }, mm) {
+      commit('goonisaddress', mm)
     },
-    bjaddress({commit,state},mm){
-      commit('gobjaddress',mm)
+    bjaddress({
+      commit,
+      state
+    }, mm) {
+      commit('gobjaddress', mm)
     },
-    ccmyadd({commit,state},mm){
-      commit('goccmyadd',mm)
+    ccmyadd({
+      commit,
+      state
+    }, mm) {
+      commit('goccmyadd', mm)
     },
-    changeloading({commit,state},mm){
-      commit('onchangeloading',mm)
+    changeloading({
+      commit,
+      state
+    }, mm) {
+      commit('onchangeloading', mm)
     },
-    changetub({commit,state},mm){
-      commit('onchangetub',mm)
+    changetub({
+      commit,
+      state
+    }, mm) {
+      commit('onchangetub', mm)
     },
   },
   mutations: {
     // 改变双旦节图标样式
-    onchangetub(house,mm){
-      house.ishasjp=mm
-      },
-    onchangeloading(house,mm){
-      house.isloading=mm
+    onchangetub(house, mm) {
+      house.ishasjp = mm
     },
-    onupdate(house,mm){
-      house.statusxx=mm
+    onchangeloading(house, mm) {
+      house.isloading = mm
+    },
+    onupdate(house, mm) {
+      house.statusxx = mm
     },
     //全局弹出错误
-    onerr(house,mm){
+    onerr(house, mm) {
       house.ismodal.isaddress = 'isuser';
       house.contentstyle = house.storagecont[mm];
       house.isshow = true;
@@ -196,40 +219,40 @@ const store = new Vuex.Store({
       axios.defaults.headers.common["Authorization"] = mm.sessionId;
       house.all = mm;
       localStorage.setItem('all', JSON.stringify(mm));
-      house.isloading =true;
+      house.isloading = true;
       //wx需要的数据
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
-        house.isloading =false;
+        house.isloading = false;
         self.prototype.wx.config({
           debug: false,
           appId: res.data.data.appid,
           timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
           nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
           signature: res.data.data.signature, // 必填，签名
-          jsApiList: ['scanQRCode','getLocation','startRecord','stopRecord'] // 必填，需要使用的JS接口列表
+          jsApiList: ['scanQRCode', 'getLocation', 'startRecord', 'stopRecord'] // 必填，需要使用的JS接口列表
         })
         //获取经纬度存入local
-        self.prototype.wx.ready(function(){
+        self.prototype.wx.ready(function() {
           self.prototype.wx.getLocation({
             type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-            success: function (res) {
+            success: function(res) {
               var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
               var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
               var speed = res.speed; // 速度，以米/每秒计
               var accuracy = res.accuracy; // 位置精度
-              let jwd ={
-                wd:latitude,
-                jd:longitude,
-                sd:speed,
-                weiz:accuracy
+              let jwd = {
+                wd: latitude,
+                jd: longitude,
+                sd: speed,
+                weiz: accuracy
               }
-              localStorage.setItem('jwdcode',JSON.stringify(jwd));
+              localStorage.setItem('jwdcode', JSON.stringify(jwd));
               //获取底部广告
-              api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
-                  house.smokeimg = res.data.data.bgImgUrl;
-                  house.advertisement[0].adv = res.data.data.imgUrl;
-                  house.advertisement[0].web = res.data.data.outUrl;
+              api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude).then((res) => {
+                house.smokeimg = res.data.data.bgImgUrl;
+                house.advertisement[0].adv = res.data.data.imgUrl;
+                house.advertisement[0].web = res.data.data.outUrl;
               }).catch((err) => {
                 console.log(err)
               })
@@ -240,21 +263,21 @@ const store = new Vuex.Store({
         console.log(err)
       })
       // 本体获取底部广告,正式服关闭
-    /*  let jwd =JSON.parse(localStorage.getItem('jwdcode'));
-     if(jwd){
-       var latitude =jwd.wd;
-       var longitude =jwd.jd;
-     }else{
-       var latitude =0;
-       var longitude =0;
-     }
-      api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
-          house.smokeimg = res.data.data.bgImgUrl;
-          house.advertisement[0].adv = res.data.data.imgUrl;
-          house.advertisement[0].web = res.data.data.outUrl;
-      }).catch((err) => {
-        console.log(err)
-      })*/
+      /*  let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+       if(jwd){
+         var latitude =jwd.wd;
+         var longitude =jwd.jd;
+       }else{
+         var latitude =0;
+         var longitude =0;
+       }
+        api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
+            house.smokeimg = res.data.data.bgImgUrl;
+            house.advertisement[0].adv = res.data.data.imgUrl;
+            house.advertisement[0].web = res.data.data.outUrl;
+        }).catch((err) => {
+          console.log(err)
+        })*/
       //判断二维码进来时的状态
       let value = JSON.parse(sessionStorage.getItem('hhl_isphone'));
       if (value === null) {
@@ -294,13 +317,13 @@ const store = new Vuex.Store({
         scanId: house.all.scanId,
         code: mm
       }
-      house.isloading =true;
+      house.isloading = true;
       //调取验证码接口
       api.checkVerifyCode(data).then((res) => {
         let codes = res.data.code;
-        house.isloading =false;
-        if(!res.data.data.follow){
-          house.ismodal.follow=res.data.data.follow;
+        house.isloading = false;
+        if (!res.data.data.follow) {
+          house.ismodal.follow = res.data.data.follow;
           if (codes == 200) {
             router.push("result")
           } else if (codes == 500) {
@@ -313,8 +336,8 @@ const store = new Vuex.Store({
               house.isshow = true;
             }
           }
-        }else{
-          house.ismodal.follow =res.data.data.follow;
+        } else {
+          house.ismodal.follow = res.data.data.follow;
           house.isshow = true;
           console.log(house.ismodal.follow)
         }
@@ -327,40 +350,40 @@ const store = new Vuex.Store({
     onresults(house, mm) {
       let data = JSON.parse(localStorage.getItem('all'));
       axios.defaults.headers.common["Authorization"] = data.sessionId;
-      let Qrc =JSON.parse(localStorage.getItem('QRcodeinfor'));
-      house.isloading =true;
-        api.real(data.scanId).then((res) => {
-          house.isloading =false;
-          let names = res.data.data;
-          house.ishasjp=names.isPopup;
-          house.ismodal.isphone=names.mobile;
-          localStorage.setItem("QRcodeinfor",JSON.stringify(names));
-          house.QRcodeinfor.name = names.productName;
-          house.QRcodeinfor.firsttime = names.scanTime;
-          house.QRcodeinfor.num = names.count;
-          house.QRcodeinfor.smoke.tar = names.tar+'mg';
-          house.QRcodeinfor.smoke.monoxide = names.co+'mg';
-          house.QRcodeinfor.smoke.alkali = names.nicotine+'mg';
-          house.QRcodeinfor.smoke.img = names.productImgUrl;
-        }).catch((err) => {
-          console.log(err)
-        })
-         let jwd = JSON.parse(localStorage.getItem('jwdcode'));
-      if(jwd){
-        var lotter ={
-            scanId:data.scanId ,//扫码Id
-             latitude:jwd.wd,// 纬度
-             longitude:jwd.jd// 经度
+      let Qrc = JSON.parse(localStorage.getItem('QRcodeinfor'));
+      house.isloading = true;
+      api.real(data.scanId).then((res) => {
+        house.isloading = false;
+        let names = res.data.data;
+        house.ishasjp = names.isPopup;
+        house.ismodal.isphone = names.mobile;
+        localStorage.setItem("QRcodeinfor", JSON.stringify(names));
+        house.QRcodeinfor.name = names.productName;
+        house.QRcodeinfor.firsttime = names.scanTime;
+        house.QRcodeinfor.num = names.count;
+        house.QRcodeinfor.smoke.tar = names.tar + 'mg';
+        house.QRcodeinfor.smoke.monoxide = names.co + 'mg';
+        house.QRcodeinfor.smoke.alkali = names.nicotine + 'mg';
+        house.QRcodeinfor.smoke.img = names.productImgUrl;
+      }).catch((err) => {
+        console.log(err)
+      })
+      let jwd = JSON.parse(localStorage.getItem('jwdcode'));
+      if (jwd) {
+        var lotter = {
+          scanId: data.scanId, //扫码Id
+          latitude: jwd.wd, // 纬度
+          longitude: jwd.jd // 经度
         }
-      }else{
-        var lotter ={
-            scanId:data.scanId ,//扫码Id
-             latitude:0,// 纬度
-             longitude:0// 经度
+      } else {
+        var lotter = {
+          scanId: data.scanId, //扫码Id
+          latitude: 0, // 纬度
+          longitude: 0 // 经度
         }
       }
       api.getLottery(lotter).then((res) => {
-        house.QRcodeinfor.status=res.data.data.status;
+        house.QRcodeinfor.status = res.data.data.status;
         console.log(house.QRcodeinfor.status)
       }).catch((err) => {
         console.log(err)
@@ -373,11 +396,11 @@ const store = new Vuex.Store({
     // 弹出输入电话
     doCallback(house, mm) {
       house.ismodal.isaddress = 'isphone';
-        house.isshow=true
+      house.isshow = true
     },
     //添加客户电话
-    oncusphone(house,mm){
-      house.ismodal.isphone=mm
+    oncusphone(house, mm) {
+      house.ismodal.isphone = mm
     },
     //弹出填写收货地址
     doaddress(house, mm) {
@@ -385,20 +408,20 @@ const store = new Vuex.Store({
       house.isshow = true;
     },
     //弹出编辑地址
-    gobjaddress(house,mm){
-      house.ismodal.isaddress='isadd';
-       house.isshow = true;
+    gobjaddress(house, mm) {
+      house.ismodal.isaddress = 'isadd';
+      house.isshow = true;
     },
     //存储我的地址
-    goonisaddress(house,mm){
-      house.myaddress=mm;
+    goonisaddress(house, mm) {
+      house.myaddress = mm;
       console.log(house.myaddress)
-      },
-      //确认显示第几个地址
-      goccmyadd(house,mm){
-        house.cusaddress=mm;
-        console.log(house.cusaddress)
-      }
+    },
+    //确认显示第几个地址
+    goccmyadd(house, mm) {
+      house.cusaddress = mm;
+      console.log(house.cusaddress)
+    }
   },
 })
 

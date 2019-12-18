@@ -3,10 +3,15 @@
     <div class="cards" :class="card ? 'card1' : 'card2'" :style="{backgroundImage:'url('+smokeimg+')'}" key="0">
      <router-view v-if="routeractive"></router-view>
     </div>
-    <div class="bottom-new" v-if="ismodal.isuser==='1'"></div>
+    <div class="bottom-new" v-if="ismodal.isuser==='1'">
+      <li>本平台含有烟草内容18岁以下谢绝关注 <br>
+        服务支持：武汉黄鹤楼漫天游文化传播有限公司</li>
+    </div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
       <ul class="bottom-old-a">
-        <li v-for="(item, index) in advertisement" :key="index"><a :href="item.web" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
+        <li v-for="(item, index) in advertisement" :key="index"><a :href="item.web?item.web:'javascript:void(0)'" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
+        <li>本平台含有烟草内容18岁以下谢绝关注 <br>
+          服务支持：武汉黄鹤楼漫天游文化传播有限公司</li>
       </ul>
     </div>
     <div class="bottom-d" :class="ismodal.isuser==='0' ? 'bottomImgold' : 'bottomImgnew'"></div>
@@ -15,13 +20,16 @@
     <!-- 等待框 -->
     <wait></wait>
     <!-- 双旦分数 -->
-    <div class="twod" v-if="ishasjp"></div>
+    <div class="twod"></div>
+    <!-- 弹出错误 -->
+    <err></err>
   </div>
 </template>
 
 <script>
 import modal from '@/components/assembly/modal'
 import wait from '@/components/assembly/wait'
+import err from '@/components/assembly/err'
 import { mapState, mapActions } from 'vuex';
 export default {
   name: 'YellowCraneTower',
@@ -41,7 +49,8 @@ export default {
   },
   components: {
     modal,
-    wait
+    wait,
+    err
   },
   computed: {
     ...mapState({
@@ -98,9 +107,21 @@ export default {
     background-size:100% 100% ;
     position: fixed;
     right: 0px;
-    bottom:200px ;
-    z-index: 9999;
+    bottom:100px ;
+    z-index: 95;
+    animation: fight 1s ease infinite both;
     }
+@keyframes fight {
+	0% {
+		transform: none;
+	}
+  50%{
+    	transform: scale3d(0.95, 0.95, 0.95);
+  }
+	100% {
+		transform: none;
+	}
+}
 @backgrounds: {
   background-position: 100% 100%;
   background-size: cover;
@@ -165,9 +186,19 @@ li {
     pointer-events: none;
     background: url(../static/bottom-new.png) no-repeat;
     @backgrounds();
-    z-index: 100;
+    z-index: 95;
     width: 750px;
     height: 1171px;
+    display: flex;
+    justify-content: center;
+    align-items:flex-end ;
+    padding-bottom:40px ;
+    box-sizing: border-box;
+    li{
+      font-size: 20px;
+      color:#fff;
+      height: 30px;
+    }
   }
   .bottomImgnew {
     bottom: 555px;
@@ -199,7 +230,7 @@ li {
       }
       li {
         height: 139px;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
         pointer-events: auto;
         a {
           border-radius: 100px;
@@ -210,6 +241,11 @@ li {
       }
       li:first-of-type{
         height:225px;
+      }
+      li:last-of-type{
+        font-size: 20px;
+        color:#fff;
+        height: 20px;
       }
     }
   }

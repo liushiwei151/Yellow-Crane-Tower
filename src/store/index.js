@@ -17,7 +17,7 @@ const store = new Vuex.Store({
         adv: ''
       },
       {
-        web: 'https://mp.weixin.qq.com/mp/homepage?__biz=MzIwNzE0MDUyMw==&hid=4&sn=53c00ccf532c568472653f528f444de9',
+        web: 'https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toTtxb',
         adv: './static/adv2.png'
       },
       {
@@ -28,6 +28,7 @@ const store = new Vuex.Store({
     // code: 0,//接收到的验证码的结果
     isshow: false, //modal框是否显示
     isloading: false, //loading是否显示
+    iserr:false,
     //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal: {
@@ -64,9 +65,9 @@ const store = new Vuex.Store({
       {
         img: false,
         text1: '您要的页面走丢了,',
-        text2: '试试重新加载找回正确的页面吧！',
-        isbutton: false,
-        button: ''
+        text2: '试试重新加载找回正确的页面！',
+        isbutton: true,
+        button: '取消'
       },
       {
         img: true,
@@ -209,9 +210,7 @@ const store = new Vuex.Store({
     },
     //全局弹出错误
     onerr(house, mm) {
-      house.ismodal.isaddress = 'isuser';
-      house.contentstyle = house.storagecont[mm];
-      house.isshow = true;
+      house.iserr =mm;
     },
     //接收开始传过来的值新老用户/验证码/wx需要的数据//底部的广告并作判断
     doisNewUser(house, mm) {
@@ -223,47 +222,55 @@ const store = new Vuex.Store({
       //wx需要的数据
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
-        house.isloading = false;
-        self.prototype.wx.config({
-          debug: false,
-          appId: res.data.data.appid,
-          timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
-          nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
-          signature: res.data.data.signature, // 必填，签名
-          jsApiList: ['scanQRCode', 'getLocation', 'startRecord', 'stopRecord'] // 必填，需要使用的JS接口列表
-        })
-        //获取经纬度存入local
-        self.prototype.wx.ready(function() {
-          self.prototype.wx.getLocation({
-            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-            success: function(res) {
-              var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-              var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-              var speed = res.speed; // 速度，以米/每秒计
-              var accuracy = res.accuracy; // 位置精度
-              let jwd = {
-                wd: latitude,
-                jd: longitude,
-                sd: speed,
-                weiz: accuracy
+        if(res.data.code==200){
+          house.isloading = false;
+          self.prototype.wx.config({
+            debug: false,
+            appId: res.data.data.appid,
+            timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+            nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+            signature: res.data.data.signature, // 必填，签名
+            jsApiList: ['scanQRCode', 'getLocation', 'startRecord', 'stopRecord'] // 必填，需要使用的JS接口列表
+          })
+          //获取经纬度存入local
+          self.prototype.wx.ready(function() {
+            self.prototype.wx.getLocation({
+              type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function(res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                let jwd = {
+                  wd: latitude,
+                  jd: longitude,
+                  sd: speed,
+                  weiz: accuracy
+                }
+                localStorage.setItem('jwdcode', JSON.stringify(jwd));
+                //获取底部广告
+                api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude).then((res) => {
+                  if(res.data.code==200){
+                    house.smokeimg = res.data.data.bgImgUrl;
+                    house.advertisement[0].adv = res.data.data.imgUrl;
+                    house.advertisement[0].web = res.data.data.outUrl;
+                  }else{
+                    alert('获取底部广告失败')
+                  }
+                }).catch((err) => {
+                  alert('获取广告失败')
+                })
               }
-              localStorage.setItem('jwdcode', JSON.stringify(jwd));
-              //获取底部广告
-              api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude).then((res) => {
-                house.smokeimg = res.data.data.bgImgUrl;
-                house.advertisement[0].adv = res.data.data.imgUrl;
-                house.advertisement[0].web = res.data.data.outUrl;
-              }).catch((err) => {
-                console.log(err)
-              })
-            }
+            });
           });
-        });
+        }else{
+          alert('获取微信错误')
+        }
       }).catch((err) => {
-        console.log(err)
+        alert('获取微信失败')
       })
-      // 本体获取底部广告,正式服关闭
-      /*  let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+      // 本地获取底部广告,正式服关闭
+       let jwd =JSON.parse(localStorage.getItem('jwdcode'));
        if(jwd){
          var latitude =jwd.wd;
          var longitude =jwd.jd;
@@ -272,12 +279,16 @@ const store = new Vuex.Store({
          var longitude =0;
        }
         api.getAdvertisement(mm.productId, mm.scanId,latitude,longitude).then((res) => {
-            house.smokeimg = res.data.data.bgImgUrl;
-            house.advertisement[0].adv = res.data.data.imgUrl;
-            house.advertisement[0].web = res.data.data.outUrl;
+            if(res.data.code==200){
+              house.smokeimg = res.data.data.bgImgUrl;
+              house.advertisement[0].adv = res.data.data.imgUrl;
+              house.advertisement[0].web = res.data.data.outUrl;
+            }else{
+              alert('测试获取底部广告失败')
+            }
         }).catch((err) => {
-          console.log(err)
-        })*/
+          alert('测试获取底部广告报错')
+        })
       //判断二维码进来时的状态
       let value = JSON.parse(sessionStorage.getItem('hhl_isphone'));
       if (value === null) {
@@ -339,10 +350,9 @@ const store = new Vuex.Store({
         } else {
           house.ismodal.follow = res.data.data.follow;
           house.isshow = true;
-          console.log(house.ismodal.follow)
         }
       }).catch((err) => {
-        console.log("调取接口失败")
+        alert("调取接口失败")
       })
 
     },
@@ -421,7 +431,7 @@ const store = new Vuex.Store({
     goccmyadd(house, mm) {
       house.cusaddress = mm;
       console.log(house.cusaddress)
-    }
+    },
   },
 })
 

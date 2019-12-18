@@ -87,15 +87,14 @@ export default {
         scanId:self.all.scanId,
         score:scores
       }
-      console.log(data)
       api.saveScore(data).then((res)=>{
         if(res.data.code=='200'){
            this.$router.push('scratch')
         }else{
-          self.goerr(3);
+          self.goerr(true);
         }
       }).catch((err)=>{
-        console.log(err)
+        self.goerr(true);
       })
       // this.$router.push('scratch');
     }

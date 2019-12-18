@@ -58,22 +58,22 @@
         <div class="modal-address-text">联系地址:</div>
          <div>
            <select v-model="province" @change="onprovince(province)" @blur="onblur">
-              <option style="display:none" value="" disabled>请选择</option>
+              <option style="display:none" value="" disabled>省</option>
               <option v-for="(item, index) in cityjson" :key="index">{{ item }}</option>
             </select>
             <select v-model="cityname" @change="oncityname(cityname)" @blur="onblur">
-              <option style="display:none" value="" disabled>请选择</option>
+              <option style="display:none" value="" disabled>市</option>
               <option v-for="(item, index) in cityjsons" :key="index">{{ item }}</option>
             </select>
             <select v-model="quyu" @blur="onblur">
-              <option style="display:none" value="" disabled>请选择</option>
+              <option style="display:none" value="" disabled>区</option>
               <option v-for="(item, index) in cityjsonq" :key="index">{{ item }}</option>
             </select>
          </div>
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        <textarea @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
+        <textarea placeholder="请您填写详细街道门牌信息" @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
         <button
@@ -102,22 +102,22 @@
         <div class="modal-address-text">联系地址:</div>
         <div>
           <select v-model="province" @change="onprovince(province)" @blur="onblur">
-            <option style="display:none" value="" disabled>请选择</option>
+            <option style="display:none" value="" disabled>省</option>
             <option v-for="(item, index) in cityjson" :key="index">{{ item }}</option>
           </select>
           <select v-model="cityname" @change="oncityname(cityname)" @blur="onblur">
-            <option style="display:none" value="" disabled>请选择</option>
+            <option style="display:none" value="" disabled>市</option>
             <option v-for="(item, index) in cityjsons" :key="index">{{ item }}</option>
           </select>
           <select v-model="quyu" @blur="onblur">
-            <option style="display:none" value="" disabled>请选择</option>
+            <option style="display:none" value="" disabled>区</option>
             <option v-for="(item, index) in cityjsonq" :key="index">{{ item }}</option>
           </select>
         </div>
       </div>
       <div class="modal-address-texta">
         <div>联系地址:</div>
-        <textarea @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
+        <textarea placeholder="请您填写详细街道门牌信息" @blur="onblur" name="address" rows="auto" v-model="cusadd.texta"></textarea>
       </div>
       <div class="modal-address-button">
         <button
@@ -135,7 +135,7 @@
     <div v-if="ismodal.isaddress === 'myadd'" class="modal-myadd">
       <p>我的地址</p>
       <div class="modal-myadd-box">
-        <p class="box-title">注意：请填写真实姓名与详细地址, 否则订单会被取消。</p>
+        <p class="box-title">请填写真实姓名与详细地址，确保您的奖品顺利送达！</p>
         <div class="modal-myadd-cart">
           <div class="box-cart" v-for="(item, index) in myaddress" :key="index">
             <div class="box-cart-add">
@@ -254,7 +254,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['subaddress', 'ccmyadd', 'changeloading']),
+    ...mapActions(['subaddress', 'ccmyadd', 'changeloading','goerr']),
     onblur(){
       window.scrollTo(0,0);
     },
@@ -281,8 +281,10 @@ export default {
             this.close();
             this.reload();
           }else{
-            alert('确认默认失败');
+            this.goerr(true);
           }
+        }).catch((err)=>{
+          this.goerr(true);
         });
       }
 
@@ -294,17 +296,23 @@ export default {
       let data = JSON.parse(localStorage.getItem('cusaddress'))[e].addressId;
       this.changeloading(true);
       api.oneAddress(data).then(res => {
-        self.changeloading(false);
-        self.cusadd.name = res.data.data.contactName;
-        self.cusadd.phone = res.data.data.contactPhone;
-        self.cusadd.texta = res.data.data.street;
-        self.province = res.data.data.province;
-        self.onprovince(res.data.data.province);
-        self.cityname = res.data.data.city;
-        self.oncityname(res.data.data.city);
-        self.quyu = res.data.data.area;
-        self.bjaddnum = e;
-        self.subaddress('bjadd');
+        if(res.data.code==200){
+          self.changeloading(false);
+          self.cusadd.name = res.data.data.contactName;
+          self.cusadd.phone = res.data.data.contactPhone;
+          self.cusadd.texta = res.data.data.street;
+          self.province = res.data.data.province;
+          self.onprovince(res.data.data.province);
+          self.cityname = res.data.data.city;
+          self.oncityname(res.data.data.city);
+          self.quyu = res.data.data.area;
+          self.bjaddnum = e;
+          self.subaddress('bjadd');
+        }else{
+          self.goerr(true);
+        }
+      }).catch((err)=>{
+        self.goerr(true);
       });
     },
     //确定编辑选中地址
@@ -333,33 +341,39 @@ export default {
       /***只要改了在哪都能console的到？***/
       // console.log(addid)
       if (this.cusadd.name == '') {
-        alert('姓名不能为空');
+         this.$layer.msg('姓名不能为空');
         return;
       } else if (this.cusadd.name.length > 20) {
-        alert('请不要输入过长的名字');
+         this.$layer.msg('请不要输入过长的名字');
       } else {
         if (this.cusadd.phone == '') {
-          alert('手机不能为空');
+          this.$layer.msg('手机不能为空');
         } else if (!/^1[3456789]\d{9}$/.test(this.cusadd.phone)) {
-          alert('请输入正确的手机号');
+          this.$layer.msg('请输入正确的手机号');
         } else {
           if (this.province != '' && this.cityname != '' && this.quyu != '') {
-            this.changeloading(true);
-            api.editAddress(data).then(res => {
-              self.changeloading(false);
-              if (res.data.code == 200) {
-                self.clear();
-                self.getmyadd();
-                this.ccmyadd(addid);
-                this.close();
-                this.reload();
+            if(this.cusadd.texta==''){
+              this.$layer.msg('需要填写详细的地址');
+            }else{
+              this.changeloading(true);
+              api.editAddress(data).then(res => {
                 self.changeloading(false);
-              } else {
-                alert('编辑接口报错');
-              }
-            });
+                if (res.data.code == 200) {
+                  self.clear();
+                  self.getmyadd();
+                  this.ccmyadd(addid);
+                  this.close();
+                  this.reload();
+                  self.changeloading(false);
+                } else {
+                  self.goerr(true);
+                }
+              }).catch((err)=>{
+                self.goerr(true);
+              });
+            }
           } else {
-            alert('请输入正确的地址');
+            this.$layer.msg('请输入正确的地址');
           }
         }
       }
@@ -384,7 +398,13 @@ export default {
         addressId: this.myaddress[e].addressId
       };
       api.deleteAddress(data).then(res => {
-        self.getmyadd();
+        if(res.data.code==200){
+          self.getmyadd();
+        }else{
+          self.goerr(true);
+        }
+      }).catch((err)=>{
+        self.goerr(true);
       });
     },
     //获取我的地址
@@ -395,18 +415,22 @@ export default {
         .then(res => {
           // self.onmyadd(res.data.data);
           // self.cusaddress=res.data.data;
-         if(res.data.data){
-            for(let i =0;i<res.data.data.length;i++){
-              if(res.data.data[i].isDefault==1){
-                self.bgimg=i;
-              }
+          if(res.data.code==200){
+            if(res.data.data){
+               for(let i =0;i<res.data.data.length;i++){
+                 if(res.data.data[i].isDefault==1){
+                   self.bgimg=i;
+                 }
+               }
             }
-         }
-          localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
-          self.gxmyadd();
+            localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+            self.gxmyadd();
+          }else{
+             self.goerr(true);
+          }
         })
         .catch(err => {
-          alert(err);
+         self.goerr(true);
         });
     },
     //新增地址
@@ -428,37 +452,47 @@ export default {
         memberId: QRcode.memberId
       };
       if (this.cusadd.name == '') {
-        alert('姓名不能为空');
+        this.$layer.msg('姓名不能为空');
         return;
       } else if (this.cusadd.name.length > 10) {
-        alert('请不要输入过长的名字');
+        this.$layer.msg('请不要输入过长的名字');
       } else {
         if (this.cusadd.phone == '') {
-          alert('手机不能为空');
+          this.$layer.msg('手机不能为空');
         } else if (!/^1[3456789]\d{9}$/.test(this.cusadd.phone)) {
-          alert('请输入正确的手机号');
+          this.$layer.msg('请输入正确的手机号');
         } else {
           if (this.province != '' && this.cityname != '' && this.quyu != '') {
-            this.changeloading(true);
-            api.addAddress(cusaddress).then(res => {
-              let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-              api.getAddress(QRcode.memberId)
-                .then(res => {
-                  self.clear();
-                  self.changeloading(false);
-                  localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
-                  self.ccmyadd(res.data.data[res.data.data.length-1]);
-                  self.turenum=res.data.data.length-1;
-                  self.gxmyadd();
-                  self.reload();
-                  self.close();
-                })
-                .catch(err => {
-                  alert(err);
-                });
-            });
+            if(this.cusadd.texta==''){
+               this.$layer.msg('需要填写详细的地址');
+            }else{
+              self.changeloading(true);
+              api.addAddress(cusaddress).then(res => {
+                let QRcode = JSON.parse(localStorage.getItem('QRcode'));
+                api.getAddress(QRcode.memberId)
+                  .then(res => {
+                    console.log(  res.data.code);
+                    if(res.data.code==200){
+                      self.clear();
+                      self.changeloading(false);
+                      localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+                      self.ccmyadd(res.data.data[res.data.data.length-1]);
+                      self.turenum=res.data.data.length-1;
+                      self.gxmyadd();
+                      self.reload();
+                      self.close();
+                    }else{
+                      self.goerr(true);
+                    }
+                  })
+                  .catch(err => {
+                    self.goerr(true);
+                    
+                  });
+              });
+            }
           } else {
-            alert('请输入正确的地址');
+             this.$layer.msg('请输入正确的地址');
           }
         }
       }
@@ -497,23 +531,27 @@ export default {
           mobile: this.cusphone
         };
         this.changeloading(true);
-        api
-          .getMobileValidate(data)
+        api.getMobileValidate(data)
           .then(res => {
-            self.changeloading(false);
-            let num = 60;
-            this.qrnum = num + 's';
-            let times = setInterval(() => {
-              num--;
+            console.log(res.data.code)
+            if(res.data.code){
+              self.changeloading(false);
+              let num = 60;
               this.qrnum = num + 's';
-              if (num < 0) {
-                clearInterval(times);
-                this.qrnum = '获取验证码';
-              }
-            }, 1000);
+              let times = setInterval(() => {
+                num--;
+                this.qrnum = num + 's';
+                if (num < 0) {
+                  clearInterval(times);
+                  this.qrnum = '获取验证码';
+                }
+              }, 1000);
+            }else{
+              self.goerr(true);
+            }
           })
           .catch(err => {
-            alert(err);
+            self.goerr(true);
           });
       } else {
         alert('请输入正确的手机号');
@@ -538,10 +576,12 @@ export default {
             // this.$router.go(0);
             this.reload();
             this.close();
-          } else alert('验证失败');
+          } else{
+            self.goerr(true);
+          }
         })
         .catch(err => {
-          alert(err);
+          self.goerr(true);
         });
     },
     sweepcode() {
@@ -600,7 +640,7 @@ export default {
   transition: all 0.3s ease-in-out 0s;
   pointer-events: none;
   box-sizing: border-box;
-  z-index: 100;
+  z-index: 99;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -741,6 +781,8 @@ export default {
         height: 45px;
         padding: 10px 0;
         box-sizing: border-box;
+        white-space:nowrap;
+        overflow: hidden;
       }
       .modal-myadd-cart {
         overflow: auto;
@@ -1022,6 +1064,6 @@ export default {
   overflow-y: auto;
   pointer-events: auto;
   opacity: 1;
-  z-index: 100;
+  z-index: 99;
 }
 </style>

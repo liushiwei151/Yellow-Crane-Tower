@@ -1,18 +1,18 @@
 <template>
-  <div v-if="bottomshow">
+  <div>
     <!-- 初始 -->
     <div class="original" v-if="result == '0'">
       <p>涂抹刮奖区域,</p>
       <p>超多奖品等您来拿！！！</p>
     </div>
     <!-- 获取实物奖品前？ -->
-    <div class="Material" v-if="result == '1'">
+    <div class="Material" v-if="result == '1'&&bottomshow">
       <p>感谢您对诚信系统的支持,</p>
       <p>恭喜您获得楼币,赶紧去您的订单页面确认吧！</p>
       <div class="scratch-a"><a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toQueryScoreLogList">点击查看</a></div>
     </div>
     <!-- 获取虚拟奖品 手机流量 -->
-    <div class="traffic" v-if="result == '4'">
+    <div class="traffic" v-if="result == '4'&&bottomshow">
       <div>
         <label for="tel">充值号码:</label>
         <input type="tel" id="tel" maxlength="11" :placeholder="teltext" v-model="telphone" />
@@ -20,7 +20,7 @@
       <button @click="complete">确定</button>
     </div>
     <!-- 获取实物奖品，填写地址 -->
-    <div class="MaterialAddress" v-if="result == '3'">
+    <div class="MaterialAddress" v-if="result == '3'&&bottomshow">
       <!-- 有收获地址 -->
       <div v-if="iscusadd != undefined && result == '3'">
         <div class="hasMaterialAddress" v-if="!cusaddress" :style="{ opacity: isaddress.isDefault ? 1 : 0 }">
@@ -28,14 +28,16 @@
             <p>{{ isaddress.contactName }}</p>
             <p>{{ isaddress.contactPhone }}</p>
           </div>
-          <div class="hasMaterialAddress-add">{{ isaddress.province }}{{ isaddress.city }}{{ isaddress.area }}{{ isaddress.street }}</div>
+          <div class="hasMaterialAddress-add">{{ isaddress.province }}{{ isaddress.city }}{{ isaddress.area }}
+          <br /><span>{{ isaddress.street }}</span></div>
         </div>
         <div class="hasMaterialAddress" v-if="cusaddress">
           <div class="hasMaterialAddress-title">
             <p>{{ cusaddress.contactName }}</p>
             <p>{{ cusaddress.contactPhone }}</p>
           </div>
-          <div class="hasMaterialAddress-add">{{ cusaddress.province }}{{ cusaddress.city }}{{ cusaddress.area }}{{ cusaddress.street }}</div>
+          <div class="hasMaterialAddress-add">{{ cusaddress.province }}{{ cusaddress.city }}{{ cusaddress.area }}
+          <br /><span>{{ cusaddress.street }}</span></div>
         </div>
         <div class="hasMaterialAddressbutton">
           <button @click="subaddress('myadd')">修改</button>
@@ -46,7 +48,7 @@
       <button @click="subaddress('isadd')" v-if="iscusadd == undefined">填写收货信息</button>
     </div>
     <!-- 虚拟奖品滴滴快车代金卷 -->
-    <div class="fictitious" v-if="result == '5'">
+    <div class="fictitious" v-if="result == '5'&&bottomshow">
       <div class="fictitious-card">
         <div class="fictitious-card-img" :style="{ backgroundImage: 'url(' + cardxx.prizeImg + ')' }"></div>
         <div class="fictitious-card-text">
@@ -104,10 +106,10 @@ export default {
     }
   },
   mounted() {
-    this.xunhuan()
+    this.xunhuan();
   },
   methods: {
-    ...mapActions(['subaddress', 'onmyadd', 'ccmyadd', 'changeloading']),
+    ...mapActions(['subaddress', 'onmyadd', 'ccmyadd', 'changeloading','goerr']),
     //循环判断是否存在isbottomtext
     xunhuan(){
       let ishasbottom =setInterval((res)=>{
@@ -116,8 +118,7 @@ export default {
           this.bottomshow=JSON.parse(localStorage.getItem('isbottomtext'))
           clearInterval(ishasbottom);
         }
-        console.log('判定中')
-      },100)
+      },200)
     },
     //提交地址跳转页面
     gocOrder() {
@@ -133,19 +134,20 @@ export default {
           addressId: this.isaddress.addressId,
           orderId: qrc.orderId
         };
-      }
+      };
       this.changeloading(true);
-      api
-        .cOrder(data)
+      api.cOrder(data)
         .then(res => {
           if (res.data.code == 200) {
             localStorage.setItem('isbottomtext',false);
             self.changeloading(false);
             self.$router.push('completes');
+          }else{
+            self.goerr(true);
           }
         })
         .catch(err => {
-          alert('提交错误');
+           self.goerr(true);
         });
     },
     // 电话确认
@@ -166,7 +168,11 @@ export default {
             localStorage.setItem('isbottomtext',false);
             self.changeloading(false);
             self.$router.push('/completes');
+          }else{
+            self.goerr(true);
           }
+        }).catch((err)=>{
+          self.goerr(true);
         });
       }
     },
@@ -184,36 +190,37 @@ export default {
         };
       }
       this.changeloading(true);
-      api
-        .cOrder(data)
+      api.cOrder(data)
         .then(res => {
           if (res.data.code == 200) {
             localStorage.setItem('isbottomtext',false);
             self.changeloading(false);
             self.$router.push('/completes');
+          }else{
+            self.goerr(true);
           }
         })
         .catch(err => {
-          alert('提交错误');
+          self.geerr(3);
         });
     },
     //获取我的地址
     getmyadd() {
       let self = this;
       let QRcode = JSON.parse(localStorage.getItem('QRcode'));
-      api
-        .getAddress(QRcode.memberId)
+      api.getAddress(QRcode.memberId)
         .then(res => {
           if (res.data.code == 200) {
-            console.log(res.data.data);
             localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+          }else{
+            self.goerr(true)
           }
           // self.onmyadd(res.data.data);
           // self.cusaddress=res.data.data;
           // localStorage.setItem('QRcode',JSON.stringify(res.data.data));
         })
         .catch(err => {
-          console.log(err);
+         self.goerr(true)
         });
     }
   }
@@ -333,8 +340,9 @@ export default {
       text-align: left;
       margin-left: 48px;
       font-size: 22.4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+text-overflow: ellipsis;
+         overflow: hidden;
+          white-space: nowrap;
     }
   }
   .hasMaterialAddressbutton {

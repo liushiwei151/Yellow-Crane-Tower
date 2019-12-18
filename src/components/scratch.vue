@@ -82,11 +82,13 @@ export default {
     let data = JSON.parse(localStorage.getItem('all'));
     axios.defaults.headers.common['Authorization'] = data.sessionId;
     api.getTop20Record().then(res => {
-      if(res.code==200){
+      if(res.data.code==200){
         self.textArr = res.data.data;
       }else{
-        alert(res.msg)
+        self.goerr(true);
       }
+    }).catch((err)=>{
+       self.goerr(true);
     });
     this.changetub(false);
   },
@@ -114,7 +116,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Callback', 'changeloading', 'changetub']),
+    ...mapActions(['Callback', 'changeloading', 'changetub','goerr']),
     //调取奖品接口
     startupdate() {
       let QRc = JSON.parse(localStorage.getItem('QRcodeinfor'));
@@ -137,27 +139,36 @@ export default {
         }
         axios.defaults.headers.common['Authorization'] = all.sessionId;
         api.doLuckyDraw(draw).then(res => {
-          self.resultTexts[0].prize = res.data.data.tip;
-          self.QRcode = res.data.data;
-          localStorage.setItem('QRcode', JSON.stringify(self.QRcode));
-          if (self.QRcode.type == '3') {
-            api
-              .getAddress(self.QRcode.memberId)
-              .then(res => {
-                localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
-                for (let i = 0; i < res.data.data.length; i++) {
-                  if (res.data.data[i].isDefault == '1') {
-                    self.cusaddress = res.data.data[i];
+          if(res.data.code==200){
+            self.resultTexts[0].prize = res.data.data.tip;
+            self.QRcode = res.data.data;
+            localStorage.setItem('QRcode', JSON.stringify(self.QRcode));
+            if (self.QRcode.type == '3') {
+              api.getAddress(self.QRcode.memberId)
+                .then(res => {
+                  console.log(res.data);
+                  if(res.data.code==200){
+                    localStorage.setItem('cusaddress', JSON.stringify(res.data.data));
+                    for (let i = 0; i < res.data.data.length; i++) {
+                      if (res.data.data[i].isDefault == '1') {
+                        self.cusaddress = res.data.data[i];
+                      }
+                    }
+                  }else{
+                    self.goerr(true);
                   }
-                }
-                // localStorage.setItem('QRcode',JSON.stringify(self.cusaddress));
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          } else if (self.QRcode.type == '5') {
-            self.cusaddress = JSON.parse(localStorage.getItem('QRcode'));
+                })
+                .catch(err => {
+                 self.goerr(true);
+                });
+            } else if (self.QRcode.type == '5') {
+              self.cusaddress = JSON.parse(localStorage.getItem('QRcode'));
+            }
+          }else{
+            self.goerr(true);
           }
+        }).catch((err)=>{
+           self.goerr(true);
         });
       } else {
         return;
@@ -178,6 +189,7 @@ export default {
     },
     //清除遮罩层后Callback
     clearCallback() {
+      this.QRcodetype = -1;
       localStorage.setItem("isbottomtext",true);
       let self = this;
       let a = 1;

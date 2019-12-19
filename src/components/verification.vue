@@ -61,14 +61,15 @@ export default {
   position: relative;
   padding: 0 60px;
   input {
-    width: 584px;
+    width: 430px;
     padding: 27px 0 27px 35px;
     border: solid 3px #f1d2ad;
     color: #a6a6a6;
     @verification();
-    font-size: 32px;
+    font-size: 45px;
   }
   input::-webkit-input-placeholder {
+    font-size: 35px;
     color: #a6a6a6;
   }
   input::-moz-input-placeholder {
@@ -81,14 +82,15 @@ export default {
     @verification();
     border: solid 3px #fff;
     color: #fff;
-    font-size: 30px;
+    font-size: 33px;
     letter-spacing: 7px;
     text-indent: 7px;
     background: url(../../static/button.png) no-repeat;
     background-size: 100% 100%;
     width: 150px;
     position: absolute;
-    right: 59px;
+    white-space: nowrap; 
+    right: 130px;
     top: 0;
   }
 }

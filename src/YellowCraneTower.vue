@@ -20,9 +20,11 @@
     <!-- 等待框 -->
     <wait></wait>
     <!-- 双旦分数 -->
-    <div class="twod"></div>
+    <div class="twod" @click="goout"></div>
     <!-- 弹出错误 -->
     <err></err>
+    <!-- 福袋签 -->
+    <fudai></fudai>
   </div>
 </template>
 
@@ -30,6 +32,7 @@
 import modal from '@/components/assembly/modal'
 import wait from '@/components/assembly/wait'
 import err from '@/components/assembly/err'
+import fudai from '@/components/assembly/fudai'
 import { mapState, mapActions } from 'vuex';
 export default {
   name: 'YellowCraneTower',
@@ -50,7 +53,8 @@ export default {
   components: {
     modal,
     wait,
-    err
+    err,
+    fudai
   },
   computed: {
     ...mapState({
@@ -81,6 +85,10 @@ export default {
   },
   methods: {
      ...mapActions(['isNewUser']),
+     //跳往双旦活动
+     goout(){
+        window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toYq'
+     },
     //移动动画切换
     move() {
       setTimeout(() => {

@@ -55,14 +55,29 @@ export default {
     ...mapState({
       QRcodeinfor: 'QRcodeinfor',
       smokeimg: 'smokeimg',
-      all:'all'
+      all:'all',
     })
   },
   created(){
     this.onresult();
   },
+  mounted() {
+    let hasjp =setInterval((res)=>{
+      if(localStorage.getItem('QRcodeinfor')){
+        if(JSON.parse(localStorage.getItem('QRcodeinfor')).isPopup&&!localStorage.getItem('hasjp')){
+          localStorage.setItem('hasjp',1);
+          this.gofudai(true);
+        }else{
+          return
+        }
+        clearInterval(hasjp);
+      }else{
+        console.log('继续')
+      }
+    },500)
+  },
   methods: {
-    ...mapActions(['onresult','goerr','changetub']),
+    ...mapActions(['onresult','goerr','changetub','gofudai']),
     //打分
     score(e) {
       let stars = [false, false, false, false, false];

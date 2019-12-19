@@ -5,11 +5,10 @@
       <p>涂抹刮奖区域,</p>
       <p>超多奖品等您来拿！！！</p>
     </div>
-    <!-- 获取实物奖品前？ -->
+    <!-- 获取楼币 -->
     <div class="Material" v-if="result == '1'&&bottomshow">
-      <p>感谢您对诚信系统的支持,</p>
-      <p>恭喜您获得楼币,赶紧去您的订单页面确认吧！</p>
-      <div class="scratch-a"><a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toQueryScoreLogList">点击查看</a></div>
+      <p>恭喜您获得楼币,赶紧去您的<a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toMall">订单页面</a>确认吧！</p>
+      <button class="scratch-a" @click="gocome()">确定</button>
     </div>
     <!-- 获取虚拟奖品 手机流量 -->
     <div class="traffic" v-if="result == '4'&&bottomshow">
@@ -119,6 +118,10 @@ export default {
           clearInterval(ishasbottom);
         }
       },200)
+    },
+    //楼币直接跳往页面
+    gocome(){
+      this.$router.push('/completes');
     },
     //提交地址跳转页面
     gocOrder() {
@@ -254,19 +257,25 @@ export default {
     font-size: 32px;
   }
 }
-// 实物中奖
+// 楼币中奖
 .Material {
   @pp();
   p {
     margin-bottom: 5px;
-  }
-  p:first-of-type {
     font-size: 32px;
+  }
+  .scratch-a{
+    @button();
+    width: 200px;
+    border-radius: 50px;
+    letter-spacing: 2px;
+    text-indent: 2px;
+    white-space: nowrap;
+    margin-top:30px ;
   }
   a {
     color: rgb(210, 47, 47);
     font-size: 32px;
-    font-weight: 600;
   }
 }
 //虚拟中奖

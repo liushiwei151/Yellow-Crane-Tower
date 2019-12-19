@@ -7,8 +7,6 @@ import axios from 'axios'
 Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
-    //双旦兑换码是否存在
-    ishasjp: true,
     //进入初始页面时接收到的所有信息
     all: {},
     //收到的底部广告和地址
@@ -29,6 +27,7 @@ const store = new Vuex.Store({
     isshow: false, //modal框是否显示
     isloading: false, //loading是否显示
     iserr:false,
+    isfudai:false,//财神签是否显示
     //modalnum:0,//显示第几条信息
     //显示什么样的modal
     ismodal: {
@@ -101,11 +100,14 @@ const store = new Vuex.Store({
       // 奖池是否有奖
       status: false,
       //中奖信息
-      statusxx: '464654',
+      statusxx: '',
+      //中奖分数
+      istest:'',
       //我的地址
       myaddress: [],
       //二维码界面的确认的地址
       cusaddress: 0,
+       ishasjp: '',
     }
   },
   getter: {
@@ -196,8 +198,18 @@ const store = new Vuex.Store({
     }, mm) {
       commit('onchangetub', mm)
     },
+    gofudai({
+      commit,
+      state
+    }, mm) {
+      commit('ongofudai', mm)
+    },
   },
   mutations: {
+    //弹出财神签
+    ongofudai(house,mm){
+      house.isfudai=mm;
+    },
     // 改变双旦节图标样式
     onchangetub(house, mm) {
       house.ishasjp = mm
@@ -255,19 +267,19 @@ const store = new Vuex.Store({
                     house.advertisement[0].adv = res.data.data.imgUrl;
                     house.advertisement[0].web = res.data.data.outUrl;
                   }else{
-                    alert('获取底部广告失败')
+                    alert('获取底部图片失败')
                   }
                 }).catch((err) => {
-                  alert('获取广告失败')
+                  alert('获取底部图片失败')
                 })
               }
             });
           });
         }else{
-          alert('获取微信错误')
+          alert('获取微信接口错误')
         }
       }).catch((err) => {
-        alert('获取微信失败')
+        alert('获取微信接口失败')
       })
       // 本地获取底部广告,正式服关闭
        let jwd =JSON.parse(localStorage.getItem('jwdcode'));
@@ -363,9 +375,9 @@ const store = new Vuex.Store({
       let Qrc = JSON.parse(localStorage.getItem('QRcodeinfor'));
       house.isloading = true;
       api.real(data.scanId).then((res) => {
+        console.log(res.data.data)
         house.isloading = false;
         let names = res.data.data;
-        house.ishasjp = names.isPopup;
         house.ismodal.isphone = names.mobile;
         localStorage.setItem("QRcodeinfor", JSON.stringify(names));
         house.QRcodeinfor.name = names.productName;
@@ -375,6 +387,9 @@ const store = new Vuex.Store({
         house.QRcodeinfor.smoke.monoxide = names.co + 'mg';
         house.QRcodeinfor.smoke.alkali = names.nicotine + 'mg';
         house.QRcodeinfor.smoke.img = names.productImgUrl;
+        house.QRcodeinfor.statusxx=names.luckySignNumber;
+        house.QRcodeinfor.istest =names.isTest;
+        house.QRcodeinfor.ishasjp = names.isPopup;
       }).catch((err) => {
         console.log(err)
       })

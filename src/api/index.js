@@ -1,7 +1,10 @@
 import axios from 'axios'
 import qs from 'qs'
 
-let httpurl ="http://qrhhl.yunyutian.cn"
+//允许cookie跨域
+// axios.defaults.withCredentials = true;
+
+let httpurl ="https://qr.hhl1916.com"
 // 提交验证码
 const checkVerifyCode = (code) => {
   return axios.post(httpurl+"/huanghelou1916-h5/code/checkVerifyCode", qs.stringify(code))

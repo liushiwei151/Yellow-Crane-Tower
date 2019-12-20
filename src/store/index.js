@@ -235,17 +235,17 @@ const store = new Vuex.Store({
       let url = location.href.split('#')[0];
       api.jsSign(url).then((res) => {
         if(res.data.code==200){
-          house.isloading = false;
           self.prototype.wx.config({
             debug: false,
             appId: res.data.data.appid,
             timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
             nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
             signature: res.data.data.signature, // 必填，签名
-            jsApiList: ['scanQRCode', 'getLocation', 'startRecord', 'stopRecord'] // 必填，需要使用的JS接口列表
+            jsApiList: ['scanQRCode', 'getLocation', 'startRecord', 'stopRecord','hideAllNonBaseMenuItem'] // 必填，需要使用的JS接口列表
           })
           //获取经纬度存入local
           self.prototype.wx.ready(function() {
+            self.prototype.wx.hideAllNonBaseMenuItem();
             self.prototype.wx.getLocation({
               type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
               success: function(res) {
@@ -266,6 +266,7 @@ const store = new Vuex.Store({
                     house.smokeimg = res.data.data.bgImgUrl;
                     house.advertisement[0].adv = res.data.data.imgUrl;
                     house.advertisement[0].web = res.data.data.outUrl;
+                     house.isloading = false;
                   }else{
                     alert('获取底部图片失败')
                   }

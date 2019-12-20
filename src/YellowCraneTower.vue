@@ -20,11 +20,11 @@
     <!-- 等待框 -->
     <wait></wait>
     <!-- 双旦分数 -->
-    <div class="twod" @click="goout"></div>
+    <div class="twod" @click="goout" v-if="istwod"></div>
     <!-- 弹出错误 -->
     <err></err>
     <!-- 福袋签 -->
-    <fudai></fudai>
+    <fudai v-if="istwod"></fudai>
   </div>
 </template>
 
@@ -48,6 +48,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
+      istwod:true
     };
   },
   components: {
@@ -73,6 +74,10 @@ export default {
             if(that.startheight==nowheight){
               window.scrollTo(0,0);
             }
+        }
+        console.log(this.$route.query.timestamp-1576854000000)
+        if(this.$route.query.timestamp<1576854000000){
+          this.istwod=false
         }
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
     if(this.$route.query.errorCode){

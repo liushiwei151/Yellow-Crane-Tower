@@ -93,6 +93,7 @@ export default {
     this.changetub(false);
   },
   mounted() {
+    window.scrollTo(0,0);
     if (JSON.parse(localStorage.getItem('QRcode'))) {
       this.isshowup = false;
       this.resultTexts[0].prize = JSON.parse(localStorage.getItem('QRcode')).tip;

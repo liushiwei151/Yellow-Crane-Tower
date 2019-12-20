@@ -276,13 +276,13 @@ const store = new Vuex.Store({
             });
           });
         }else{
-          alert('获取微信接口错误')
+          console.log('获取微信接口错误')
         }
       }).catch((err) => {
-        alert('获取微信接口失败')
+        console.log('获取微信接口失败')
       })
       // 本地获取底部广告,正式服关闭
-       let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+       /*let jwd =JSON.parse(localStorage.getItem('jwdcode'));
        if(jwd){
          var latitude =jwd.wd;
          var longitude =jwd.jd;
@@ -300,7 +300,7 @@ const store = new Vuex.Store({
             }
         }).catch((err) => {
           alert('测试获取底部广告报错')
-        })
+        })*/
       //判断二维码进来时的状态
       let value = JSON.parse(sessionStorage.getItem('hhl_isphone'));
       if (value === null) {
@@ -388,7 +388,7 @@ const store = new Vuex.Store({
         house.QRcodeinfor.smoke.alkali = names.nicotine + 'mg';
         house.QRcodeinfor.smoke.img = names.productImgUrl;
         house.QRcodeinfor.statusxx=names.luckySignNumber;
-        house.QRcodeinfor.istest =names.isTest;
+        house.QRcodeinfor.istest =names.score;
         house.QRcodeinfor.ishasjp = names.isPopup;
       }).catch((err) => {
         console.log(err)

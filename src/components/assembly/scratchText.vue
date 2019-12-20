@@ -7,7 +7,7 @@
     </div>
     <!-- 获取楼币 -->
     <div class="Material" v-if="result == '1'&&bottomshow">
-      <p>恭喜您获得楼币,赶紧去您的<a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toMall">订单页面</a>确认吧！</p>
+      <p>恭喜您获得楼币,赶紧去<a href="https://wx.hhl1916.com/opc/ms/wxForeign/r?fsr=toMall">楼币商城</a>看看吧！</p>
       <button class="scratch-a" @click="gocome()">确定</button>
     </div>
     <!-- 获取虚拟奖品 手机流量 -->

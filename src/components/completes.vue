@@ -8,7 +8,7 @@
         <span class="text">{{ threetime }}s</span>
         后为您呈现！
       </p>
-      <a href="https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA">直接前往</a>
+      <a href="https://mp.weixin.qq.com/s/lyXQWn49YzicENsK-ey9vA">直接前往</a>
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ export default {
     };
   },
   mounted() {
+    window.scrollTo(0,0);
     this.times();
     this.changetub(false);
   },
@@ -43,7 +44,7 @@ export default {
     goout(){
       if(this.$route.path=='/completes'){
          // localStorage.clear('QRcode');
-         window.location.href ='https://mp.weixin.qq.com/s/xRNVTqdxJ84hxYiTp7IOlA'
+         window.location.href ='https://mp.weixin.qq.com/s/lyXQWn49YzicENsK-ey9vA'
       }
     }
   }

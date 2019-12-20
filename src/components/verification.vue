@@ -22,6 +22,7 @@ export default {
     };
   },
   mounted() {
+    window.scrollTo(0,0);
     this.changetub(false);
      localStorage.clear('QRcode');
      //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据

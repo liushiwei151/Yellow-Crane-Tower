@@ -62,6 +62,7 @@ export default {
     this.onresult();
   },
   mounted() {
+    window.scrollTo(0,0);
     let hasjp =setInterval((res)=>{
       if(localStorage.getItem('QRcodeinfor')){
         if(JSON.parse(localStorage.getItem('QRcodeinfor')).isPopup&&!localStorage.getItem('hasjp')){

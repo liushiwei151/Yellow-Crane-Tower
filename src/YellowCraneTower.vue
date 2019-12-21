@@ -48,7 +48,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
-      istwod:true
+      istwod:false
     };
   },
   components: {
@@ -75,8 +75,8 @@ export default {
               window.scrollTo(0,0);
             }
         }
-        console.log(this.$route.query.timestamp-1576854000000)
-        if(this.$route.query.timestamp<1576854000000){
+        console.log(this.$route.query.timestamp-1576873800000);
+        if(this.$route.query.timestamp<1576873800000){
           this.istwod=false
         }
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据

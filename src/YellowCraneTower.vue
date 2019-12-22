@@ -48,7 +48,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
-      istwod:false
+      istwod:true
     };
   },
   components: {
@@ -75,10 +75,17 @@ export default {
               window.scrollTo(0,0);
             }
         }
-        console.log(this.$route.query.timestamp-1576873800000);
-        if(this.$route.query.timestamp<1576873800000){
-          this.istwod=false
+        console.log(this.$route.query.timestamp-1577030400000);
+        if(this.$route.query.timestamp){
+          if(this.$route.query.timestamp<1577030400000){
+            this.istwod=false
+          }
+        }else{
+          if(JSON.parse(localStorage.getItem('all')).timestamp<1577030400000){
+            this.istwod=false
+          }
         }
+
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
     if(this.$route.query.errorCode){
       this.isNewUser(this.$route.query);
@@ -92,7 +99,7 @@ export default {
      ...mapActions(['isNewUser']),
      //跳往双旦活动
      goout(){
-        window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toYq'
+        window.location.href='https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toYq'
      },
     //移动动画切换
     move() {

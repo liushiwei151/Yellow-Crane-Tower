@@ -36,7 +36,7 @@ export default {
   methods: {
     ...mapActions(['gofudai']),
     goout(){
-      window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toYq'
+      window.location.href='https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toYq'
     }
   }
 };

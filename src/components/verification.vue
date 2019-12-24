@@ -43,9 +43,6 @@ export default {
     empty() {
       this.verificationCode = '';
     },
-    scrollToTop() {
-    　　var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-    }
   }
 };
 </script>

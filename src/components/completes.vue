@@ -8,7 +8,7 @@
         <span class="text">{{ threetime }}s</span>
         后为您呈现！
       </p>
-      <a href="https://mp.weixin.qq.com/s/lyXQWn49YzicENsK-ey9vA">直接前往</a>
+      <a :href='gotourl'>直接前往</a>
     </div>
   </div>
 </template>
@@ -19,7 +19,8 @@ export default {
   name: 'completes',
   data() {
     return {
-      threetime: 3
+      threetime: 3,
+      gotourl:'https://mp.weixin.qq.com/s/5ofCMHDQBabcwx3VqbTs3w',
     };
   },
   mounted() {
@@ -34,7 +35,7 @@ export default {
       setTimeout(() => {
         self.threetime--;
         if (self.threetime <= 0) {
-          this.goout()
+          this.goout();
           return;
         } else {
           this.times();
@@ -44,7 +45,7 @@ export default {
     goout(){
       if(this.$route.path=='/completes'){
          // localStorage.clear('QRcode');
-         window.location.href ='https://mp.weixin.qq.com/s/lyXQWn49YzicENsK-ey9vA'
+         window.location.href =this.gotourl;
       }
     }
   }

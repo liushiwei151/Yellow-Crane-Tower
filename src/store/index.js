@@ -308,6 +308,7 @@ const store = new Vuex.Store({
                 house.smokeimg = res.data.data.bgImgUrl;
                 house.advertisement[0].adv = res.data.data.imgUrl;
                 house.advertisement[0].web = res.data.data.outUrl;
+                house.isloading = false;
               }else{
                 alert('测试获取底部广告失败')
               }

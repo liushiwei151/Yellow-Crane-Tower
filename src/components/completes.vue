@@ -20,8 +20,12 @@ export default {
   data() {
     return {
       threetime: 3,
-      gotourl:'https://mp.weixin.qq.com/s/5ofCMHDQBabcwx3VqbTs3w',
+      gotourl:'',
     };
+  },
+  created() {
+    this.gotourl=JSON.parse(localStorage.getItem('QRcode')).jumpLinkUrl;
+    console.log(this.gotourl);
   },
   mounted() {
     window.scrollTo(0,0);

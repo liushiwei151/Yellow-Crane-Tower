@@ -87,11 +87,10 @@ export default {
         }
 
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
-    if(this.$route.query.errorCode){
-      this.isNewUser(this.$route.query);
-    }else{
-       this.isNewUser(JSON.parse(localStorage.getItem('all')))
-    }
+      if(this.$route.path != '/'){
+        this.isNewUser(JSON.parse(localStorage.getItem('all')))
+      }
+
     // this.$router.push('/');
     this.move();
   },
@@ -103,9 +102,15 @@ export default {
      },
     //移动动画切换
     move() {
-      setTimeout(() => {
-        this.card = false;
-      }, 0);
+      let self =this;
+      var getimgmove =setInterval(()=>{
+        if(self.smokeimg!=''){
+          setTimeout(() => {
+            self.card = false;
+          }, 300);
+          clearInterval(getimgmove);
+        }
+      },100)
     },
     //刷新页面
     reload(){

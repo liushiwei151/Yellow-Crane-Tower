@@ -339,7 +339,17 @@ const store = new Vuex.Store({
     dosubcode(house, mm) {
       //确定弹出的modal为判断验证码
       house.ismodal.isaddress = 'isuser';
+      let jwd =JSON.parse(localStorage.getItem('jwdcode'));
+      if(jwd==undefined||jwd==""){
+       var lati =0;
+       var long =0;
+      }else{
+        var lati =jwd.wd;
+        var long =jwd.jd;
+      }
       let data = {
+        latitude:lati,
+        longitude:long,
         scanId: house.all.scanId,
         code: mm
       }

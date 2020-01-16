@@ -9,7 +9,7 @@
     </div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
       <ul class="bottom-old-a">
-        <li v-for="(item, index) in advertisement" :key="index"><a :href="item.web?item.web:'javascript:void(0)'" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
+        <li v-for="(item, index) in advertisement" @click="record(item,index)" :key="index"><a :href="item.web?item.web:'javascript:void(0)'" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
         <li>本平台含有烟草内容18岁以下谢绝关注 <br>
           服务支持：武汉黄鹤楼漫天游文化传播有限公司</li>
       </ul>
@@ -34,6 +34,7 @@ import wait from '@/components/assembly/wait'
 import err from '@/components/assembly/err'
 import fudai from '@/components/assembly/fudai'
 import { mapState, mapActions } from 'vuex';
+import api from '@/api'
 export default {
   name: 'YellowCraneTower',
   provide(){
@@ -63,7 +64,8 @@ export default {
       smokeimg:'smokeimg',
       all:'all',
       advertisement:'advertisement',
-      ishasjp:'ishasjp'
+      ishasjp:'ishasjp',
+      openid:'openid'
     })
   },
   mounted() {
@@ -96,6 +98,14 @@ export default {
   },
   methods: {
      ...mapActions(['isNewUser']),
+     //记录点击底部跳转的次数
+     record(e,f){
+      let data ={
+        openid:this.openid,
+        type:f-(-3)
+      }
+      api.uStatistics(data).then((res)=>{return})
+     },
      //跳往双旦活动
      goout(){
         window.location.href='https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toYq'

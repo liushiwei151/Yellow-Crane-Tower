@@ -108,6 +108,8 @@ const store = new Vuex.Store({
       //二维码界面的确认的地址
       cusaddress: 0,
        ishasjp: '',
+       //客户的openid
+       openid:null
     }
   },
   getter: {
@@ -274,6 +276,7 @@ const store = new Vuex.Store({
                   //获取底部广告
                   api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude).then((res) => {
                     if(res.data.code==200){
+                      house.openid=res.data.data.openid;
                       house.smokeimg = res.data.data.bgImgUrl;
                       house.advertisement[0].adv = res.data.data.imgUrl;
                       house.advertisement[0].web = res.data.data.outUrl;

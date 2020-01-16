@@ -4,7 +4,7 @@ import qs from 'qs'
 //允许cookie跨域
 // axios.defaults.withCredentials = true;
 //测试
-// let httpurl=" http://qrhhl.yunyutian.cn"
+// let httpurl="http://qrhhl.yunyutian.cn"
 //正式
 let httpurl ="https://qr.hhl1916.com"
 // 提交验证码
@@ -111,6 +111,13 @@ const deleteAddress =(address)=>{
 const getTop20Record =()=>{
   return axios.get(httpurl+'/huanghelou1916-h5/luckyDraw/getTop20Record ')
 }
+const uStatistics =(data)=>{
+  if(httpurl=='http://qrhhl.yunyutian.cn'){
+    return axios.post(httpurl+'/huanghelou1916-center/open/uStatistics',qs.stringify(data))
+  }else{
+    return axios.post('https://wx.hhl1916.com/huanghelou1916-center/open/uStatistics',qs.stringify(data))
+  }
+}
 export default {
   checkVerifyCode,
   jsSign,
@@ -128,5 +135,6 @@ export default {
   editAddress,
   cOrder,
   deleteAddress,
-  getTop20Record
+  getTop20Record,
+  uStatistics
 }

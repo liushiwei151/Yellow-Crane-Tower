@@ -9,7 +9,7 @@
     </div>
     <div class="bottom-old" v-if="ismodal.isuser==='0'">
       <ul class="bottom-old-a">
-        <li v-for="(item, index) in advertisement" @click="record(item,index)" :key="index"><a :href="item.web?item.web:'javascript:void(0)'" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
+        <li v-for="(item, index) in advertisement" @click="record(item,index)" :key="index"><a href="javascript:void(0)" class="webadv" :style="{backgroundImage:'url('+item.adv+')'}"></a></li>
         <li>本平台含有烟草内容18岁以下谢绝关注 <br>
           服务支持：武汉黄鹤楼漫天游文化传播有限公司</li>
       </ul>
@@ -104,7 +104,13 @@ export default {
         openid:this.openid,
         type:f-(-3)
       }
-      api.uStatistics(data).then((res)=>{return})
+      api.uStatistics(data).then((res)=>{return});
+      setTimeout(()=>{
+        if(e.web==undefined||e.web==""||e.web==null){
+          return
+        }
+        window.location.href=e.web;
+      },500)
      },
      //跳往双旦活动
      goout(){

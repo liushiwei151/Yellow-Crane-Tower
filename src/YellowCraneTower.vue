@@ -104,13 +104,22 @@ export default {
         openid:this.openid,
         type:f-(-3)
       }
-      api.uStatistics(data).then((res)=>{return});
-      setTimeout(()=>{
+      if(this.openid==null||this.openid==undefined||this.openid==""){
+        window.location.href=e.web;
+      }else{
+        api.uStatistics(data).then((res)=>{
+           window.location.href=e.web;
+        }).catch((err)=>{
+          window.location.href=e.web;
+        })
+      }
+
+     /* setTimeout(()=>{
         if(e.web==undefined||e.web==""||e.web==null){
           return
         }
         window.location.href=e.web;
-      },500)
+      },500)*/
      },
      //跳往双旦活动
      goout(){

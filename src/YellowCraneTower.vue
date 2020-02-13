@@ -20,13 +20,13 @@
     <!-- 等待框 -->
     <wait></wait>
     <!-- 双旦活动 -->
-    <div class="twod" @click="goout" v-if="istwod"></div>
-    <!-- 新增图标 -->
-    <div class="activity" @click="goActivityWeb"></div>
+    <!-- <div class="twod" @click="goout" v-if="istwod"></div> -->
+    <!-- 活动图标 -->
+    <div class="activity" @click="goActivityWeb" v-if="istwod"></div>
     <!-- 弹出错误 -->
     <err></err>
     <!-- 福袋签 -->
-    <fudai v-if="istwod"></fudai>
+    <!-- <fudai v-if="istwod"></fudai> -->
   </div>
 </template>
 
@@ -51,7 +51,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
-      istwod:false
+      istwod:true
     };
   },
   components: {
@@ -79,16 +79,16 @@ export default {
               window.scrollTo(0,0);
             }
         }
-        // console.log(this.$route.query.timestamp-1577030400000);
-        // if(this.$route.query.timestamp){
-        //   if(this.$route.query.timestamp<1577030400000){
-        //     this.istwod=false
-        //   }
-        // }else{
-        //   if(JSON.parse(localStorage.getItem('all')).timestamp<1577030400000){
-        //     this.istwod=false
-        //   }
-        // }
+        console.log(this.$route.query.timestamp-1581645600000);
+        if(this.$route.query.timestamp){
+          if(this.$route.query.timestamp<1581645600000){
+            this.istwod=false
+          }
+        }else{
+          if(JSON.parse(localStorage.getItem('all')).timestamp<1581645600000){
+            this.istwod=false
+          }
+        }
 
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
       if(this.$route.path != '/'){
@@ -128,9 +128,9 @@ export default {
       },500)*/
      },
      //跳往双旦活动
-     goout(){
+    /* goout(){
         window.location.href='https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toYq'
-     },
+     },*/
     //移动动画切换
     move() {
       let self =this;
@@ -163,21 +163,21 @@ export default {
     background-size:100% 100% ;
     position: fixed;
     right: 10px;
-    bottom:270px ;
+    bottom:250px ;
     z-index: 95;
   }
   // 双旦分数样式
-  .twod{
-    background: url(../static/twod.png) no-repeat;
-    width: 167px;
-    height: 191px;
-    background-size:100% 100% ;
-    position: fixed;
-    right: 0px;
-    bottom:100px ;
-    z-index: 95;
-    animation: fight 1s ease infinite both;
-    }
+  // .twod{
+  //   background: url(../static/twod.png) no-repeat;
+  //   width: 167px;
+  //   height: 191px;
+  //   background-size:100% 100% ;
+  //   position: fixed;
+  //   right: 0px;
+  //   bottom:100px ;
+  //   z-index: 95;
+  //   animation: fight 1s ease infinite both;
+  //   }
 @keyframes fight {
 	0% {
 		transform: none;

@@ -4,9 +4,9 @@ import qs from 'qs'
 //允许cookie跨域
 // axios.defaults.withCredentials = true;
 //测试
-// let httpurl="http://qrhhl.yunyutian.cn"
+let httpurl="http://qrhhl.yunyutian.cn"
 //正式
-let httpurl ="https://qr.hhl1916.com"
+// let httpurl ="https://qr.hhl1916.com"
 // 提交验证码
 const checkVerifyCode = (code) => {
   return axios.post(httpurl+"/huanghelou1916-h5/code/checkVerifyCode", qs.stringify(code))

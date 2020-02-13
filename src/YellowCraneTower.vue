@@ -19,8 +19,10 @@
     <modal></modal>
     <!-- 等待框 -->
     <wait></wait>
-    <!-- 双旦分数 -->
+    <!-- 双旦活动 -->
     <div class="twod" @click="goout" v-if="istwod"></div>
+    <!-- 新增图标 -->
+    <div class="activity" @click="goActivityWeb"></div>
     <!-- 弹出错误 -->
     <err></err>
     <!-- 福袋签 -->
@@ -49,7 +51,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
-      istwod:true
+      istwod:false
     };
   },
   components: {
@@ -77,16 +79,16 @@ export default {
               window.scrollTo(0,0);
             }
         }
-        console.log(this.$route.query.timestamp-1577030400000);
-        if(this.$route.query.timestamp){
-          if(this.$route.query.timestamp<1577030400000){
-            this.istwod=false
-          }
-        }else{
-          if(JSON.parse(localStorage.getItem('all')).timestamp<1577030400000){
-            this.istwod=false
-          }
-        }
+        // console.log(this.$route.query.timestamp-1577030400000);
+        // if(this.$route.query.timestamp){
+        //   if(this.$route.query.timestamp<1577030400000){
+        //     this.istwod=false
+        //   }
+        // }else{
+        //   if(JSON.parse(localStorage.getItem('all')).timestamp<1577030400000){
+        //     this.istwod=false
+        //   }
+        // }
 
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
       if(this.$route.path != '/'){
@@ -98,6 +100,10 @@ export default {
   },
   methods: {
      ...mapActions(['isNewUser']),
+     //跳转活动页面
+     goActivityWeb(){
+      window.location.href='https://w.url.cn/s/A93zZhD'
+     },
      //记录点击底部跳转的次数
      record(e,f){
       let data ={
@@ -149,6 +155,17 @@ export default {
 </script>
 
 <style lang="less">
+  //新增图标跳转样式
+  .activity{
+    background: url(../static/activity.png) no-repeat;
+    width: 150px;
+    height: 150px;
+    background-size:100% 100% ;
+    position: fixed;
+    right: 10px;
+    bottom:270px ;
+    z-index: 95;
+  }
   // 双旦分数样式
   .twod{
     background: url(../static/twod.png) no-repeat;

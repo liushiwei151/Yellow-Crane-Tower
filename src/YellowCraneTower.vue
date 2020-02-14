@@ -51,7 +51,7 @@ export default {
       card: true,
       transitionName: '',
       routeractive:true,
-      istwod:true
+      istwod:false
     };
   },
   components: {
@@ -79,16 +79,16 @@ export default {
               window.scrollTo(0,0);
             }
         }
-        console.log(this.$route.query.timestamp-1581645600000);
-        if(this.$route.query.timestamp){
-          if(this.$route.query.timestamp<1581645600000){
-            this.istwod=false
-          }
-        }else{
-          if(JSON.parse(localStorage.getItem('all')).timestamp<1581645600000){
-            this.istwod=false
-          }
-        }
+        // console.log(this.$route.query.timestamp-1581645600000);
+        // if(this.$route.query.timestamp){
+        //   if(this.$route.query.timestamp<1581645600000){
+        //     this.istwod=false
+        //   }
+        // }else{
+        //   if(JSON.parse(localStorage.getItem('all')).timestamp<1581645600000){
+        //     this.istwod=false
+        //   }
+        // }
 
     //判断是否通过二维码扫描进入此页面，是直接把传来的值存储，不是就读取在local中是否存在之前存的数据
       if(this.$route.path != '/'){

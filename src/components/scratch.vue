@@ -129,13 +129,15 @@ export default {
           var draw ={
               scanId:all.scanId ,//扫码Id
                latitude:jwd.wd,// 纬度
-               longitude:jwd.jd// 经度
+               longitude:jwd.jd,// 经度
+               isNewUser:all.isNewUser
           }
         }else{
           var draw ={
               scanId:all.scanId ,//扫码Id
                latitude:0,// 纬度
-               longitude:0// 经度
+               longitude:0,// 经度
+               isNewUser:all.isNewUser
           }
         }
         axios.defaults.headers.common['Authorization'] = all.sessionId;

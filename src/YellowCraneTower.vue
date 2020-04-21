@@ -27,6 +27,16 @@
     <err></err>
     <!-- 福袋签 -->
     <!-- <fudai v-if="istwod"></fudai> -->
+    <!-- 弹出框 -->
+    <transition name="fade">
+      <div v-if='isfudai' class='alertBox' @click="gofudai(false)">
+        </div>
+      </transition>
+    <transition name="fade">
+      <div v-if='isfudai' class='alertBoxImg'>
+        <div class='alertClose' @click="gotoWeb"></div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -67,7 +77,8 @@ export default {
       all:'all',
       advertisement:'advertisement',
       ishasjp:'ishasjp',
-      openid:'openid'
+      openid:'openid',
+      isfudai:'isfudai'
     })
   },
   mounted() {
@@ -99,7 +110,10 @@ export default {
     this.move();
   },
   methods: {
-     ...mapActions(['isNewUser']),
+     ...mapActions(['isNewUser','gofudai']),
+     gotoWeb(){
+       console.log('跳转页面')
+     },
      //跳转活动页面
      goActivityWeb(){
       window.location.href='https://w.url.cn/s/A93zZhD'
@@ -155,6 +169,43 @@ export default {
 </script>
 
 <style lang="less">
+  //新增弹窗的样式
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+  .alertBoxImg{
+    background: url(../static/modal/alertBoxbg.png) no-repeat;
+    background-size: 100% 100%;
+    width: 700px;
+    height: 48.275vh;
+    position: relative;
+    left: 25px;
+    top: 25.8625vh;
+    z-index: 100;
+    .alertClose{
+      background: url(../static/modal/alertBoxClose.png) no-repeat;
+      background-size: 100% 100%;
+      width: 365px;
+      height: 6.072vh;
+      position: absolute;
+      top: 35.75vh;
+      left: 167.5px;
+    }
+  }
+  .alertBox{
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 98;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
   //新增图标跳转样式
   .activity{
     background: url(../static/activity.png) no-repeat;

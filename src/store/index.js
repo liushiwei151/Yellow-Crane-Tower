@@ -211,6 +211,9 @@ const store = new Vuex.Store({
     //弹出财神签
     ongofudai(house,mm){
       house.isfudai=mm;
+      var a =JSON.parse(localStorage.getItem('QRcodeinfor'));
+      a.isPopup=false;
+      localStorage.setItem('QRcodeinfor',JSON.stringify(a))
     },
     // 改变双旦节图标样式
     onchangetub(house, mm) {
@@ -388,10 +391,9 @@ const store = new Vuex.Store({
     onresults(house, mm) {
       let data = JSON.parse(localStorage.getItem('all'));
       axios.defaults.headers.common["Authorization"] = data.sessionId;
-      let Qrc = JSON.parse(localStorage.getItem('QRcodeinfor'));
+      // let Qrc = JSON.parse(localStorage.getItem('QRcodeinfor'));
       house.isloading = true;
       api.real(data.scanId).then((res) => {
-        console.log(res.data.data)
         house.isloading = false;
         let names = res.data.data;
         house.ismodal.isphone = names.mobile;
@@ -425,7 +427,6 @@ const store = new Vuex.Store({
       }
       api.getLottery(lotter).then((res) => {
         house.QRcodeinfor.status = res.data.data.status;
-        console.log(house.QRcodeinfor.status)
       }).catch((err) => {
         console.log(err)
       })

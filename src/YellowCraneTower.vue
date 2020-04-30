@@ -112,7 +112,7 @@ export default {
   methods: {
      ...mapActions(['isNewUser','gofudai']),
      gotoWeb(){
-       console.log('跳转页面')
+      window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toLabor'
      },
      //跳转活动页面
      goActivityWeb(){

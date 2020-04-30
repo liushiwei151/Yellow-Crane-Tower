@@ -19,14 +19,10 @@
     <modal></modal>
     <!-- 等待框 -->
     <wait></wait>
-    <!-- 双旦活动 -->
-    <!-- <div class="twod" @click="goout" v-if="istwod"></div> -->
     <!-- 活动图标 -->
     <div class="activity" @click="goActivityWeb" v-if="istwod"></div>
     <!-- 弹出错误 -->
     <err></err>
-    <!-- 福袋签 -->
-    <!-- <fudai v-if="istwod"></fudai> -->
     <!-- 弹出框 -->
     <transition name="fade">
       <div v-if='isfudai' class='alertBox' @click="gofudai(false)">
@@ -112,7 +108,7 @@ export default {
   methods: {
      ...mapActions(['isNewUser','gofudai']),
      gotoWeb(){
-      window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toLabor'
+      window.location.href='https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toLabor'
      },
      //跳转活动页面
      goActivityWeb(){

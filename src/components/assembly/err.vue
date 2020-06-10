@@ -35,7 +35,7 @@ export default {
     color: #fff;
     width: 700px;
     height: 744px;
-    background: url(https://pic.cwyyt.cn//upload/img/20191203/1732133213_popp.png) no-repeat;
+    background: url(../../../static/cardBG.png) no-repeat;
     background-size: 100% 100%;
   };
 .modal {

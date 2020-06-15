@@ -34,7 +34,10 @@
     <!-- 弹出框 -->
     <transition name="fade"><div v-if="isfudai" class="alertBox" @click="gofudai(false)"></div></transition>
     <transition name="fade">
-      <div v-if="isfudai" class="alertBoxImg"><div class="alertClose" @click="gotoWeb"></div></div>
+      <div v-if="isfudai" class="alertBoxImg">
+        <div class="alertClose" @click="gotoWeb"></div>
+        <div class="alertClose2" @click="gofudai(false)"></div>
+      </div>
     </transition>
     <!-- 新增次数弹框 -->
     <transiton name="fade">
@@ -42,12 +45,11 @@
         <div class="imgBG">
           <div class="icon"></div>
           <div class="text">
-            <span>{{maskText1}}</span>
-            <span>{{maskText2}}</span>
+            <span>{{ maskText1 }}</span>
+            <span>{{ maskText2 }}</span>
+            <span>{{ maskText3 }}</span>
           </div>
-          <div class="button" @click="alertMask(false)">
-            关闭
-          </div>
+          <div class="button" @click="alertMask(false)">关闭</div>
         </div>
       </div>
     </transiton>
@@ -66,7 +68,7 @@ export default {
   provide() {
     return {
       reload: this.reload,
-      alertMask:this.alertMask
+      alertMask: this.alertMask
     };
   },
   data() {
@@ -77,9 +79,10 @@ export default {
       transitionName: "",
       routeractive: true,
       istwod: false,
-      isMask:false,
-      maskText1:'',
-      maskText2:''
+      isMask: false,
+      maskText1: "",
+      maskText2: "",
+      maskText3: ""
     };
   },
   components: {
@@ -130,14 +133,15 @@ export default {
   methods: {
     ...mapActions(["isNewUser", "gofudai"]),
     gotoWeb() {
-      window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toLabor";
+      window.location.href = "http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toBoat";
     },
-    alertMask(e){
-      if(e===false){
+    alertMask(e) {
+      if (e === false) {
         this.isMask = false;
-      }else{
+      } else {
         this.maskText1 = e.text1;
         this.maskText2 = e.text2;
+        this.maskText3 = e.text3;
         this.isMask = true;
       }
     },
@@ -221,15 +225,15 @@ export default {
     flex-direction: column;
     box-sizing: border-box;
     padding-top: 100px;
-    .text{
-    font-size: 32px;  
-    color: #955409;
-    margin: 35px 0;
-    span{
-      display: block;
-      margin-bottom: 10px;
-      white-space: nowrap;
-    }
+    .text {
+      font-size: 32px;
+      color: #955409;
+      margin: 30px 0;
+      span {
+        display: block;
+        margin-bottom: 10px;
+        white-space: nowrap;
+      }
     }
     .button {
       background: linear-gradient(90deg, rgba(255, 144, 82, 1) 0%, rgba(248, 59, 65, 1) 100%);
@@ -242,9 +246,9 @@ export default {
       justify-content: center;
       color: #fff;
       font-size: 40px;
-       letter-spacing:5px;
-       text-align: 5px;
-       white-space: nowrap;
+      letter-spacing: 5px;
+      text-align: 5px;
+      white-space: nowrap;
     }
     .icon {
       background: url(../static/img1.png) no-repeat;
@@ -265,20 +269,29 @@ export default {
 .alertBoxImg {
   background: url(../static/modal/alertBoxbg.png) no-repeat;
   background-size: 100% 100%;
-  width: 700px;
-  height: 48.275vh;
+  width: 655px;
+  height: 54.8vh;
   position: relative;
-  left: 25px;
-  top: 25.8625vh;
+  left: 100px;
+  top: 5vh;
   z-index: 100;
+  .alertClose2 {
+    background: url(../static/modal/alertClose.png) no-repeat;
+    background-size: 100% 100%;
+    width: 69px;
+    height: 65px;
+    top: 18vh;
+    right: 16vw;
+    position: absolute;
+  }
   .alertClose {
     background: url(../static/modal/alertBoxClose.png) no-repeat;
     background-size: 100% 100%;
-    width: 365px;
-    height: 6.072vh;
+    width: 462px;
+    height: 10.35vh;
     position: absolute;
-    top: 35.75vh;
-    left: 167.5px;
+    bottom: -12vh;
+    left: 6vw;
   }
 }
 .alertBox {

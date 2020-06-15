@@ -147,6 +147,7 @@ export default {
             self.resultTexts[0].prize = res.data.data.tip;
             self.QRcode = res.data.data;
             localStorage.setItem('QRcode', JSON.stringify(self.QRcode));
+            const lastAmount = res.data.data.lastAmount;
             // 是否弹出次数框
             if(res.data.data.isPop){
               let num = res.data.data.count;
@@ -155,17 +156,20 @@ export default {
                 if(num === 1||num===2){
                   data ={
                     text1:'您已完成扫码验真抽奖'+num+'次',
-                    text2:'再完成'+(3-num)+'次即能抽中实物大奖！'
+                    text2:'再完成'+(3-num)+'次即能抽中实物大奖！',
+                    text3:'大奖仅剩'+lastAmount+'份,先到先得！'
                   }
                 }else if(num ===3){
                   data ={
                     text1:'恭喜您完成3次扫码验真抽奖获得惊喜大奖',
-                    text2:'再完成2次还有机会抽中特别大奖！'
+                    text2:'再完成2次还有机会抽中特别大奖！',
+                    text3:'大奖仅剩'+lastAmount+'份,先到先得！'
                   }
                 }else if(num ===4){
                   data ={
                     text1:'您已完成扫码验真抽奖'+num+'次',
-                    text2:'再完成'+(5-num)+'次即能抽中实物大奖！'
+                    text2:'再完成'+(5-num)+'次即能抽中实物大奖！',
+                    text3:'大奖仅剩'+lastAmount+'份,先到先得！'
                   }
                 }
                 if(data&&num<5){
@@ -176,12 +180,14 @@ export default {
                 if(num===5){
                   data={
                     text1:'恭喜您完成5次扫码验真抽奖获得惊喜大奖',
-                    text2:'再完成5次还有机会抽中特别大奖！'
+                    text2:'再完成5次还有机会抽中特别大奖！',
+                    text3:'大奖仅剩'+lastAmount+'份,先到先得！'
                   }
                 }else{
                   data={
                     text1:'您已完成扫码验真抽奖'+num+'次',
-                    text2:'再完成'+(5-num%5)+'次即能抽中实物大奖！'
+                    text2:'再完成'+(5-num%5)+'次即能抽中实物大奖！',
+                    text3:'大奖仅剩'+lastAmount+'份,先到先得！'
                   }
                 }
                 if(data&&num<10){
@@ -213,9 +219,7 @@ export default {
           }else{
             self.goerr(true);
           }
-        }).catch((err)=>{
-           self.goerr(true);
-        });
+        })
       } else {
         return;
       }

@@ -133,7 +133,7 @@ export default {
   methods: {
     ...mapActions(["isNewUser", "gofudai"]),
     gotoWeb() {
-      window.location.href = "http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toBoat";
+      window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toBoat";
     },
     alertMask(e) {
       if (e === false) {

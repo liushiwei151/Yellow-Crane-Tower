@@ -45,6 +45,7 @@
         <div class="imgBG">
           <div class="icon"></div>
           <div class="text">
+            <span>现阶段活动周期：8月19日-8月25日</span>
             <span>{{ maskText1 }}</span>
             <span>{{ maskText2 }}</span>
             <span>{{ maskText3 }}</span>
@@ -228,7 +229,7 @@ export default {
     .text {
       font-size: 32px;
       color: #955409;
-      margin: 30px 0;
+      margin: 15px 0 ;
       span {
         display: block;
         margin-bottom: 10px;

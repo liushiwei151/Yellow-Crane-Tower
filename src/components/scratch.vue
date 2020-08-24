@@ -173,6 +173,7 @@ export default {
                   }
                 }
                 if(data&&num<5){
+                  data['text4']=res.data.data.lotteryTime;
                   self.alertMask(data)
                 }
               }else if(res.data.data.productType === 2){
@@ -191,6 +192,7 @@ export default {
                   }
                 }
                 if(data&&num<10){
+                  data['text4']=res.data.data.lotteryTime;
                   self.alertMask(data)
                 }
               }

@@ -277,7 +277,7 @@ const store = new Vuex.Store({
                   }
                   localStorage.setItem('jwdcode', JSON.stringify(jwd));
                   //获取底部广告
-                  api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude).then((res) => {
+                  api.getAdvertisement(mm.productId, mm.scanId, latitude, longitude,mm.isNewUser).then((res) => {
                     if(res.data.code==200){
                       house.openid=res.data.data.openid;
                       house.smokeimg = res.data.data.bgImgUrl;

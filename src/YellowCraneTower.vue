@@ -32,11 +32,13 @@
     <!-- 弹出错误 -->
     <err></err>
     <!-- 弹出框 -->
-    <transition name="fade"><div v-if="isfudai" class="alertBox" @click="gofudai(false)"></div></transition>
+    <!-- <transition name="fade"><div v-if="isfudai" class="alertBox" @click="gofudai(false)"></div></transition> -->
     <transition name="fade">
-      <div v-if="isfudai" class="alertBoxImg">
-        <div class="alertClose" @click="gotoWeb"></div>
-        <div class="alertClose2" @click="gofudai(false)"></div>
+      <div v-if="isfudai" class="alertBox" @click.self="gofudai(false)">
+        <div class="alertBoxImg">
+          <div class="alertClose" @click="gotoWeb"></div>
+          <div class="alertClose2" @click="gofudai(false)"></div>
+        </div>
       </div>
     </transition>
     <!-- 新增次数弹框 -->
@@ -135,7 +137,10 @@ export default {
   methods: {
     ...mapActions(["isNewUser", "gofudai"]),
     gotoWeb() {
-      window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toBoat";
+      // 测试跳转
+      window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toCake';
+      //正式跳转
+      // window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toCake";
     },
     alertMask(e) {
       if (e === false) {
@@ -270,31 +275,30 @@ export default {
   opacity: 0;
 }
 .alertBoxImg {
-  background: url(../static/modal/alertBoxbg.png) no-repeat;
+  background: url(../static/modal/alertPopupBG.png) no-repeat;
   background-size: 100% 100%;
-  width: 655px;
-  height: 54.8vh;
+  width: 593px;
+  height: 545px;
   position: relative;
-  left: 100px;
-  top: 5vh;
   z-index: 100;
+  top: -100px;
   .alertClose2 {
-    background: url(../static/modal/alertClose.png) no-repeat;
+    background: url(../static/modal/alertPopupClose.png) no-repeat;
     background-size: 100% 100%;
     width: 69px;
     height: 65px;
-    top: 18vh;
-    right: 16vw;
     position: absolute;
+    right: 0;
+    top: 0;
   }
   .alertClose {
-    background: url(../static/modal/alertBoxClose.png) no-repeat;
+    background: url(../static/modal/alertPopupButton.png) no-repeat;
     background-size: 100% 100%;
-    width: 462px;
-    height: 10.35vh;
+    width: 261px;
+    height: 119px;
     position: absolute;
-    bottom: -12vh;
-    left: 6vw;
+    bottom: -50px;
+    left:200px;
   }
 }
 .alertBox {

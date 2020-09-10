@@ -367,6 +367,9 @@ const store = new Vuex.Store({
         if (!res.data.data.follow) {
           house.ismodal.follow = res.data.data.follow;
           if (codes == 200) {
+            alert(
+                  "为了给楼主们提供更优质的服务\n自2020年9月11日起\n每天晚上9:00至次日早上7:30\n进行系统维护升级\n预计维护时间两周\n给您造成的不便敬请谅解。"
+                );
             router.push("result")
           } else if (codes == 500) {
             house.ismodal.errnum++;

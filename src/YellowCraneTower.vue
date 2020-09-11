@@ -138,9 +138,9 @@ export default {
     ...mapActions(["isNewUser", "gofudai"]),
     gotoWeb() {
       // 测试跳转
-      window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toCake';
+      // window.location.href='http://qrhhl.yunyutian.cn/huanghelou1916-center/wx/gCode?name=toCake';
       //正式跳转
-      // window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toCake";
+      window.location.href = "https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toCake";
     },
     alertMask(e) {
       if (e === false) {
